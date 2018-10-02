@@ -187,5 +187,31 @@ void MainWindow::updateActions()
 
 void MainWindow::on_pushButton_2_clicked()
 {
-    //This is what happens after "generate" button is pressed.
+    //This function is what happens after "generate" button is pressed.
+    QAbstractItemModel *model = view->model();
+
+    //Getting data from text boxes
+    for (int row = 0; row < model->rowCount(); row++)
+    {
+            row++;//REMOVE
+    }
+    QString node_file_name = lineEdit->text();
+    std::string file_name = node_file_name.toStdString();
+    //string name_space = lineEdit_2;
+    //double node_file_name = lineEdit->text().toDouble(); //this worked
+
+    //Getting data from table - see https://www.qtcentre.org/threads/1294-QT4-get-content-of-a-QAbstractItemModel
+    int row = 1;
+    int column = 0;
+    //rows:      0 = Publishers 1 = Subscribers 2 = Parameters
+    //columns:   0 = Items(rows)1 = Name        2 = Type        3 = Topic       4 = Default Value       5 = Description
+    QModelIndex idx = (model->index(row, column));
+    QString s = model->data(idx).toString();
+
+
+    //This is the output after generation
+    label_3->setText("Success(not really yet)");
+    label_3->setText(node_file_name);
+    label_3->setText(s);
+    //lineEdit_3->setText(QString::number(node_file_name));// = node_file_name;
 }

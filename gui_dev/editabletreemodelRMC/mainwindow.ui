@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Editable Tree Model</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">MainWindow {background: rgb(193, 125, 17)}</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout">
     <property name="spacing">
@@ -32,6 +35,9 @@
     </property>
     <item>
      <widget class="QTreeView" name="view">
+      <property name="styleSheet">
+       <string notr="true">QLineEdit { background: color:rgb(238,238,236)}</string>
+      </property>
       <property name="alternatingRowColors">
        <bool>true</bool>
       </property>
@@ -71,12 +77,30 @@
      </widget>
     </item>
     <item>
-     <widget class="QLineEdit" name="lineEdit"/>
+     <widget class="QLineEdit" name="lineEdit">
+      <property name="maxLength">
+       <number>32753</number>
+      </property>
+     </widget>
     </item>
     <item>
      <widget class="QPushButton" name="pushButton_2">
+      <property name="styleSheet">
+       <string notr="true">QPushButton { background:qconicalgradient(cx:0, cy:0, angle:135, stop:0 rgba(255, 200, 0, 69), stop:0.375 rgba(255, 200, 0, 69), stop:0.423533 rgba(251, 255, 0, 145), stop:0.45 rgba(247, 255, 0, 208), stop:0.477581 rgba(255, 244, 71, 130), stop:0.518717 rgba(255, 218, 71, 130), stop:0.55 rgba(255, 255, 0, 255), stop:0.57754 rgba(255, 203, 0, 130), stop:0.625 rgba(255, 255, 0, 69), stop:1 rgba(255, 255, 0, 69))}</string>
+      </property>
       <property name="text">
        <string>Generate</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_3">
+      <property name="styleSheet">
+       <string notr="true"> QLabel { background: rgb(233, 185, 110)}
+</string>
+      </property>
+      <property name="text">
+       <string>Nothing Generated So Far...</string>
       </property>
      </widget>
     </item>
