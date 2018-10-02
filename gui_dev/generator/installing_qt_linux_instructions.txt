@@ -1,0 +1,18 @@
+Installing Qt in Linux
+
+Go here: https://www.qt.io/download
+Click “Go open source”, and download
+Open a terminal and cd to ~/Downloads or wherever it was downloaded to
+The file will have a name like “qt-unified-linux...run”.  Make it executable by running the command: chmod +x file
+Run the file: ./file
+There may be a credentials warning, but that is unimportant
+This will start the Qt Setup process, no need to make an account, just skip
+When it shows the options of what versions to install, make sure to select 5.11.2, and click on the drop down arrow to show what it contains.  You can deselect the components we don’t need, such as anything related to android or web.
+This is the most important step because it is possible to install Qt without any version and then you’re left with a fancy text editor without examples and other helpful stuff.  At least that’s what happened to me at first…  So make sure you install a version.
+Finish the installation
+It may take a while, was about 8 gb
+Launch it!
+If it worked correctly, a window should open and examples should be shown
+Warning - examples are not read-only so it’s possible to break them!
+If questions contact Molly
+

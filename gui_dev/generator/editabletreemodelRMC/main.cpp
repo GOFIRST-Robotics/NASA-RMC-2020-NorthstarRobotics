@@ -48,31 +48,16 @@
 **
 ****************************************************************************/
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#include <QApplication>
 
-#include "ui_mainwindow.h"
+#include "mainwindow.h"
 
-#include <QMainWindow>
-#include <QModelIndex>
-
-class MainWindow : public QMainWindow, private Ui::MainWindow
+int main(int argc, char *argv[])
 {
-    Q_OBJECT
+    Q_INIT_RESOURCE(editabletreemodel);
 
-public:
-    MainWindow(QWidget *parent = 0);
-
-public slots:
-    void updateActions();
-
-private slots:
-    void insertChild();
-    bool insertColumn();
-    void insertRow();
-    bool removeColumn();
-    void removeRow();
-    void on_pushButton_2_clicked();
-};
-
-#endif // MAINWINDOW_H
+    QApplication app(argc, argv);
+    MainWindow window;
+    window.show();
+    return app.exec();
+}
