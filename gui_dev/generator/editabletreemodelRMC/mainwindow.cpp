@@ -50,6 +50,9 @@
 
 #include "mainwindow.h"
 #include "treemodel.h"
+//#include <iostream>
+//#include <fstream>
+#include <QTextStream>
 
 #include <QFile>
 
@@ -195,10 +198,23 @@ void MainWindow::on_pushButton_2_clicked()
     {
             row++;//REMOVE
     }
+
+    //opening file
     QString node_file_name = lineEdit->text();
     std::string file_name = node_file_name.toStdString();
     //string name_space = lineEdit_2;
     //double node_file_name = lineEdit->text().toDouble(); //this worked
+    //std:: ofstream outfile;
+    //outfile.open(file_name);
+    //outfile << "Test\n";
+    //outfile.close();
+
+
+    QFile file(":/out.txt");
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        return;
+    QTextStream out(&file);
+    out << "The magic number is: " << 49 << "\n";
 
     //Getting data from table - see https://www.qtcentre.org/threads/1294-QT4-get-content-of-a-QAbstractItemModel
     int row = 1;
