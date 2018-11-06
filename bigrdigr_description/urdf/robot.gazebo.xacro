@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<robot name="digr" xmlns:xacro="https://www.ros.org/wiki/xacro">
+
+	<gazebo reference="world_origin">
+		<turnGravityOff>false</turnGravityOff>
+	</gazebo>
+	
+	<gazebo reference="base_link">
+		<material>Gazebo/LightGrey</material>
+		<turnGravityOff>false</turnGravityOff>
+	</gazebo>
+	
+	<gazebo reference="front_left_wheel">
+		<
+		
+	<gazebo>
+		<plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+			<robotNamespce>/</robotNamespace>
+		</plugin>
+	</gazebo>
+	
+	<!-- IMU support -->
+	<gazebo>
+		<plugin name="imu_plugin" filename="libgazebo_ros_imu.so">
+			<alwaysOn>true</alwaysOn>
+			<bodyName>imu_link</bodyName>
+			<frameName>imu_link</frameName>
+			<topicName>imu</topicName>
+			<serviceName>imu_service</serviceName>
+			<gaussianNoise>    </gaussianNoise>
+			<updateRate>     </updateRate>
+			<imu>
+				<noise>
+					<type>gaussian</type>
+					<rate>
+						<mean>0.0</mean>
+						<stddev>2e-4</stddev>
+						<bias_mean>0.0000075</bias_mean>
+						<bias_stddev>0.0000008</bias_stddev>
+					</rate>
+					<accel>
+						<mean>0.0</mean>
+						<stddev>1.7e-2</stddev>
+						<bias_mean>0.1</bias_mean>
+						<bias_stddev>0.001</bias_stddev>
+					</accel>
+				</noise>
+			</imu>
+		</plugin>
+	</gazebo>
+	
+	
+</robot>
