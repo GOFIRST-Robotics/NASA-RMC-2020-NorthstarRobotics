@@ -1,0 +1,37 @@
+Adding an SSH key to your computer
+# If ~/.ssh exists, it won't mkdir, that's ok
+mkdir ~/.ssh
+cd ~/.ssh
+ssh-keygen -b 2048 -t rsa
+# Then for "Enter file in which to save key", hit [Enter]
+# Give it a password you'll remember
+cp ~/.ssh/id_rsa.pub ~/.ssh/authorized_keys2 # All ssh2 keys can be placed here, 1 per line
+ln -s ~/.ssh/id_rsa ~/.ssh/identity # Your default (ssh) <identity> file is now your private-key
+ssh-add
+# Test ssh capability
+# If UMN student, or CSELabs student see
+# https://cseit.umn.edu/computer-classrooms/cse-labs-unix-machine-listings
+# 
+# Can ssh into UMN computer like so:
+# ssh x500@<computer_name> # Then enter UMN password
+# # ssh sauve031@apollo.cselabs.umn.edu
+# # Are you sure you want to continue connecting (yes/no)? yes 
+# # sauve031@apollo.cselabs.umn.edu's password:
+
+Adding an SSH key to your github
+Go to github, login, and your settings
+There's an SSH keys tab
+Click add new ssh key
+Give it a good descriptive title, as if you'll end up having 6-7 of them (you may)
+Open up ~/.ssh/id_rsa.pub file
+Copy-paste entire contents of file to "add key" box
+Done
+
+When you clone a repo, clone using the ssh address instead of the http. 
+Then when you push/pull, you only need to enter in your ssh key once. 
+If you use http, you have to re-login on the commandline everytime. 
+If you accidentally did that, you can run the following code:
+# Code:
+git remote set-url <remote-name (origin?)> <ssh-address>
+git remote set-url --push <remote-name> <ssh-address>
+# You can view the configured remotes with `git-remote -v` and branches with `git branch -a`
