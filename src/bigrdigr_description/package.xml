@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>digr_description</name>
+  <name>bigrdigr_description</name>
   <version>0.0.0</version>
-  <description>DIGR description</description>
+  <description>BIGRDIGR description</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
