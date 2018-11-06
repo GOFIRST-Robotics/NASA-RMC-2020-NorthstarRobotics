@@ -7,6 +7,7 @@
 .directory
 *.zip
 /CMakeLists.txt
+/src/CMakeLists.txt
 
 # Vim save files
 *.swp
