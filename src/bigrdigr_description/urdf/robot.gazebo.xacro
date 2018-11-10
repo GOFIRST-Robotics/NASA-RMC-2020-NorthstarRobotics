@@ -1,24 +1,70 @@
 <?xml version="1.0"?>
 <robot name="digr" xmlns:xacro="https://www.ros.org/wiki/xacro">
-
-	<gazebo reference="world_origin">
+<xacro:property name="imu_visual" value="false"/>
+	<!--<gazebo reference="world_origin">
 		<turnGravityOff>false</turnGravityOff>
-	</gazebo>
-	
+	</gazebo-->
+
 	<gazebo reference="base_link">
 		<material>Gazebo/LightGrey</material>
-		<turnGravityOff>false</turnGravityOff>
 	</gazebo>
-	
+
 	<gazebo reference="front_left_wheel">
-		<
-		
-	<gazebo>
+		<mu1>1.0</mu1>
+		<mu2>1.0</mu2>
+		<kp>1000000.0</kp>
+		<kd>1.0</kd>
+		<minDepth>0.001</minDepth>
+		<maxVel>1707</maxVel>
+		<fdir1>1 0 0</fdir1>
+		<material>Gazebo/FlatBlack</material>
+	</gazebo>
+
+	<gazebo reference="front_right_wheel">
+		<mu1>1.0</mu1>
+		<mu2>1.0</mu2>
+		<kp>1000000.0</kp>
+		<kd>1.0</kd>
+		<minDepth>0.001</minDepth>
+		<maxVel>1707</maxVel>
+		<fdir1>1 0 0</fdir1>
+		<material>Gazebo/FlatBlack</material>
+	</gazebo>
+
+	<gazebo reference="back_left_wheel">
+		<mu1>1.0</mu1>
+		<mu2>1.0</mu2>
+		<kp>1000000.0</kp>
+		<kd>1.0</kd>
+		<minDepth>0.001</minDepth>
+		<maxVel>1707</maxVel>
+		<fdir1>1 0 0</fdir1>
+		<material>Gazebo/FlatBlack</material>
+	</gazebo>
+
+	<gazebo reference="back_right_wheel">
+		<mu1>1.0</mu1>
+		<mu2>1.0</mu2>
+		<kp>1000000.0</kp>
+		<kd>1.0</kd>
+		<minDepth>0.001</minDepth>
+		<maxVel>1707</maxVel>
+		<fdir1>1 0 0</fdir1>
+		<material>Gazebo/FlatBlack</material>
+	</gazebo>
+<!--	<gazebo>
 		<plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
 			<robotNamespce>/</robotNamespace>
 		</plugin>
+	</gazebo>-->
+
+	<gazebo reference="imu_link">
+		<sensor type="imu" name="imu">
+			<always_on>true</always_on>
+			<visualize>${imu_visual}</visualize>
+		</sensor>
+		<materal>Gazebo/FlatBlack</materal>
 	</gazebo>
-	
 	<!-- IMU support -->
 	<gazebo>
 		<plugin name="imu_plugin" filename="libgazebo_ros_imu.so">
@@ -27,8 +73,8 @@
 			<frameName>imu_link</frameName>
 			<topicName>imu</topicName>
 			<serviceName>imu_service</serviceName>
-			<gaussianNoise>    </gaussianNoise>
-			<updateRate>     </updateRate>
+			<gaussianNoise>0.0</gaussianNoise>
+			<updateRate>200</updateRate>
 			<imu>
 				<noise>
 					<type>gaussian</type>
@@ -48,6 +94,6 @@
 			</imu>
 		</plugin>
 	</gazebo>
-	
-	
+
+
 </robot>
