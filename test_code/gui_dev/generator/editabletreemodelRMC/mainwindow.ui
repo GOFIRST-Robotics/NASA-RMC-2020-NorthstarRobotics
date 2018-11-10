@@ -96,7 +96,7 @@
     <item>
      <widget class="QLabel" name="label_3">
       <property name="styleSheet">
-       <string notr="true"> QLabel { background: rgb(233, 185, 110)}
+       <string notr="true"> QLabel { background: rgb(180, 0, 0)}
 </string>
       </property>
       <property name="text">
