@@ -8,14 +8,14 @@
 	<!-- All units in meters, kg, seconds, rads -->
 	<!-- Equation for inertial matrix of box/prisim -->
 	<xacro:macro name="box_inertial_matrix" params="m l w h">
-		<inertia ixx="${(m*(w*w+h*h))/12.0}" ixy = "0" ixz = "0"
-				 iyy="${(m*(l*l+h*h))/12.0}" iyz = "0"
+		<inertia ixx="${(m*(w*w+h*h))/12.0}" ixy = "0.0" ixz = "0.0"
+				 iyy="${(m*(l*l+h*h))/12.0}" iyz = "0.0"
 				 izz="${(m*(l*l+w*w))/12.0}" />
 	</xacro:macro>
 	<!-- Equation for inertial matrix of cylinder (rotating around y axis) -->
 	<xacro:macro name="cylinder_inertia" params="m r h">
-		<inertia ixx="${(m*(3*r*r+h*h))/12.0}" ixy = "0" ixz = "0"
-				 iyy="${m*r*r/2}"			   iyz = "0"
+		<inertia ixx="${(m*(3*r*r+h*h))/12.0}" ixy = "0.0" ixz = "0.0"
+				 iyy="${m*r*r/2.0}"			   iyz = "0.0"
 				 izz="${(m*(3*r*r+h*h))/12.0}"  />
 	</xacro:macro>
 
@@ -25,7 +25,7 @@
 	<xacro:property name="base_height" value="0.690" />
 	<xacro:property name="base_length" value="0.740" />
 	<xacro:property name="base_width" value="0.865" />
-	<xacro:property name="base_mass" value="72" />
+	<xacro:property name="base_mass" value="72.0" />
 
 	<xacro:property name="base_x_origin_to_wheel_origin" value="0.29125" />
 	<xacro:property name="base_y_origin_to_wheel_origin" value="0.190" />
@@ -33,16 +33,26 @@
 
 	<xacro:property name="wheel_radius" value="0.174" />
 	<xacro:property name="wheel_height" value="0.15" />
-	<xacro:property name="wheel_mass" value="2" />
+	<xacro:property name="wheel_mass" value="2.0" />
 
-	<xacro:property name="imu_length" value="" />
-	<xacro:property name="imu_width" value="" />
-	<xacro:property name="imu_height" value="" />
+	<xacro:property name="imu_length" value="0.025" />
+	<xacro:property name="imu_width" value="0.025" />
+	<xacro:property name="imu_height" value="0.01" />
+
+	<xacro:property name="pseye_camera_height" value="0.08" />
+	<xacro:property name="pseye_camera_length" value="0.07" />
+	<xacro:property name="pseye_camera_width" value="0.09" />
+	<!-- 4 top corners-->
+
+	<!--<xacro:property name="realSense_camera_height" value="0.09" />
+	<xacro:property name="realSense_camera_length" value="0.025" />
+	<xacro:property name="realSense_camera_width" value="0.025" />-->
+ <!--front middle-in, back middle-in, top middle -->
 
 	<!-- World Origin -->
 	<!-- world_origin is a fictitious link(frame) that is on the ground right below base_link origin -->
 	<!-- z axis is height -->
-	<link name="world_origin"/>
+	<link name="world_origin">
 
 	<joint name="base_footprint_joint" type="fixed">
 		<origin xyz="0 0 ${wheel_radius - base_hight_to_wheel_origin}" rpy="0 0 0" />
@@ -215,21 +225,127 @@
 		<axis rpy="0 0 0" xyz="0 1 0"/>
 		<parent link="base_link" />
 		<child link="imu_link" />
-		<origin rp="0 0 0" xyz="0 0 ${base_height + ium_height/2.0}" />
+		<origin xyz="0 0 ${base_height + ium_height/2.0}" rpy="0 0 0" />
 	</joint>
 
 	<link name="imu_link">
 		<visual>
+			<origin xyz="0 0 0" rpy="0 0 0" />
 			<geometry>
 				<box size="${imu_length} ${imu_width} ${imu_height}" />
 			</geometry>
+			<materal name="purple"/>
 		</visual>
 
 		<collision>
+			<origin xyz="0 0 0" rpy="0 0 0" />
 			<geometry>
 				<box size="${imu_length} ${imu_width} ${imu_height}" />
 			</geometry>
 		</collision>
+	</link>
+
+<!--PSeye Cameras. One in each top corner -->
+<!--Top right camera -->
+		<joint name="camera1_joint" type="fixed">
+			<axis xyz="0 1 0" />
+			<origin xyz="${base_width/2} ${base_length/2.0} ${base_height}" rpy="0 0 0"/>
+			<parent link="base_link"/>
+			<child link="pseye_camera1"/>
+		</joint>
+
+		<link name="pseye_camera1">
+			<visual>
+				<origin xyz="0 0 0" rpy="0 0 0"/>
+				<geometry>
+					<box size="${pseye_camera_length} ${pseye_camera_width} ${pseye_camera_height}"/>
+				</geometry>
+				<materal name="blue"/>
+			</visual>
+
+			<collision>
+				<origin xyz="0 0 0" rpy="0 0 0" />
+				<geometry>
+					<box size="${pseye_camera_length} ${pseye_camera_width} ${pseye_camera_height}"/>
+				</geometry>
+			</collision>
+		</link>
+
+<!--Top left camera -->
+	<joint name="camera1_joint" type="fixed">
+		<axis xyz="0 1 0" />
+		<origin xyz="${-base_width/2} ${base_length/2.0} ${base_height}" rpy="0 0 0"/>
+		<parent link="base_link"/>
+		<child link="pseye_camera2"/>
+	</joint>
+
+<link name="pseye_camera2">
+	<visual>
+		<origin xyz="0 0 0" rpy="0 0 0"/>
+		<geometry>
+			<box size="${pseye_camera_length} ${pseye_camera_width} ${pseye_camera_height}"/>
+		</geometry>
+		<materal name="blue"/>
+	</visual>
+
+	<collision>
+		<origin xyz="0 0 0" rpy="0 0 0" />
+		<geometry>
+			<box size="${pseye_camera_length} ${pseye_camera_width} ${pseye_camera_height}"/>
+		</geometry>
+	</collision>
+</link>
+
+<!--Back right camera -->
+	<joint name="camera1_joint" type="fixed">
+		<axis xyz="0 1 0" />
+		<origin xyz="${base_width/2} ${-base_length/2.0} ${base_height}" rpy="0 0 0"/>
+		<parent link="base_link"/>
+		<child link="pseye_camera3"/>
+	</joint>
+
+	<link name="pseye_camera3">
+		<visual>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<box size="${pseye_camera_length} ${pseye_camera_width} ${pseye_camera_height}"/>
+			</geometry>
+			<materal name="blue"/>
+		</visual>
+
+		<collision>
+			<origin xyz="0 0 0" rpy="0 0 0" />
+			<geometry>
+				<box size="${pseye_camera_length} ${pseye_camera_width} ${pseye_camera_height}"/>
+			</geometry>
+		</collision>
+	</link>
+
+<!--Back left camera -->
+		<joint name="camera1_joint" type="fixed">
+			<axis xyz="0 1 0" />
+			<origin xyz="${-base_width/2} ${-base_length/2.0} ${base_height}" rpy="0 0 0"/>
+			<parent link="base_link"/>
+			<child link="pseye_camera4"/>
+		</joint>
+
+		<link name="pseye_camera4">
+			<visual>
+				<origin xyz="0 0 0" rpy="0 0 0"/>
+				<geometry>
+					<box size="${pseye_camera_length} ${pseye_camera_width} ${pseye_camera_height}"/>
+				</geometry>
+				<materal name="blue"/>
+			</visual>
+
+			<collision>
+				<origin xyz="0 0 0" rpy="0 0 0" />
+				<geometry>
+					<box size="${pseye_camera_length} ${pseye_camera_width} ${pseye_camera_height}"/>
+				</geometry>
+			</collision>
+		</link>
+
 
 	</link>
 </robot>

@@ -57,6 +57,44 @@
 			<robotNamespce>/</robotNamespace>
 		</plugin>
 	</gazebo>-->
+<!-- Cameras-->
+
+	<gazebo reference="pseye_camera1">
+		<sensor type="camera" name="cam1">
+			<update_rate></update_rate>
+			<camera name="front_left">
+				<horizizontal_fov></horizizontal_fov>
+				<image>
+					<width></width>
+					<height></height>
+					<format></format>
+				</image>
+				<clip>
+					<near></near>
+					<far></far>
+				</clip>
+				<noise>
+					<type>gaussian</type>
+					<mean></mean>
+					<stddev></stddev>
+				</noise>
+			</camera>
+			<plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+				<alwaysOn>true</alwaysOn>
+				<updateRate></updateRate>
+				<cameraName></cameraName>
+				<imageTopicName></imageTopicName>
+				<cameraInfoTopicName></cameraInfoTopicName>
+				<frameName>pseye_camera1</frameName>
+				<hackBaseline></hackBaseline>
+				<distortionK1></distortionK1>
+				<distortionK2></distortionK2>
+				<distortionK3></distortionK3>
+				<distortionT1></distortionT1>
+				<distortionT2></distortionT2>
+			</plugin>
+		</sensor>
+	</gazebo>
 
 	<gazebo reference="imu_link">
 		<sensor type="imu" name="imu">
