@@ -1,9 +1,19 @@
 <?xml version="1.0"?>
 <robot name="digr" xmlns:xacro="https://www.ros.org/wiki/xacro">
 <xacro:property name="imu_visual" value="false"/>
+<xacro:property name="pseye_FOV" value=""/> <!--56 or 75 degrees, need rad-->
 	<!--<gazebo reference="world_origin">
 		<turnGravityOff>false</turnGravityOff>
 	</gazebo-->
+<!-- ToDo
+Pseye camera sensors
+imu sensor values
+real sense sensors
+decawave sensors (1001) (talks between robot and base station for speed)
+gps (decawave)
+wheel odometry (encoders, handleed in ros)
+explore other plugins
+-->
 
 	<gazebo reference="base_link">
 		<material>Gazebo/LightGrey</material>
@@ -61,37 +71,156 @@
 
 	<gazebo reference="pseye_camera1">
 		<sensor type="camera" name="cam1">
-			<update_rate></update_rate>
+			<update_rate>120</update_rate> <!--fps? -->
 			<camera name="front_left">
-				<horizizontal_fov></horizizontal_fov>
+				<horizizontal_fov>${pseye_FOV}</horizizontal_fov> <!-- -->
 				<image>
-					<width></width>
-					<height></height>
-					<format></format>
+					<width>320</width>
+					<height>240</height>
+					<format>R8G8B8</format>
 				</image>
-				<clip>
-					<near></near>
-					<far></far>
+				<clip> <!--distance (m) limits on where a camera can see an object need to find -->
+					<near>0.02</near>
+					<far>300</far>
 				</clip>
 				<noise>
 					<type>gaussian</type>
-					<mean></mean>
-					<stddev></stddev>
+					<mean>0.0</mean>
+					<stddev>0.007</stddev>
 				</noise>
 			</camera>
 			<plugin name="camera_controller" filename="libgazebo_ros_camera.so">
 				<alwaysOn>true</alwaysOn>
-				<updateRate></updateRate>
-				<cameraName></cameraName>
-				<imageTopicName></imageTopicName>
-				<cameraInfoTopicName></cameraInfoTopicName>
+				<!--Nodes-->
+				<updateRate>0.0</updateRate>
+				<cameraName>camera/pseye_camera1</cameraName>
+				<imageTopicName>image_raw</imageTopicName>
+				<cameraInfoTopicName>camera_info</cameraInfoTopicName>
 				<frameName>pseye_camera1</frameName>
-				<hackBaseline></hackBaseline>
-				<distortionK1></distortionK1>
-				<distortionK2></distortionK2>
-				<distortionK3></distortionK3>
-				<distortionT1></distortionT1>
-				<distortionT2></distortionT2>
+				<!--May need to find? -->
+				<hackBaseline>0.07</hackBaseline>
+				<distortionK1>0.0</distortionK1>
+				<distortionK2>0.0</distortionK2>
+				<distortionK3>0.0</distortionK3>
+				<distortionT1>0.0</distortionT1>
+				<distortionT2>0.0</distortionT2>
+			</plugin>
+		</sensor>
+	</gazebo>
+
+	<gazebo reference="pseye_camera2">
+		<sensor type="camera" name="cam2">
+			<update_rate>120</update_rate> <!--fps? -->
+			<camera name="front_left">
+				<horizizontal_fov>${pseye_FOV}</horizizontal_fov> <!-- -->
+				<image>
+					<width>320</width>
+					<height>240</height>
+					<format>R8G8B8</format>
+				</image>
+				<clip> <!--distance (m) limits on where a camera can see an object need to find -->
+					<near>0.02</near>
+					<far>300</far>
+				</clip>
+				<noise>
+					<type>gaussian</type>
+					<mean>0.0</mean>
+					<stddev>0.007</stddev>
+				</noise>
+			</camera>
+			<plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+				<alwaysOn>true</alwaysOn>
+				<!--Nodes-->
+				<updateRate>0.0</updateRate>
+				<cameraName>camera/pseye_camera2</cameraName>
+				<imageTopicName>image_raw</imageTopicName>
+				<cameraInfoTopicName>camera_info</cameraInfoTopicName>
+				<frameName>pseye_camera2</frameName>
+				<!--May need to find? -->
+				<hackBaseline>0.07</hackBaseline>
+				<distortionK1>0.0</distortionK1>
+				<distortionK2>0.0</distortionK2>
+				<distortionK3>0.0</distortionK3>
+				<distortionT1>0.0</distortionT1>
+				<distortionT2>0.0</distortionT2>
+			</plugin>
+		</sensor>
+	</gazebo>
+
+	<gazebo reference="pseye_camera3">
+		<sensor type="camera" name="cam1">
+			<update_rate>120</update_rate> <!--fps? -->
+			<camera name="front_left">
+				<horizizontal_fov>${pseye_FOV}</horizizontal_fov> <!-- -->
+				<image>
+					<width>320</width>
+					<height>240</height>
+					<format>R8G8B8</format>
+				</image>
+				<clip> <!--distance (m) limits on where a camera can see an object need to find -->
+					<near>0.02</near>
+					<far>300</far>
+				</clip>
+				<noise>
+					<type>gaussian</type>
+					<mean>0.0</mean>
+					<stddev>0.007</stddev>
+				</noise>
+			</camera>
+			<plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+				<alwaysOn>true</alwaysOn>
+				<!--Nodes-->
+				<updateRate>0.0</updateRate>
+				<cameraName>camera/pseye_camera3</cameraName>
+				<imageTopicName>image_raw</imageTopicName>
+				<cameraInfoTopicName>camera_info</cameraInfoTopicName>
+				<frameName>pseye_camera3</frameName>
+				<!--May need to find? -->
+				<hackBaseline>0.07</hackBaseline>
+				<distortionK1>0.0</distortionK1>
+				<distortionK2>0.0</distortionK2>
+				<distortionK3>0.0</distortionK3>
+				<distortionT1>0.0</distortionT1>
+				<distortionT2>0.0</distortionT2>
+			</plugin>
+		</sensor>
+	</gazebo>
+
+	<gazebo reference="pseye_camera4">
+		<sensor type="camera" name="cam4">
+			<update_rate>120</update_rate> <!--fps? -->
+			<camera name="front_left">
+				<horizizontal_fov>${pseye_FOV}</horizizontal_fov> <!-- -->
+				<image>
+					<width>320</width>
+					<height>240</height>
+					<format>R8G8B8</format>
+				</image>
+				<clip> <!--distance (m) limits on where a camera can see an object need to find -->
+					<near>0.02</near>
+					<far>300</far>
+				</clip>
+				<noise>
+					<type>gaussian</type>
+					<mean>0.0</mean>
+					<stddev>0.007</stddev>
+				</noise>
+			</camera>
+			<plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+				<alwaysOn>true</alwaysOn>
+				<!--Nodes-->
+				<updateRate>0.0</updateRate>
+				<cameraName>camera/pseye_camera4</cameraName>
+				<imageTopicName>image_raw</imageTopicName>
+				<cameraInfoTopicName>camera_info</cameraInfoTopicName>
+				<frameName>pseye_camera4</frameName>
+				<!--May need to find? -->
+				<hackBaseline>0.07</hackBaseline>
+				<distortionK1>0.0</distortionK1>
+				<distortionK2>0.0</distortionK2>
+				<distortionK3>0.0</distortionK3>
+				<distortionT1>0.0</distortionT1>
+				<distortionT2>0.0</distortionT2>
 			</plugin>
 		</sensor>
 	</gazebo>
