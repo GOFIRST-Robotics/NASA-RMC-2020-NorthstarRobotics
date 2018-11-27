@@ -1,10 +1,8 @@
 <?xml version="1.0"?>
-<robot name="digr" xmlns:xacro="https://www.ros.org/wiki/xacro">
+<robot name="bigrdigr" xmlns:xacro="https://www.ros.org/wiki/xacro">
 <xacro:property name="imu_visual" value="false"/>
-<xacro:property name="pseye_FOV" value=""/> <!--56 or 75 degrees, need rad-->
-	<!--<gazebo reference="world_origin">
-		<turnGravityOff>false</turnGravityOff>
-	</gazebo-->
+<xacro:property name="pseye_FOV" value="1.309"/> <!--56 or 75 degrees, need rad-->
+
 <!-- ToDo
 Pseye camera sensors
 imu sensor values
@@ -14,9 +12,13 @@ gps (decawave)
 wheel odometry (encoders, handleed in ros)
 explore other plugins
 -->
+	<gazebo reference="world_origin">
+		<turnGravityOff>false</turnGravityOff>
+	</gazebo>
 
 	<gazebo reference="base_link">
 		<material>Gazebo/LightGrey</material>
+		<turnGravityOff>false</turnGravityOff>
 	</gazebo>
 
 	<gazebo reference="front_left_wheel">
@@ -25,7 +27,7 @@ explore other plugins
 		<kp>1000000.0</kp>
 		<kd>1.0</kd>
 		<minDepth>0.001</minDepth>
-		<maxVel>1707</maxVel>
+		<maxVel>1</maxVel>
 		<fdir1>1 0 0</fdir1>
 		<material>Gazebo/FlatBlack</material>
 	</gazebo>
@@ -36,7 +38,7 @@ explore other plugins
 		<kp>1000000.0</kp>
 		<kd>1.0</kd>
 		<minDepth>0.001</minDepth>
-		<maxVel>1707</maxVel>
+		<maxVel>1</maxVel>
 		<fdir1>1 0 0</fdir1>
 		<material>Gazebo/FlatBlack</material>
 	</gazebo>
@@ -47,7 +49,7 @@ explore other plugins
 		<kp>1000000.0</kp>
 		<kd>1.0</kd>
 		<minDepth>0.001</minDepth>
-		<maxVel>1707</maxVel>
+		<maxVel>1</maxVel>
 		<fdir1>1 0 0</fdir1>
 		<material>Gazebo/FlatBlack</material>
 	</gazebo>
@@ -58,15 +60,17 @@ explore other plugins
 		<kp>1000000.0</kp>
 		<kd>1.0</kd>
 		<minDepth>0.001</minDepth>
-		<maxVel>1707</maxVel>
+		<maxVel>1</maxVel>
 		<fdir1>1 0 0</fdir1>
 		<material>Gazebo/FlatBlack</material>
 	</gazebo>
-<!--	<gazebo>
+
+	<gazebo>
 		<plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-			<robotNamespce>/</robotNamespace>
+			<robotNamespace>/</robotNamespace>
 		</plugin>
-	</gazebo>-->
+	</gazebo>
+
 <!-- Cameras-->
 
 	<gazebo reference="pseye_camera1">
@@ -233,7 +237,7 @@ explore other plugins
 		<materal>Gazebo/FlatBlack</materal>
 	</gazebo>
 	<!-- IMU support -->
-	<gazebo>
+	<!-- <gazebo>
 		<plugin name="imu_plugin" filename="libgazebo_ros_imu.so">
 			<alwaysOn>true</alwaysOn>
 			<bodyName>imu_link</bodyName>
@@ -260,7 +264,8 @@ explore other plugins
 				</noise>
 			</imu>
 		</plugin>
-	</gazebo>
+	</gazebo> -->
+
 
 
 </robot>

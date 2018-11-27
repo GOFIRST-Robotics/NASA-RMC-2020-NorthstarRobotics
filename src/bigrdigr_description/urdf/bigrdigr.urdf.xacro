@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
-<robot name="digr" xmlsn:xacro="http://ros.org/wiki/xacro">
-	<xacro:include filename="$(find description)/urdf/common_properties.xacro"/>
-	<xacro:include filename="$(find description)/urdf/digr.gazebo.xacro"/>
+<robot name="bigrdigr" xmlns:xacro="https://www.ros.org/wiki/xacro">
+	<!-- <xacro:include filename="$(find description)/urdf/common_properties.xacro"/> -->
+	<xacro:include filename="$(find bigrdigr_description)/urdf/bigrdigr.gazebo.xacro"/>
 
 	<!-- Define colors -->
 
@@ -55,7 +55,7 @@
 	<link name="world_origin">
 
 	<joint name="base_footprint_joint" type="fixed">
-		<origin xyz="0 0 ${wheel_radius - base_hight_to_wheel_origin}" rpy="0 0 0" />
+		<origin xyz="0 0 ${wheel_radius - base_height_origin_to_wheel_origin}" rpy="0 0 0" />
 		<parent link="world_origin" />
 		<child link="base_link" />
 	</joint>
@@ -87,7 +87,7 @@
 	<joint name="front_left_wheel_joint" type="continuous">
 		<parent link="base_link"/>
 		<child link="front_left_wheel"/>
-		<origin xyz="${base_x_origin_to_wheel} ${base_y_origin_to_wheel_origin} 0" rpy="0 0 0"/>
+		<origin xyz="${base_x_origin_to_wheel_origin} ${base_y_origin_to_wheel_origin} 0" rpy="0 0 0"/>
 		<dynamics damping="0.5" friction="0.1"/> <!-- get real later-->
 		<limit effort="1000" velocity="10"/> <!-- simmulate motors, max velocity and max joint effort -->
 		<axis xyz="0 1 0"/> <!-- will rotate for y axis -->
@@ -122,7 +122,7 @@
 	<joint name="front_right_wheel_joint" type="continuous">
 		<parent link="base_link"/>
 		<child link="front_right_wheel"/>
-		<origin xyz="${base_x_origin_to_wheel} ${-base_y_origin_to_wheel_origin} 0" rpy="0 0 0"/>
+		<origin xyz="${base_x_origin_to_wheel_origin} ${-base_y_origin_to_wheel_origin} 0" rpy="0 0 0"/>
 		<dynamics damping="0.5" friction="0.1"/> <!-- get real later-->
 		<limit effort="1000" velocity="10"/> <!-- simmulate motors, max velocity and max joint effort -->
 		<axis xyz="0 1 0"/> <!-- will rotate for y axis -->
@@ -156,7 +156,7 @@
 	<joint name="back_left_wheel_joint" type="continuous">
 		<parent link="base_link"/>
 		<child link="back_left_wheel"/>
-		<origin xyz="${-base_x_origin_to_wheel} ${base_y_origin_to_wheel_origin} 0" rpy="0 0 0"/>
+		<origin xyz="${-base_x_origin_to_wheel_origin} ${base_y_origin_to_wheel_origin} 0" rpy="0 0 0"/>
 		<dynamics damping="0.5" friction="0.1"/> <!-- get real later-->
 		<limit effort="1000" velocity="10"/> <!-- simmulate motors, max velocity and max joint effort -->
 		<axis xyz="0 1 0"/> <!-- will rotate for y axis -->
@@ -190,7 +190,7 @@
 	<joint name="back_right_wheel_joint" type="continuous">
 		<parent link="base_link"/>
 		<child link="back_right_wheel"/>
-		<origin xyz="${-base_x_origin_to_wheel} ${-base_y_origin_to_wheel_origin} 0" rpy="0 0 0"/>
+		<origin xyz="${-base_x_origin_to_wheel_origin} ${-base_y_origin_to_wheel_origin} 0" rpy="0 0 0"/>
 		<dynamics damping="0.5" friction="0.1"/> <!-- get real later-->
 		<limit effort="1000" velocity="10"/> <!-- simmulate motors, max velocity and max joint effort -->
 		<axis xyz="0 1 0"/> <!-- will rotate for y axis -->
@@ -221,11 +221,11 @@
 	</link>
 
 	<!-- IMU -->
-	<joint name="imu_joint" type="fixed">
+	<!-- <joint name="imu_joint" type="fixed">
 		<axis rpy="0 0 0" xyz="0 1 0"/>
 		<parent link="base_link" />
 		<child link="imu_link" />
-		<origin xyz="0 0 ${base_height + ium_height/2.0}" rpy="0 0 0" />
+		<origin xyz="0 0 ${base_height + imu_height/2.0}" rpy="0 0 0" />
 	</joint>
 
 	<link name="imu_link">
@@ -243,7 +243,7 @@
 				<box size="${imu_length} ${imu_width} ${imu_height}" />
 			</geometry>
 		</collision>
-	</link>
+	</link> -->
 
 <!--PSeye Cameras. One in each top corner -->
 <!--Top right camera -->
@@ -348,6 +348,7 @@
 
 
 	</link>
+
 </robot>
 
 
