@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
 <robot name="bigrdigr" xmlns:xacro="https://www.ros.org/wiki/xacro">
+<xacro:property name="cam_ambient" value="0.3 0 0 1"/>
+<xacro:property name="cam_diffuse" value="0.5 0 0 1"/>
+<xacro:property name="cam_emissive" value="0.4 0 0 1"/>
 <xacro:property name="imu_visual" value="false"/>
 <xacro:property name="pseye_FOV" value="1.309"/> <!--56 or 75 degrees, need rad-->
 
@@ -17,7 +20,15 @@ explore other plugins
 	</gazebo>
 
 	<gazebo reference="base_link">
-		<material>Gazebo/LightGrey</material>
+		<!-- <material>Gazebo/Grey</material> -->
+		<visual>
+			<material>
+				<ambient>0.5 0.5 0.5 1</ambient> <!--rgb with no light-->
+				<diffuse>0.8 0.8 0.8 1</diffuse> <!--rgb under white light-->
+				<specular>0 0 0 0</specular> <!--Not working yet in gazebo-->
+				<emissive>0 0 0 1</emissive> <!--rgb emitted-->
+			</material>
+		</visual>
 		<turnGravityOff>false</turnGravityOff>
 	</gazebo>
 
@@ -74,10 +85,19 @@ explore other plugins
 <!-- Cameras-->
 
 	<gazebo reference="pseye_camera1">
+		<!-- <material>Gazebo/Red</material> -->
+		<visual>
+			<material>
+				<ambient>${cam_ambient}</ambient>
+				<diffuse>${cam_diffuse}</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>${cam_emissive}</emissive>
+			</material>
+		</visual>
 		<sensor type="camera" name="cam1">
 			<update_rate>120</update_rate> <!--fps? -->
 			<camera name="front_left">
-				<horizizontal_fov>${pseye_FOV}</horizizontal_fov> <!-- -->
+				<horizontal_fov>${pseye_FOV}</horizontal_fov>
 				<image>
 					<width>320</width>
 					<height>240</height>
@@ -113,10 +133,19 @@ explore other plugins
 	</gazebo>
 
 	<gazebo reference="pseye_camera2">
+		<!-- <material>Gazebo/Red</material> -->
+		<visual>
+			<material>
+				<ambient>${cam_ambient}</ambient>
+				<diffuse>${cam_diffuse}</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>${cam_emissive}</emissive>
+			</material>
+		</visual>
 		<sensor type="camera" name="cam2">
 			<update_rate>120</update_rate> <!--fps? -->
 			<camera name="front_left">
-				<horizizontal_fov>${pseye_FOV}</horizizontal_fov> <!-- -->
+				<horizontal_fov>${pseye_FOV}</horizontal_fov>
 				<image>
 					<width>320</width>
 					<height>240</height>
@@ -152,10 +181,19 @@ explore other plugins
 	</gazebo>
 
 	<gazebo reference="pseye_camera3">
+		<!-- <material>Gazebo/Red</material> -->
+		<visual>
+			<material>
+				<ambient>${cam_ambient}</ambient>
+				<diffuse>${cam_diffuse}</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>${cam_emissive}</emissive>
+			</material>
+		</visual>
 		<sensor type="camera" name="cam1">
 			<update_rate>120</update_rate> <!--fps? -->
 			<camera name="front_left">
-				<horizizontal_fov>${pseye_FOV}</horizizontal_fov> <!-- -->
+				<horizontal_fov>${pseye_FOV}</horizontal_fov>
 				<image>
 					<width>320</width>
 					<height>240</height>
@@ -191,10 +229,19 @@ explore other plugins
 	</gazebo>
 
 	<gazebo reference="pseye_camera4">
+		<!-- <material>Gazebo/Red</material> -->
+		<visual>
+			<material>
+				<ambient>${cam_ambient}</ambient>
+				<diffuse>${cam_diffuse}</diffuse>
+				<specular>0 0 0 0</specular>
+				<emissive>${cam_emissive}</emissive>
+			</material>
+		</visual>
 		<sensor type="camera" name="cam4">
 			<update_rate>120</update_rate> <!--fps? -->
 			<camera name="front_left">
-				<horizizontal_fov>${pseye_FOV}</horizizontal_fov> <!-- -->
+				<horizontal_fov>${pseye_FOV}</horizontal_fov>
 				<image>
 					<width>320</width>
 					<height>240</height>
@@ -234,7 +281,7 @@ explore other plugins
 			<always_on>true</always_on>
 			<visualize>${imu_visual}</visualize>
 		</sensor>
-		<materal>Gazebo/FlatBlack</materal>
+		<material>Gazebo/FlatBlack</material>
 	</gazebo>
 	<!-- IMU support -->
 	<!-- <gazebo>
