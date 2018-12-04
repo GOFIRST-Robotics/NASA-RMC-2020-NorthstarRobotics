@@ -115,6 +115,16 @@
 		</inertial>
 	</link>
 
+	<transmission name="front_left_wheel_trans">
+		<type>transmission_interface/SimpleTransmission</type>
+		<joint name="front_left_wheel_joint">
+			<hardwareInterface>EffortJointInterface</hardwareInterface>
+		</joint>
+		<actuator name="front_left_wheel_motor">
+			<hardwareInterface>EffortJointInterface</hardwareInterface>
+			<mechanicalReduction>1</mechanicalReduction>
+		</actuator>
+	</transmission>
 	<!-- Transmission sims motor control -->
 
 	<joint name="front_right_wheel_joint" type="continuous">
@@ -150,6 +160,16 @@
 		</inertial>
 	</link>
 
+	<transmission name="front_left_wheel_trans">
+		<type>transmission_interface/SimpleTransmission</type>
+		<joint name="front_left_wheel_joint">
+			<hardwareInterface>EffortJointInterface</hardwareInterface>
+		</joint>
+		<actuator name="front_left_wheel_motor">
+			<hardwareInterface>EffortJointInterface</hardwareInterface>
+			<mechanicalReduction>1</mechanicalReduction>
+		</actuator>
+	</transmission>
 
 	<joint name="back_left_wheel_joint" type="continuous">
 		<parent link="base_link"/>
@@ -184,6 +204,16 @@
 		</inertial>
 	</link>
 
+	<transmission name="front_left_wheel_trans">
+		<type>transmission_interface/SimpleTransmission</type>
+		<joint name="front_left_wheel_joint">
+			<hardwareInterface>EffortJointInterface</hardwareInterface>
+		</joint>
+		<actuator name="front_left_wheel_motor">
+			<hardwareInterface>EffortJointInterface</hardwareInterface>
+			<mechanicalReduction>1</mechanicalReduction>
+		</actuator>
+	</transmission>
 
 	<joint name="back_right_wheel_joint" type="continuous">
 		<parent link="base_link"/>
@@ -218,6 +248,16 @@
 		</inertial>
 	</link>
 
+	<transmission name="front_left_wheel_trans">
+		<type>transmission_interface/SimpleTransmission</type>
+		<joint name="front_left_wheel_joint">
+			<hardwareInterface>EffortJointInterface</hardwareInterface>
+		</joint>
+		<actuator name="front_left_wheel_motor">
+			<hardwareInterface>EffortJointInterface</hardwareInterface>
+			<mechanicalReduction>1</mechanicalReduction>
+		</actuator>
+	</transmission>
 	<!-- IMU -->
 	<!-- <joint name="imu_joint" type="fixed">
 		<axis rpy="0 0 0" xyz="0 1 0"/>

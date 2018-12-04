@@ -1,0 +1,16 @@
+<launch>
+
+  <rosparam file="$(find bigrdigr_control)/config/bigrdigr_control.yaml" command="load"/>
+
+  <!--Load Controllers-->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+    output="screen" ns="/bigrdigr" args="front_left_wheel_position_controller front_right_wheel_position_controller
+    back_left_wheel_position_controller back_right_wheel_position_controller"/>
+
+  <!--Convert Joint States to TF transforms for rviz-->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+    respawn="false" output="screen">
+    <remap from="/joint_states" to="/bigrdigr/joint_states"/>
+  </node>
+
+</launch>
