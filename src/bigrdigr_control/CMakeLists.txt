@@ -9,7 +9,7 @@ project(bigrdigr_control)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   controller_manager
-  joint_state_conrtoller
+  joint_state_controller
   robot_state_publisher
 )
 
@@ -105,7 +105,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES bigrdigr_control
-#  CATKIN_DEPENDS controller_manager joint_state_conrtoller robot_state_publisher
+#  CATKIN_DEPENDS controller_manager joint_state_controller robot_state_publisher
 #  DEPENDS system_lib
 )
 
