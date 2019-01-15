@@ -1,0 +1,22 @@
+12/3/2018:
+
+Configuring Anchors and Tags:
+https://www.decawave.com/sites/default/files/dwm1001-api-guide.pdf
+
+One anchor must be an initiator - command = nmi
+The rest can be regular - command = nma
+
+To set back to tag: nmt
+
+
+LED codes (p.9) : https://www.decawave.com/wp-content/uploads/2018/08/dwm1001-dev_datasheet.pdf
+
+
+(arduino serial thing)
+set baud rate to: 115200
+press enter twice
+/dev/ttyACM0
+may change to /dev/ttyACM1
+
+supply 5V to decawave for power, connect over usb
+
