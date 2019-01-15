@@ -2,11 +2,11 @@ Adding an SSH key to your computer
 # If ~/.ssh exists, it won't mkdir, that's ok
 mkdir ~/.ssh
 cd ~/.ssh
-ssh-keygen -b 2048 -t rsa
+ssh-keygen -b 2048 -t ed25519
 # Then for "Enter file in which to save key", hit [Enter]
 # Give it a password you'll remember
-cp ~/.ssh/id_rsa.pub ~/.ssh/authorized_keys2 # All ssh2 keys can be placed here, 1 per line
-ln -s ~/.ssh/id_rsa ~/.ssh/identity # Your default (ssh) <identity> file is now your private-key
+cp ~/.ssh/id_ed25519.pub ~/.ssh/authorized_keys # All ssh public keys can be placed here, 1 per line, to ssh in
+ln -s ~/.ssh/id_ed25519 ~/.ssh/identity # Your default (ssh) <identity> file is now your private-key
 ssh-add
 # Test ssh capability
 # If UMN student, or CSELabs student see
@@ -23,7 +23,7 @@ Go to github, login, and your settings
 There's an SSH keys tab
 Click add new ssh key
 Give it a good descriptive title, as if you'll end up having 6-7 of them (you may)
-Open up ~/.ssh/id_rsa.pub file
+Open up ~/.ssh/id_ed25519.pub file
 Copy-paste entire contents of file to "add key" box
 Done
 
