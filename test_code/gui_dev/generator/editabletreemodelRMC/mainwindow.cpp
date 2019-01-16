@@ -569,7 +569,7 @@ void main_params_spin_end(QTextStream &out,std::vector<pub_sub_info> params)
     }
     out << "\n";
     out << "    //Spin" <<"\n";
-    out << "ros::spin();" << "\n";
+    out << "ros::spinOnce();" << "\n";
     out << "}\n";
 }
 
