@@ -1,7 +1,6 @@
 <?xml version="1.0" ?>
 <robot name="bigrdigr" xmlns:xacro="https://www.ros.org/wiki/xacro">
-	<!-- <xacro:include filename="$(find description)/urdf/common_properties.xacro"/> -->
-	<xacro:include filename="$(find bigrdigr_description)/urdf/bigrdigr.gazebo.xacro"/>
+	<xacro:include filename="$(find bigrdigr_description)/urdf/bigrdigr1.gazebo.xacro"/>
 
 	<!-- All units in meters, kg, seconds, rads -->
 	<!-- Equation for inertial matrix of box/prisim -->
@@ -52,6 +51,7 @@
 	<!-- z axis is height -->
 	<link name="world_origin"/>
 
+
 	<joint name="base_footprint_joint" type="fixed">
 		<origin xyz="0 0 ${wheel_radius - base_height_origin_to_wheel_origin}" rpy="0 0 0" />
 		<parent link="world_origin" />
@@ -65,6 +65,7 @@
 				<box size=" ${base_length} ${base_width} ${base_height}" />
 				<!-- <mesh filename="~/NASA_ws/digr/description/meshes/base_link.stl" scale="0.001 0.001 0.001"/> -->
 			</geometry>
+			<material name="grey"/>
 		</visual>
 
 		<collision>
@@ -97,7 +98,7 @@
 			<geometry>
 				<cylinder length="${wheel_height}" radius="${wheel_radius}" />
 			</geometry>
-			<mesh filename="~/NASA_ws/digr/description/meshes/wheel_1.stl" scale="0.001 0.001 0.001"/>
+			<!-- <mesh filename="~/NASA_ws/digr/description/meshes/wheel_1.stl" scale="0.001 0.001 0.001"/> -->
 			<material name="light_black"/>
 		</visual>
 
@@ -142,7 +143,7 @@
 			<geometry>
 				<cylinder length="${wheel_height}" radius="${wheel_radius}" />
 			</geometry>
-			<mesh filename="~/NASA_ws/digr/description/meshes/wheel_1.stl" scale="0.001 0.001 0.001"/>
+			<!-- <mesh filename="~/NASA_ws/digr/description/meshes/wheel_1.stl" scale="0.001 0.001 0.001"/> -->
 			<material name="light_black"/>
 		</visual>
 
@@ -186,7 +187,7 @@
 			<geometry>
 				<cylinder length="${wheel_height}" radius="${wheel_radius}" />
 			</geometry>
-			<mesh filename="~/NASA_ws/digr/description/meshes/wheel_1.stl" scale="0.001 0.001 0.001"/>
+			<!-- <mesh filename="~/NASA_ws/digr/description/meshes/wheel_1.stl" scale="0.001 0.001 0.001"/> -->
 			<material name="light_black"/>
 		</visual>
 
@@ -230,7 +231,7 @@
 			<geometry>
 				<cylinder length="${wheel_height}" radius="${wheel_radius}" />
 			</geometry>
-			<mesh filename="~/NASA_ws/digr/description/meshes/wheel_1.stl" scale="0.001 0.001 0.001"/>
+			<!-- <mesh filename="~/NASA_ws/digr/description/meshes/wheel_1.stl" scale="0.001 0.001 0.001"/> -->
 			<material name="light_black"/>
 		</visual>
 
@@ -259,7 +260,7 @@
 		</actuator>
 	</transmission>
 	<!-- IMU -->
-	<!-- <joint name="imu_joint" type="fixed">
+	<joint name="imu_joint" type="fixed">
 		<axis rpy="0 0 0" xyz="0 1 0"/>
 		<parent link="base_link" />
 		<child link="imu_link" />
@@ -281,7 +282,7 @@
 				<box size="${imu_length} ${imu_width} ${imu_height}" />
 			</geometry>
 		</collision>
-	</link> -->
+	</link>
 
 <!--PSeye Cameras. One in each top corner -->
 <!--Top right camera -->
@@ -298,6 +299,7 @@
 				<geometry>
 					<box size="${pseye_camera_length} ${pseye_camera_width} ${pseye_camera_height}"/>
 				</geometry>
+				<material name="red"/>
 			</visual>
 
 			<collision>
@@ -322,6 +324,7 @@
 		<geometry>
 			<box size="${pseye_camera_length} ${pseye_camera_width} ${pseye_camera_height}"/>
 		</geometry>
+		<material name="red"/>
 	</visual>
 
 	<collision>
@@ -346,6 +349,7 @@
 			<geometry>
 				<box size="${pseye_camera_length} ${pseye_camera_width} ${pseye_camera_height}"/>
 			</geometry>
+			<material name="red"/>
 		</visual>
 
 		<collision>
@@ -370,6 +374,7 @@
 				<geometry>
 					<box size="${pseye_camera_length} ${pseye_camera_width} ${pseye_camera_height}"/>
 				</geometry>
+				<material name="red"/>
 			</visual>
 
 			<collision>

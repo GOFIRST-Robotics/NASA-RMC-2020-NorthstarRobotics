@@ -5,12 +5,30 @@
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="world_name" value="$(find bigrdigr_gazebo)/worlds/test.world"/>
     <!-- more default parameters can be changed here -->
+    <arg name="paused" value="true"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
   </include>
 
   <param name="bigrdigr_description" command="$(find xacro)/xacro --inorder $(find bigrdigr_description)/urdf/bigrdigr.urdf.xacro" />
 
   <!-- Spawn a robot into Gazebo -->
-  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param bigrdigr_description -urdf -model bigrdigr -x 0 -y 0 -z 0" />
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args=" -urdf -model bigrdigr -x 0.0 -y 0.0 -z 1.0 -param bigrdigr_description" />
 
+  <rosparam file="$(find bigrdigr_control)/config/bigrdigr_control.yaml" command="load"/>
+
+  <!--Load Controllers-->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+    output="screen" ns="/bigrdigr" args="front_left_wheel_position_controller front_right_wheel_position_controller
+    back_left_wheel_position_controller back_right_wheel_position_controller joint_state_controller"/>
+
+  <!--Convert Joint States to TF transforms for rviz-->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+    respawn="false" output="screen">
+    <remap from="/joint_states" to="/bigrdigr/joint_states"/>
+    <remap from="robot_description" to="bigrdigr_description" />
+  </node>
 
 </launch>
