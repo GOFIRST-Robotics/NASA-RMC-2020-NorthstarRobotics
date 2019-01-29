@@ -82,6 +82,21 @@
 		</inertial>
 	</link>
 
+	<joint name="scoop_joint" type="fixed">
+		<parent link="base_link"/>
+		<child link="scoop_link"/>
+		<origin xyz="${base_length/2} 0 ${base_height/2}" rpy="0 0 0"/>
+	</joint>
+
+	<link name="scoop_link">
+		<visual>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<box size="0.01 0.2 0.2"/>
+			</geometry>
+			<material name="purple"/>
+		</visual>
+	</link>
 
 	<joint name="front_left_wheel_joint" type="continuous">
 		<parent link="base_link"/>

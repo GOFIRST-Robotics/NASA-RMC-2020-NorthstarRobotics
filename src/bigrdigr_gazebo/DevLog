@@ -1,0 +1,4 @@
+Added the controller spawner
+Trying to get the gazebo_ros_control plugin to work
+	Causes model not to load, not consistant with other examples
+Added skif steer plugin for model to listen to Twist messages

@@ -1,9 +1,6 @@
 <?xml version="1.0"?>
 <robot name="bigrdigr" xmlns:xacro="https://www.ros.org/wiki/xacro">
-<xacro:property name="cam_ambient" value="0.3 0 0 1"/>
-<xacro:property name="cam_diffuse" value="0.5 0 0 1"/>
-<xacro:property name="cam_emissive" value="0.4 0 0 1"/>
-<xacro:property name="imu_visual" value="false"/>
+<xacro:property name="imu_visual" value="true"/>
 <xacro:property name="pseye_FOV" value="1.309"/> <!--56 or 75 degrees, need rad-->
 
 <!-- ToDo
@@ -20,15 +17,7 @@ explore other plugins
 	</gazebo>
 
 	<gazebo reference="base_link">
-		<!-- <material>Gazebo/Grey</material> -->
-		<visual>
-			<material>
-				<ambient>0.5 0.5 0.5 1</ambient> <!--rgb with no light-->
-				<diffuse>0.8 0.8 0.8 1</diffuse> <!--rgb under white light-->
-				<specular>0 0 0 0</specular> <!--Not working yet in gazebo-->
-				<emissive>0 0 0 1</emissive> <!--rgb emitted-->
-			</material>
-		</visual>
+		<material>Gazebo/Grey</material>
 		<turnGravityOff>false</turnGravityOff>
 	</gazebo>
 
@@ -85,15 +74,7 @@ explore other plugins
 <!-- Cameras-->
 
 	<gazebo reference="pseye_camera1">
-		<!-- <material>Gazebo/Red</material> -->
-		<visual>
-			<material>
-				<ambient>${cam_ambient}</ambient>
-				<diffuse>${cam_diffuse}</diffuse>
-				<specular>0 0 0 0</specular>
-				<emissive>${cam_emissive}</emissive>
-			</material>
-		</visual>
+		<material>Gazebo/Red</material>
 		<sensor type="camera" name="cam1">
 			<update_rate>120</update_rate> <!--fps? -->
 			<camera name="front_left">
@@ -133,15 +114,7 @@ explore other plugins
 	</gazebo>
 
 	<gazebo reference="pseye_camera2">
-		<!-- <material>Gazebo/Red</material> -->
-		<visual>
-			<material>
-				<ambient>${cam_ambient}</ambient>
-				<diffuse>${cam_diffuse}</diffuse>
-				<specular>0 0 0 0</specular>
-				<emissive>${cam_emissive}</emissive>
-			</material>
-		</visual>
+		<material>Gazebo/Red</material>
 		<sensor type="camera" name="cam2">
 			<update_rate>120</update_rate> <!--fps? -->
 			<camera name="front_left">
@@ -181,15 +154,7 @@ explore other plugins
 	</gazebo>
 
 	<gazebo reference="pseye_camera3">
-		<!-- <material>Gazebo/Red</material> -->
-		<visual>
-			<material>
-				<ambient>${cam_ambient}</ambient>
-				<diffuse>${cam_diffuse}</diffuse>
-				<specular>0 0 0 0</specular>
-				<emissive>${cam_emissive}</emissive>
-			</material>
-		</visual>
+		<material>Gazebo/Red</material>
 		<sensor type="camera" name="cam1">
 			<update_rate>120</update_rate> <!--fps? -->
 			<camera name="front_left">
@@ -229,15 +194,7 @@ explore other plugins
 	</gazebo>
 
 	<gazebo reference="pseye_camera4">
-		<!-- <material>Gazebo/Red</material> -->
-		<visual>
-			<material>
-				<ambient>${cam_ambient}</ambient>
-				<diffuse>${cam_diffuse}</diffuse>
-				<specular>0 0 0 0</specular>
-				<emissive>${cam_emissive}</emissive>
-			</material>
-		</visual>
+		<material>Gazebo/Red</material>
 		<sensor type="camera" name="cam4">
 			<update_rate>120</update_rate> <!--fps? -->
 			<camera name="front_left">
@@ -276,43 +233,28 @@ explore other plugins
 		</sensor>
 	</gazebo>
 
+
+
 	<gazebo reference="imu_link">
+		<gravity>true</gravity>
 		<sensor type="imu" name="imu">
 			<always_on>true</always_on>
+			<update_rate>100</update_rate>
 			<visualize>${imu_visual}</visualize>
+			<topic>imu_data</topic>
+			<plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+				<topicName>imu</topicName>
+				<bodyName>imu_link</bodyName>
+				<updateRateHZ>10.0</updateRateHZ>
+				<gaussianNoise>0.0</gaussianNoise>
+				<xyzOffset>0 0 0</xyzOffset>
+				<rpyOffset>0 0 0</rpyOffset>
+				<frameName>imu_link</frameName>
+			</plugin>
+			<pose>0 0 0 0 0 0</pose>
 		</sensor>
 		<material>Gazebo/FlatBlack</material>
 	</gazebo>
-	<!-- IMU support -->
-	<!-- <gazebo>
-		<plugin name="imu_plugin" filename="libgazebo_ros_imu.so">
-			<alwaysOn>true</alwaysOn>
-			<bodyName>imu_link</bodyName>
-			<frameName>imu_link</frameName>
-			<topicName>imu</topicName>
-			<serviceName>imu_service</serviceName>
-			<gaussianNoise>0.0</gaussianNoise>
-			<updateRate>200</updateRate>
-			<imu>
-				<noise>
-					<type>gaussian</type>
-					<rate>
-						<mean>0.0</mean>
-						<stddev>2e-4</stddev>
-						<bias_mean>0.0000075</bias_mean>
-						<bias_stddev>0.0000008</bias_stddev>
-					</rate>
-					<accel>
-						<mean>0.0</mean>
-						<stddev>1.7e-2</stddev>
-						<bias_mean>0.1</bias_mean>
-						<bias_stddev>0.001</bias_stddev>
-					</accel>
-				</noise>
-			</imu>
-		</plugin>
-	</gazebo> -->
-
 
 
 </robot>
