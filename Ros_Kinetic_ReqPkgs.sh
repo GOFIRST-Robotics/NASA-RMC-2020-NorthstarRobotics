@@ -18,6 +18,7 @@ sudo apt-get install -y ros-kinetic-joy 2>&1 >/dev/null ||:
 sudo apt-get install -y ros-kinetic-move-base 2>&1 >/dev/null ||:
 sudo apt-get install -y ros-kinetic-nav-core 2>&1 >/dev/null ||:
 sudo apt-get install -y ros-kinetic-robot-localization 2>&1 >/dev/null ||:
+sudo apt-get install -y ros-kinetic-robot-state-publisher 2>&1 >/dev/null ||:
 sudo apt-get install -y ros-kinetic-rviz-imu-plugin 2>&1 >/dev/null ||:
 sudo apt-get install -y ros-kinetic-socketcan-bridge 2>&1 >/dev/null ||:
 sudo apt-get install -y ros-kinetic-socketcan-interface 2>&1 >/dev/null ||:
