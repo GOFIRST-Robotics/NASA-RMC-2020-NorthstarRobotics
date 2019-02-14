@@ -1,0 +1,7 @@
+Command for running TX2 onboard camera:
+
+gst-launch-1.0 nvcamerasrc fpsRange="30.0 30.0" ! 'video/x-raw(memory:NVMM), width=(int)1920, height=(int)1080, format=(string)I420, framerate=(fraction)30/1' ! nvtee ! nvvidconv flip-method=2 ! 'video/x-raw(memory:NVMM), format=(string)I420' ! nvoverlaysink -e
+
+from here: https://devtalk.nvidia.com/default/topic/1023584/jetson-tx2/usb-web-cam-does-not-show-up-in-dev/
+
+
