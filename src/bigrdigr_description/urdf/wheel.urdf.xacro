@@ -53,7 +53,17 @@
     </joint>
 	</xacro:macro>
 
-  <xacro:macro name="null">
+  <xacro:macro name="wheel_trans" params="prefix">
+    <transmission name="${prefix}_wheel_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${prefix}_wheel_joint">
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${prefix}_wheel_motor">
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
   </xacro:macro>
 
 

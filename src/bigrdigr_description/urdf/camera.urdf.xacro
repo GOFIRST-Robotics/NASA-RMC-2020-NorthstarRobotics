@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<xacro:macro name="camera_joint" params="camera_name">
+  <joint name="${camera_name}_camera_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin xyz="${base_width/2} ${-base_length/2.0} ${base_height}" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="${camera_name}"/>
+  </joint>
+</xacro:macro>
+
+<xacro:macro name="camera" params="camera_name">
+  <link name="pseye_camera3">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${pseye_camera_length} ${pseye_camera_width} ${pseye_camera_height}"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <box size="${pseye_camera_length} ${pseye_camera_width} ${pseye_camera_height}"/>
+      </geometry>
+    </collision>
+  </link>
+</xacro:macro>
+
