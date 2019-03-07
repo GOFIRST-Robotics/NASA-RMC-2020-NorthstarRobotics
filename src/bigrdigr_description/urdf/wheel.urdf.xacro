@@ -1,0 +1,63 @@
+<?xml version="1.0" ?>
+
+<robot name="bigrdigr" xmlns:xacro="https://www.ros.org/wiki/xacro">
+
+
+	<xacro:property name="PI" value="3.141592653589793238462643383279502884197" />
+
+
+	<!--here are a lot of the measurements. currently, all of them are just dummy values.
+	change these later when it will be useful to do so.-->
+	<xacro:property name="wheel_height" value="1" />
+	<xacro:property name="wheel_radius" value="1" />
+	<xacro:property name="wheel_mass" value="1" />
+
+
+	
+	<!--here is a macro for a wheel -->
+	<xacro:macro name="wheel" params="prefix">
+		<link name="${prefix}_wheel">
+			<visual>
+				<origin xyz="0 0 0" rpy="${PI/2.0} 0 0"/>
+	      <geometry>
+          <cylinder length="${wheel_height}" radius="${wheel_radius}" />
+        </geometry>
+        <!-- <mesh filename="~/NASA_ws/digr/description/meshes/wheel_1.stl" scale="0.001 0.001 0.001"/> -->
+        <material name="light_black"/>
+			<\visual>
+	    <collision>
+        <origin xyz="0 0 0" rpy="${PI/2.0} 0 0" />
+        <geometry>
+          <cylinder length="${wheel_height}" radius="${wheel_radius}" />
+       	</geometry>
+	    </collision>
+
+	    <inertial>
+       	<origin xyz="0 0 0" />
+      	<mass value="${wheel_mass}" />
+       	<cylinder_inertia m="${wheel_mass}" h="${wheel_height}" r="${wheel_radius}"/>
+      </inertial>
+		</link>
+	</xacro:macro>
+
+
+
+	<xacro:macro name="wheel_joint" params="prefix">
+		<joint name="${prefix}_wheel_joint" type="continuous">
+			<parent link="base_link" />
+			<child 	link="${prefix}_wheel" />
+      <origin xyz="${base_x_origin_to_wheel_origin} ${base_y_origin_to_wheel_origin} 0" rpy="0 0 0"/>
+      <dynamics damping="0.5" friction="0.1"/> <!-- get real later-->
+      <limit effort="1000" velocity="10"/> <!-- simmulate motors, max velocity and max joint effort -->
+      <axis xyz="0 1 0"/> <!-- will rotate for y axis -->
+    </joint>
+	</xacro:macro>
+
+  <xacro:macro name="null">
+  </xacro:macro>
+
+
+
+
+
+</robot>
