@@ -1,0 +1,2 @@
+Attempting to add digger arm and digger with movable joints
+	Currently the model parts do not show in Gazebo, but do in rviz

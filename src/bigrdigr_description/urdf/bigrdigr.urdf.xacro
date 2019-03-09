@@ -2,6 +2,25 @@
 <robot name="bigrdigr" xmlns:xacro="https://www.ros.org/wiki/xacro">
 	<xacro:include filename="$(find bigrdigr_description)/urdf/bigrdigr1.gazebo.xacro"/>
 
+	<material name="grey">
+		<color rgba="0.5 0.5 0.5 1"/>
+	</material>
+	<material name="dark_grey">
+		<color rgba="0.2 0.2 0.2 1"/>
+	</material>
+	<material name="blue">
+		<color rgba="0 0 0.8 1"/>
+	</material>
+	<material name="red">
+		<color rgba="0.8 0 0 1"/>
+	</material>
+	<material name="purple">
+		<color rgba="0.8 0 0.8 1"/>
+	</material>
+	<material name="orange">
+		<color rgba="0.8 0.2 0 1"/>
+	</material>
+
 	<!-- All units in meters, kg, seconds, rads -->
 	<!-- Equation for inertial matrix of box/prisim -->
 	<xacro:macro name="box_inertial_matrix" params="m l w h">
@@ -15,6 +34,10 @@
 				 iyy="${m*r*r/2.0}"			   iyz = "0.0"
 				 izz="${(m*(3*r*r+h*h))/12.0}"  />
 	</xacro:macro>
+
+	<!-- Wheel Links -->
+	<xaacro:macro>
+		
 
 	<!-- Main dimensions: meters, kg, seconds, rads -->
 	<xacro:property name="PI" value="3.1415926535897931" />
@@ -31,6 +54,15 @@
 	<xacro:property name="wheel_radius" value="0.174" />
 	<xacro:property name="wheel_height" value="0.15" />
 	<xacro:property name="wheel_mass" value="2.0" />
+
+	<xacro:property name="arm_length" value="0.4"/>
+	<xacro:property name="arm_height" value="0.06"/>
+	<xacro:property name="arm_width" value="0.06"/>
+	<xacro:property name="arm_mass" value="2.0"/>
+
+	<xacro:property name="digr_height" value="0.08"/>
+	<xacro:property name="digr_radius" value="0.2"/>
+	<xacro:property name="digr_mass" value="2.0"/>
 
 	<xacro:property name="imu_length" value="0.025" />
 	<xacro:property name="imu_width" value="0.025" />
@@ -82,21 +114,80 @@
 		</inertial>
 	</link>
 
-	<joint name="scoop_joint" type="fixed">
+	<joint name="arm_joint" type="fixed">
 		<parent link="base_link"/>
-		<child link="scoop_link"/>
-		<origin xyz="${base_length/2} 0 ${base_height/2}" rpy="0 0 0"/>
+		<child link="arm_link"/>
+		<origin xyz="${base_length/2+arm_length/2} 0 ${base_height/2}" rpy="0 0 0"/>
+		<dynamics damping="0.5" friction="0.1"/> <!-- get real later-->
+		<limit effort="1000" velocity="10"/> <!-- simmulate motors, max velocity and max joint effort -->
+		<axis xyz="0 1 0"/> <!-- will rotate for y axis -->
 	</joint>
 
-	<link name="scoop_link">
+	<link name="arm_link">
 		<visual>
 			<origin xyz="0 0 0" rpy="0 0 0"/>
 			<geometry>
-				<box size="0.01 0.2 0.2"/>
+				<box size="${arm_length} ${arm_width} ${arm_height}"/>
+			</geometry>
+			<material name="orange"/>
+		</visual>
+
+		<collision>
+			<origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<box size="${arm_length} ${arm_width} ${arm_height}"/>
+			</geometry>
+		</collision>
+
+		<inertia>
+			<origin xyz="${arm_length/2} 0 0" rpy="0 0 0"/>
+			<mass value="${arm_mass}"/>
+			<box_inertial_matrix m="${arm_mass}" h="${arm_height}" l="${arm_length}" w="${arm_width}" />
+		</inertia>
+	</link>
+
+	<joint name="digr_joint" type="continuous">
+		<parent link="arm_link"/>
+		<child link="digr_link"/>
+		<origin xyz="${arm_length/2-0.01} 0 0" rpy="0 0 0"/>
+		<dynamics damping="0.5" friction="0.1"/> <!-- get real later-->
+		<limit effort="1000" velocity="10"/> <!-- simmulate motors, max velocity and max joint effort -->
+		<axis xyz="0 1 0"/> <!-- will rotate for y axis -->
+	</joint>
+
+	<link name="digr_link">
+		<visual>
+			<origin xyz="0 0 0" rpy="${PI/2.0} 0 0"/>
+			<geometry>
+				<cylinder length="${digr_height}" radius="${digr_radius}" />
 			</geometry>
 			<material name="purple"/>
 		</visual>
+
+		<collision>
+			<origin xyz="0 0 0" rpy="${PI/2.0} 0 0"/>
+			<geometry>
+				<cylinder length="${digr_height}" radius="${digr_radius}" />
+			</geometry>
+		</collision>
+
+		<inertia>
+			<origin xyz="0 0 0"/>
+			<mass value="${digr_mass}"/>
+			<cylinder_inertia m="${digr_mass}" h="${digr_height}" r="${digr_radius}"/>
+		</inertia>
 	</link>
+
+	<!-- <transmission name="digr_trans">
+		<type>transmission_interface/SimpleTransmission</type>
+		<joint name="digr_joint">
+			<hardwareInterface>EffortJointInterface</hardwareInterface>
+		</joint>
+		<actuator name="digr_motor">
+			<hardwareInterface>EffortJointInterface</hardwareInterface>
+			<mechanicalReduction>1</mechanicalReduction>
+		</actuator>
+	</transmission> -->
 
 	<joint name="front_left_wheel_joint" type="continuous">
 		<parent link="base_link"/>
@@ -288,7 +379,7 @@
 			<geometry>
 				<box size="${imu_length} ${imu_width} ${imu_height}" />
 			</geometry>
-			<materal name="purple"/>
+			<materal name="blue"/>
 		</visual>
 
 		<collision>
@@ -385,7 +476,7 @@
 
 		<link name="pseye_camera4">
 			<visual>
-				<origin xyz="0 0 0" rpy="0 0 0"/>
+				<origin xyz="0 0 0" rpy="0 0 ${PI}"/>
 				<geometry>
 					<box size="${pseye_camera_length} ${pseye_camera_width} ${pseye_camera_height}"/>
 				</geometry>

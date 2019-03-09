@@ -9,7 +9,53 @@
     <include>
       <uri>model://sun</uri>
     </include>
-    
+    <!-- <model name="heightmap">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <heightmap>
+              <uri>model://heightmap0/materials/textures/heightmap0.png</uri>
+              <size>100 100 10</size>
+              <pos>0 0 0</pos>
+            </heightmap>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <heightmap>
+              <texture>
+                <diffuse>file://materials/textures/dirt_diffusespecular.png</diffuse>
+                <normal>file://materials/textures/flat_normal.png</normal>
+                <size>1</size>
+              </texture>
+              <texture>
+                <diffuse>file://materials/textures/grass_diffusespecular.png</diffuse>
+                <normal>file://materials/textures/flat_normal.png</normal>
+                <size>1</size>
+              </texture>
+              <texture>
+                <diffuse>file://materials/textures/fungus_diffusespecular.png</diffuse>
+                <normal>file://materials/textures/flat_normal.png</normal>
+                <size>1</size>
+              </texture>
+              <blend>
+                <min_height>2</min_height>
+                <fade_dist>5</fade_dist>
+              </blend>
+              <blend>
+                <min_height>4</min_height>
+                <fade_dist>5</fade_dist>
+              </blend>
+              <uri>model://heightmap0/materials/textures/heightmap0.png</uri>
+              <size>100 100 10</size>
+              <pos>0 0 0</pos>
+            </heightmap>
+          </geometry>
+        </visual>
+      </link>
+    </model> -->
+
    <!-- <include>
       <uri>model://gas_station</uri>
       <name>gas_station</name>

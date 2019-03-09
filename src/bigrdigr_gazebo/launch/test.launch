@@ -17,11 +17,11 @@
 
   <!-- Spawn a robot into Gazebo -->
   <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
-    args=" -urdf -model bigrdigr -x 0.0 -y 0.0 -z 1.0 -param bigrdigr_description" />
+    args=" -urdf -model bigrdigr -x 0.0 -y 0.0 -z 0.0 -param bigrdigr_description" />
 
-  <rosparam file="$(find bigrdigr_control)/config/bigrdigr_control.yaml" command="load"/>
+  <!-- <rosparam file="$(find bigrdigr_control)/config/bigrdigr_control.yaml" command="load"/> -->
 
-  <!--Load Controllers-->
+  <!--Load Gazebo Controllers-->
   <!-- <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
     output="screen" ns="/bigrdigr" args="front_left_wheel_position_controller
     front_right_wheel_position_controller
@@ -29,11 +29,27 @@
     back_right_wheel_position_controller
     joint_state_controller"/> -->
 
+  <!--Load MoveIt Controllers-->
+  <!-- Set the param that trajectory_execution_manager needs to find the controller plugin -->
+  <arg name="moveit_controller_manager" default="moveit_simple_controller_manager/MoveItSimpleControllerManager" />
+  <param name="moveit_controller_manager" value="$(arg moveit_controller_manager)"/>
+  <!-- load controller_list -->
+  <rosparam file="$(find bigrdigr_control)/config/bigrdigr_controllers.yaml"/>
+  <node pkg="moveit_ros_move_group" type="move_group" name="any_name" output="screen">
+    <remap from="robot_description" to="bigrdigr_description"/>
+    <remap from="joint_states" to="bigrdigr/joint_states"/>
+  </node>
+
   <!--Convert Joint States to TF transforms for rviz-->
-  <!-- <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
     respawn="false" output="screen">
     <remap from="/joint_states" to="/bigrdigr/joint_states"/>
     <remap from="robot_description" to="bigrdigr_description" />
-  </node> -->
+  </node>
+  <arg name="use_gui" value="True"/>
+  <arg name="model" default="$(find bigrdigr_description)/urdf/bigrdigr.urdf.xacro"/>
+  <arg name="rvizconfig" default="$(find bigrdigr_description)/rviz/config.rviz" />
+  <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" /> -->
+
 
 </launch>

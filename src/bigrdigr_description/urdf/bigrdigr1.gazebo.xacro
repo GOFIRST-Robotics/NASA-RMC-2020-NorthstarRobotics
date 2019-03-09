@@ -26,9 +26,21 @@ explore other plugins
 		<turnGravityOff>false</turnGravityOff>
 	</gazebo>
 
-	<gazebo reference="scoop_link">
+	<gazebo reference="arm_link">
+		<material>Gazebo/Orange</material>
+		<mu1>0.3</mu1>
+		<mu2>0.3</mu2>
+	</gazebo>
+
+	<gazebo reference="digr_link">
 		<material>Gazebo/Purple</material>
-		<turnGravityOff>false</turnGravityOff>
+		<mu1>0.3</mu1>
+		<mu2>0.3</mu2>
+		<kp>1000000.0</kp>
+		<kd>1.0</kd>
+		<minDepth>0.001</minDepth>
+		<maxVel>1</maxVel>
+		<fdir1>1 0 0</fdir1>
 	</gazebo>
 
 	<gazebo reference="front_left_wheel">
@@ -243,7 +255,7 @@ explore other plugins
 			<visualize>${imu_visual}</visualize>
 			<topic>imu_data</topic>
 			<plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
-				<topicName>imu</topicName>
+				<topicName>imu/data</topicName>
 				<bodyName>imu_link</bodyName>
 				<updateRateHZ>10.0</updateRateHZ>
 				<gaussianNoise>0.0</gaussianNoise>
@@ -294,8 +306,8 @@ explore other plugins
 	  <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
 	    <updateRate>100.0</updateRate>
 	    <robotNamespace>/bigrdigr</robotNamespace>
-			<commandTopic>/cmd_vel</commandTopic>
-			<odometryTopic>/odom</odometryTopic>
+			<commandTopic>cmd_vel</commandTopic>
+			<odometryTopic>odometry/wheel</odometryTopic>
 	    <leftFrontJoint>front_left_wheel_joint</leftFrontJoint>
 	    <rightFrontJoint>front_right_wheel_joint</rightFrontJoint>
 	    <leftRearJoint>back_left_wheel_joint</leftRearJoint>
