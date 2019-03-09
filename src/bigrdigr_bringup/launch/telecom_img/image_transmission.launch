@@ -1,0 +1,14 @@
+<launch>
+
+  <!--launches the web video server I think-->
+  <node name="web_video_server" pkg="web_video_server" type="web_video_server"
+  output="screen"  
+  />
+
+  <!--start up the camera-->
+  <node name="image_publisher" pkg="image_publisher" type="image_publisher"
+  output="screen" ns="/image_raw" args="0">
+  <param name="publish_rate" value="4" />
+ </node>
+  
+</launch>

@@ -1,0 +1,13 @@
+2018 April 18: Jude
+This class was made long before this, but now I'm adding support for arbitrary channel communication, as the rpi will communicate over ethernet two the UP board & arduino, as well as our laptop by wifi. 
+This previously just supported the one dedicated wifi connection and arbitrary file descriptors / select access, but will be expanded to multiple.
+Development began with a dropbuffer / message holding queue, to prevent dropped msgs while keeping UDP, but that was too complicated & unneccessary, so all development continued with the NoBuffer versions. 
+This change will act on the NoBuffer version, and will be sectioned under folder Telecomm2. 
+
+I took a look, and the Telecomm here isn't sync'd with the Telecomm in main. Need to make sure that works first. 
+May not have to do anything, could just have separate Telecomm instances for each thing - would simplify things. 
+
+2018 May 5th: Jude
+There are still 3 folders under telecomm, still using NoBuffer. Plan is to send over wifi absolute positions, no deltas or math-y stuff, and deltas over ethernet, b/c no packet drop. 
+Added the ability to just send a bulk of bytes, chiefly for image passing. Prefered usage is to just make another obj on a different port, just for bytes. 
+

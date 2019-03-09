@@ -1,0 +1,20 @@
+***** Jan. 22 *****
+To make test.launch work with Aruco 2 (in seperate terminals):
+$ roslaunch realsense2_camera rs_rgbd.launch camera:=realsense_d415
+$ roslaunch launch/test.launch
+
+Now working to update to Aruco 3 to improve distance sensing.
+Source devel/setup.bash when things aren't recognized.
+
+
+***** Jan. 23 *****
+Pose working, low resolution
+
+
+***** Jan. 25 *****
+$ roslaunch realsense2_camera rs_rgbd.launch camera:=realsense_d415 color_width:=1920 color_height:=1080
+
+
+***** Feb. 1 *****
+Changing test.launch to custom.launch so it is more descriptive
+Creating a custom realsense launch based on rs_rgbd.launch so the command line stuff can be built-in

@@ -1,0 +1,18 @@
+#! /bin/bash
+# Note, make sure install can-utils
+echo "Starting CAN0 on VS Com interface"
+sudo modprobe slcan
+sudo modprobe can
+sudo modprobe can-raw
+echo "Wait..."
+sleep 1
+sudo ifconfig can0 down
+echo "Wait..."
+sleep 1
+sudo slcand -o -s5 -t hw -S 3000000 /dev/ttyUSB0 can0
+echo "Wait..."
+sleep 1
+sudo ifconfig can0 txqueuelen 1000
+sudo ip link set up can0
+#cansend can0 5A1#11.22.33.44.55.66.77.88
+
