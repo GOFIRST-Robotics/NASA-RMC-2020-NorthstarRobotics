@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot name="bigrdigr" xmlns:xacro="https://www.ros.org/wiki/xacro">
+
+  <!-- Hard coded dimenstions well approximating robot -->
+  <!-- Robot modeled as:
+       a large box (base_link), origin at bottom,
+       two base_legs, beneath it,
+       four wheels, two on each base_leg,
+       a box that reps the drum, 
+       four extensions with cameras, imus, decawaves,
+       two rgbd cams front and back center -->
+
+
