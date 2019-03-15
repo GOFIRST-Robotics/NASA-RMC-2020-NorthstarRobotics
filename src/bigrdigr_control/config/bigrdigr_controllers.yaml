@@ -8,6 +8,13 @@ controller_list:
      - back_right_wheel_joint
      - front_left_wheel_joint
      - front_right_wheel_joint
+
+ - name: drum_controller
+   action_ns: follow_joint_trajectory
+   type: FollowJointTrajectory
+   default: true
+   joints:
+     - drum_joint
  # - name: hand_controller
  #   action_ns: gripper_action
  #   type: GripperCommand

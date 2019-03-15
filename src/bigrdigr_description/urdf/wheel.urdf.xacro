@@ -1,63 +1,70 @@
 <?xml version="1.0" ?>
-
 <robot name="bigrdigr" xmlns:xacro="https://www.ros.org/wiki/xacro">
-
-
-	<xacro:property name="PI" value="3.141592653589793238462643383279502884197" />
-
-
 	<!--here are a lot of the measurements. currently, all of them are just dummy values.
 	change these later when it will be useful to do so.-->
-	<xacro:property name="wheel_height" value="1" />
-	<xacro:property name="wheel_radius" value="1" />
-	<xacro:property name="wheel_mass" value="1" />
+	<!-- Main dimensions: meters, kg, seconds, rads -->
+	<xacro:property name="PI" value="3.141592653589793238462643383279502884197" />
+	<xacro:property name="wheel_width" value=".15" />
+	<xacro:property name="wheel_radius" value=".18035" />
+	<xacro:property name="wheel_mass" value="2" />
 
 
-	
+
 	<!--here is a macro for a wheel -->
-	<xacro:macro name="wheel" params="prefix">
+	<xacro:macro name="wheel_link" params="prefix">
 		<link name="${prefix}_wheel">
 			<visual>
 				<origin xyz="0 0 0" rpy="${PI/2.0} 0 0"/>
 	      <geometry>
-          <cylinder length="${wheel_height}" radius="${wheel_radius}" />
+          <cylinder length="${wheel_width}" radius="${wheel_radius}" />
         </geometry>
-        <!-- <mesh filename="~/NASA_ws/digr/description/meshes/wheel_1.stl" scale="0.001 0.001 0.001"/> -->
         <material name="light_black"/>
-			<\visual>
+			</visual>
+
 	    <collision>
         <origin xyz="0 0 0" rpy="${PI/2.0} 0 0" />
         <geometry>
-          <cylinder length="${wheel_height}" radius="${wheel_radius}" />
+          <cylinder length="${wheel_width}" radius="${wheel_radius}" />
        	</geometry>
 	    </collision>
 
 	    <inertial>
        	<origin xyz="0 0 0" />
       	<mass value="${wheel_mass}" />
-       	<cylinder_inertia m="${wheel_mass}" h="${wheel_height}" r="${wheel_radius}"/>
+       	<cylinder_inertia m="${wheel_mass}" h="${wheel_width}" r="${wheel_radius}"/>
       </inertial>
 		</link>
 	</xacro:macro>
 
-
-
-	<xacro:macro name="wheel_joint" params="prefix">
+	<xacro:macro name="wheel_joint" params="prefix leg x y">
 		<joint name="${prefix}_wheel_joint" type="continuous">
-			<parent link="base_link" />
+			<parent link="${leg}" />
 			<child 	link="${prefix}_wheel" />
-      <origin xyz="${base_x_origin_to_wheel_origin} ${base_y_origin_to_wheel_origin} 0" rpy="0 0 0"/>
-      <dynamics damping="0.5" friction="0.1"/> <!-- get real later-->
+      <origin xyz="${x*leg_x_origin_to_axle} ${y*(wheel_radius/2+leg_width/4)} ${leg_axle_height-leg_height/2}" rpy="0 0 0"/>
+      <dynamics damping="0.5" friction="0.1"/> <!-- get real later N*m*s/rad damp N*m friction-->
       <limit effort="1000" velocity="10"/> <!-- simmulate motors, max velocity and max joint effort -->
       <axis xyz="0 1 0"/> <!-- will rotate for y axis -->
     </joint>
+	</xacro:macro>
+
+	<xacro:macro name="wheel_gazebo" params="prefix">
+		<gazebo reference="${prefix}_wheel">
+			<mu1>0.3</mu1>
+			<mu2>0.3</mu2>
+			<kp>1000000.0</kp>
+			<kd>1.0</kd>
+			<minDepth>0.001</minDepth>
+			<maxVel>1</maxVel>
+			<fdir1>1 0 0</fdir1>
+			<material>Gazebo/FlatBlack</material>
+		</gazebo>
 	</xacro:macro>
 
   <xacro:macro name="wheel_trans" params="prefix">
     <transmission name="${prefix}_wheel_trans">
       <type>transmission_interface/SimpleTransmission</type>
       <joint name="${prefix}_wheel_joint">
-        <hardwareInterface>EffortJointInterface</hardwareInterface>
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
       </joint>
       <actuator name="${prefix}_wheel_motor">
         <hardwareInterface>EffortJointInterface</hardwareInterface>
@@ -66,7 +73,12 @@
     </transmission>
   </xacro:macro>
 
-
+	<xacro:macro name="wheel" params="prefix leg x y">
+		<wheel_link prefix="${prefix}"/>
+		<wheel_joint prefix="${prefix}" leg="${leg}" x="${x}" y="${y}"/>
+		<wheel_gazebo prefix="${prefix}"/>
+		<wheel_trans prefix="${prefix}"/>
+	</xacro:macro>
 
 
 

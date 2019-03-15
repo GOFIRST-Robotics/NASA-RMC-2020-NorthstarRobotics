@@ -35,9 +35,6 @@
 				 izz="${(m*(3*r*r+h*h))/12.0}"  />
 	</xacro:macro>
 
-	<!-- Wheel Links -->
-	<xaacro:macro>
-		
 
 	<!-- Main dimensions: meters, kg, seconds, rads -->
 	<xacro:property name="PI" value="3.1415926535897931" />
