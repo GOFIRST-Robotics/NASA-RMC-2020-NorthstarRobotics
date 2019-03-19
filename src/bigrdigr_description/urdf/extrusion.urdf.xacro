@@ -2,13 +2,14 @@
 <robot name="bigrdigr" xmlns:xacro="https://www.ros.org/wiki/xacro">
   <!-- Main dimensions: meters, kg, seconds, rads -->
   <xacro:property name="extrusion_height" value="0.0254"/>
-  <xacro:property name="extrusion_length" value="0.0946"/>
+  <xacro:property name="extrusion_length" value="0.0254"/>
   <xacro:property name="extrusion_width" value="0.13254"/>
   <xacro:property name="extrusion_mass" value="0.5"/>
+  <xacro:property name="extrusion_edge_to_base_edge" value="0.0946"/>
 
   <xacro:macro name="extrusion_joint" params="prefix x y">
     <joint name="${prefix}_extrusion_joint" type="fixed">
-      <origin xyz="${x*(base_length/2-extrusion_length/2)} ${y*base_width/2} ${base_height-extrusion_height/2}" rpy="0 0 0"/>
+      <origin xyz="${x*(base_length/2-extrusion_length/2-extrusion_edge_to_base_edge)} ${y*base_width/2} ${base_height-extrusion_height/2}" rpy="0 0 0"/>
       <parent link="base_link"/>
       <child link="${prefix}_extrusion"/>
   	</joint>

@@ -5,10 +5,11 @@
   <xacro:property name="pseye_camera_height" value="0.08" />
 	<xacro:property name="pseye_camera_length" value="0.07" />
 	<xacro:property name="pseye_camera_width" value="0.09" />
+  <xacro:property name="pseye_camera_angle" value=".5236" /> <!--rad from horizontal, + = downward-->
   <xacro:property name="pseye_FOV" value="1.309"/> <!--56 or 75 degrees, need rad-->
 
 
-  <xacro:macro name="camera_link" params="number">
+  <xacro:macro name="camera_link" params="number extrusion">
     <link name="pseye_camera${number}">
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -27,10 +28,10 @@
     </link>
   </xacro:macro>
 
-  <xacro:macro name="camera_joint" params="number x y spin">
+  <xacro:macro name="camera_joint" params="number y spin extrusion">
     <joint name="camera${number}_joint" type="fixed">
-      <origin xyz="${x*(base_length/2-pseye_camera_length/2)} ${y*(base_width/2+pseye_camera_width/2)} ${base_height-pseye_camera_height/2}" rpy="0 0 ${spin}"/>
-      <parent link="base_link"/>
+      <origin xyz="0 ${y*(extrusion_width-pseye_camera_width/2)} ${0-extrusion_height/2-pseye_camera_height/2}" rpy="0 ${pseye_camera_angle} ${spin}"/>
+      <parent link="${extrusion}"/>
       <child link="pseye_camera${number}"/>
     </joint>
   </xacro:macro>
@@ -77,9 +78,9 @@
   	</gazebo>
   </xacro:macro>
 
-  <xacro:macro name="camera_macro" params="number x y spin">
-    <camera_link number="${number}"/>
-    <camera_joint number="${number}" x="${x}" y="${y}" spin="${spin}"/>
+  <xacro:macro name="camera_macro" params="number y extrusion spin">
+    <camera_link number="${number}" extrusion="${extrusion}"/>
+    <camera_joint number="${number}" y="${y}" spin="${spin}" extrusion="${extrusion}"/>
     <camera_gazebo number="${number}"/>
   </xacro:macro>
 

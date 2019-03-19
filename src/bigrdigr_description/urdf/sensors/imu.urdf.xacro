@@ -8,12 +8,12 @@
   <xacro:property name="imu_visual" value="true"/>
 
 
-  <xacro:macro name="imu_joint" params="number">
+  <xacro:macro name="imu_joint" params="number x y extrusion">
     <joint name="imu${number}_joint" type="fixed">
       <axis rpy="0 0 0" xyz="0 1 0"/>
-      <parent link="base_link" />
+      <parent link="${extrusion}" />
       <child link="imu${number}_link" />
-      <origin xyz="0 0 ${base_height + imu_height/2.0}" rpy="0 0 0" />
+      <origin xyz="${x*(extrusion_length/2+imu_length/2)} ${y*extrusion_width/2} 0" rpy="0 0 0" />
     </joint>
   </xacro:macro>
 
@@ -59,8 +59,8 @@
   	</gazebo>
   </xacro:macro>
 
-  <xacro:macro name="imu" params="number">
-    <imu_joint number="${number}"/>
+  <xacro:macro name="imu" params="number x y extrusion">
+    <imu_joint number="${number}" x="${x}" y="${y}" extrusion="${extrusion}"/>
     <imu_link number="${number}"/>
     <imu_gazebo number="${number}"/>
   </xacro:macro>
