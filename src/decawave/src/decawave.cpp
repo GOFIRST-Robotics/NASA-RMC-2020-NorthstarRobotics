@@ -1,11 +1,21 @@
-#include "decawave/decawave.h"
+/*
+ * decawave.cpp
+ * Interfaces with Decawave 1001 module over USB
+ * VERSION: 0.0
+ * Last changed: 2019-04-01
+ * Authors: {insert molly} <@umn.edu>
+ * Maintainers: {insert molly} <@umn.edu>
+ * MIT License
+ * Copyright (c) 2018 GOFIRST-Robotics
+ */
 
 #include <string>
 #include <vector>
 #include <iostream>
 #include <math.h>
 
-#include <serial/serial.h>
+#include "decawave/decawave.h"
+#include "serial/serial.h"
 
 Decawave::Decawave(){
   int index=0; //from 0 to 7, for donut array
