@@ -3,9 +3,6 @@ project(bigrdigr_bringup)
 
 add_compile_options(-std=c++11)
 
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
@@ -14,7 +11,6 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
-
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -72,26 +68,6 @@ find_package(catkin REQUIRED COMPONENTS
 #   sensor_msgs
 # )
 
-################################################
-## Declare ROS dynamic reconfigure parameters ##
-################################################
-
-## To declare and build dynamic reconfigure parameters within this
-## package, follow these steps:
-## * In the file package.xml:
-##   * add a build_depend and a exec_depend tag for "dynamic_reconfigure"
-## * In this file (CMakeLists.txt):
-##   * add "dynamic_reconfigure" to
-##     find_package(catkin REQUIRED COMPONENTS ...)
-##   * uncomment the "generate_dynamic_reconfigure_options" section below
-##     and list every .cfg file to be processed
-
-## Generate dynamic reconfigure parameters in the 'cfg' folder
-# generate_dynamic_reconfigure_options(
-#   cfg/DynReconf1.cfg
-#   cfg/DynReconf2.cfg
-# )
-
 ###################################
 ## catkin specific configuration ##
 ###################################
@@ -102,9 +78,15 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
+<<<<<<< HEAD
    INCLUDE_DIRS include
 #  LIBRARIES bigrdigr_bringup
    CATKIN_DEPENDS roscpp sensor_msgs geometry_msgs
+=======
+  INCLUDE_DIRS include
+#  LIBRARIES bigrdigr_bringup
+  CATKIN_DEPENDS roscpp sensor_msgs
+>>>>>>> ea0e022e8a5f2b968086a9e69b32436620a1ec31
 #  DEPENDS system_lib
 )
 
@@ -136,6 +118,8 @@ include_directories(
 
 add_executable(teleop_twist_node src/teleop_twist_node.cpp)
 target_link_libraries(teleop_twist_node ${catkin_LIBRARIES})
+add_executable(navx_node src/navx_node.cpp)
+target_link_libraries(navx_node ${catkin_LIBRARIES}) # Add AHRS
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

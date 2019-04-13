@@ -1,34 +1,31 @@
 /*
- * decawave_node.cpp
- * ROS interface to Decawave class
- * VERSION: 1.0
+ * navx_node.cpp
+ * Runs the Kauai Labs NavX, using modified NavX library
+ * VERSION: 0.0
  * Last changed: 2019-04-01
- * Authors: Amalia Schwartzwald <schw1818@umn.edu>
- * Maintainers: Amalia Schwartzwald <schw1818@umn.edu>
+ * Authors: Jude Sauve <sauve031@umn.edu>
+ * Maintainers: Jude Sauve <sauve031@umn.edu>
  * MIT License
  * Copyright (c) 2018 GOFIRST-Robotics
  */
 
 // ROS Libs
 #include <ros/ros.h>
-#include <nav_msgs/Odometry.h>
+#include <sensor_msgs/Imu.h>
 
 // Native_Libs
 #include <string>
 
 // Custom_Libs
-#include "decawave/decawave.h"
-#include <serial/serial.h>
+//#include "ahrs/AHRS.h"
 
 // Subscribers (inputs)
 //    update_timer (Timer)
-//      Update loop for reading / querying Decawave
-//    sub_name1 (sub_name1_type): sub_name1_TOPIC_VALUE
-//      sub_name1_desc
+//      Update loop for reading / querying IMU
 
 // Publishers (outputs)
-//    gps_pub (nav_msgs/Odometry): "odometry/gps"
-//      A simulated local position as if GPS UTM
+//    imu_pub (sensor_msgs/Imu): imu/data
+//      The published imu data
 
 // Parameters (settings)
 //    frequency (double): default=50.0
@@ -39,10 +36,10 @@
 
 // ROS Node and Publishers
 ros::NodeHandle * nh;
-ros::Publisher gps_pub;
+ros::Publisher imu_pub;
 
 // ROS Topics
-std::string gps_topic = "odometry/gps";
+std::string imu_topic = "imu/data";
 
 // ROS Callbacks
 void update_callback(const ros::TimerEvent&);
@@ -53,53 +50,34 @@ double frequency = 50.0;
 //param_name3_type param_name3 = param_name3_default;
 
 // Global_Vars
-Decawave piTag;
-coordinate tagPos;
+// double global1 = 0.0;
+// int    global2 = 0;
+// std::string global3 = "";
+// void myCustomFunc1(int i);
+// bool myCustomFunc2(float f);
 
 int main(int argc, char** argv){
   // Init ROS
-  ros::init(argc, argv, "decawave_node");
+  ros::init(argc, argv, "navx_node");
   nh = new ros::NodeHandle("~");
 
   // Subscribers
   ros::Timer update_timer = nh->createTimer(ros::Duration(1.0/frequency), update_callback);
 
   // Publishers
-  gps_pub = nh->advertise<nav_msgs::Odometry>(gps_topic, 10);
+  imu_pub = nh->advertise<sensor_msgs::Imu>(imu_topic, 10);
 
   // Params
   nh->param<double>("frequency", frequency);
   //nh->param<param_name2_type>(param_name2_path, param_name2, param_name2_default;
   //nh->param<param_name3_type>(param_name3_path, param_name3, param_name3_default;
 
-  // Initialize
-  // get initial decwave data
-  for(int i = 0; i < 10; ++i){
-    piTag.updateSamples();
-  }
-
   // Spin
   ros::spin();
 }
 
-
 void update_callback(const ros::TimerEvent&){
-  nav_msgs::Odometry msg;
-  
-  // update decawave data
-  piTag.updateSamples();
+  sensor_msgs::Imu msg;
 
-  // get tag position from the decawave
-  tagPos = piTag.getPos();
-
-  // put the position data into the message
-  msg.pose.pose.position.x = tagPos.x;
-  msg.pose.pose.position.y = tagPos.y;
-
-  // fill out message header
-  msg.header.stamp = ros::Time::now();
-  msg.header.frame_id = "odom";
-  msg.child_frame_id = "base_link"; //change to correct part
-
-  gps_pub.publish(msg);
+  imu_pub.publish(msg);
 }
