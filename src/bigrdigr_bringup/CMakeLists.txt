@@ -78,15 +78,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-<<<<<<< HEAD
-   INCLUDE_DIRS include
+#  INCLUDE_DIRS include
 #  LIBRARIES bigrdigr_bringup
-   CATKIN_DEPENDS roscpp sensor_msgs geometry_msgs
-=======
-  INCLUDE_DIRS include
-#  LIBRARIES bigrdigr_bringup
-  CATKIN_DEPENDS roscpp sensor_msgs
->>>>>>> ea0e022e8a5f2b968086a9e69b32436620a1ec31
+#  CATKIN_DEPENDS roscpp sensor_msgs geometry_msgs
 #  DEPENDS system_lib
 )
 
