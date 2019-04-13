@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?> 
+<?xml version="1.0" encoding="UTF-8"?>
 <launch>
   <!-- Interface: 
     Pub: joy (sensor_msgs/Joy)
@@ -17,3 +17,4 @@
     <param name="scale_angular" value="2" />
   </node>
 </launch>
+
