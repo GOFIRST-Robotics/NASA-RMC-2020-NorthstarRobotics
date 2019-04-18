@@ -6,6 +6,7 @@ add_compile_options(-std=c++11)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
+  geometry_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -77,9 +78,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
+#  INCLUDE_DIRS include
 #  LIBRARIES bigrdigr_bringup
-  CATKIN_DEPENDS roscpp sensor_msgs
+#  CATKIN_DEPENDS roscpp sensor_msgs geometry_msgs
 #  DEPENDS system_lib
 )
 
@@ -109,6 +110,11 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/bigrdigr_bringup_node.cpp)
 
+add_executable(teleop_twist_node src/teleop_twist_node.cpp)
+target_link_libraries(teleop_twist_node ${catkin_LIBRARIES})
+add_executable(navx_node src/navx_node.cpp)
+target_link_libraries(navx_node ${catkin_LIBRARIES}) # Add AHRS
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -123,7 +129,3 @@ include_directories(
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
-
-# Nodes
-add_executable(navx_node src/navx_node.cpp)
-target_link_libraries(navx_node ${catkin_LIBRARIES}) # Add AHRS
