@@ -1,29 +1,87 @@
 <?xml version="1.0" ?>
-<xacro:macro name="camera_joint" params="camera_name">
-  <joint name="${camera_name}_camera_joint" type="fixed">
-    <axis xyz="0 1 0" />
-    <origin xyz="${base_width/2} ${-base_length/2.0} ${base_height}" rpy="0 0 0"/>
-    <parent link="base_link"/>
-    <child link="${camera_name}"/>
-  </joint>
-</xacro:macro>
+<robot name="bigrdigr" xmlns:xacro="https://www.ros.org/wiki/xacro">
 
-<xacro:macro name="camera" params="camera_name">
-  <link name="pseye_camera3">
-    <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <geometry>
-        <box size="${pseye_camera_length} ${pseye_camera_width} ${pseye_camera_height}"/>
-      </geometry>
-      <material name="red"/>
-    </visual>
+  <!-- Main dimensions: meters, kg, seconds, rads -->
+  <xacro:property name="pseye_camera_height" value="0.08" />
+	<xacro:property name="pseye_camera_length" value="0.07" />
+	<xacro:property name="pseye_camera_width" value="0.09" />
+  <xacro:property name="pseye_camera_angle" value=".5236" /> <!--rad from horizontal, + = downward-->
+  <xacro:property name="pseye_FOV" value="1.309"/> <!--56 or 75 degrees, need rad-->
 
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <box size="${pseye_camera_length} ${pseye_camera_width} ${pseye_camera_height}"/>
-      </geometry>
-    </collision>
-  </link>
-</xacro:macro>
 
+  <xacro:macro name="camera_link" params="number extrusion">
+    <link name="pseye_camera${number}">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${pseye_camera_length} ${pseye_camera_width} ${pseye_camera_height}"/>
+        </geometry>
+        <material name="red"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${pseye_camera_length} ${pseye_camera_width} ${pseye_camera_height}"/>
+        </geometry>
+      </collision>
+    </link>
+  </xacro:macro>
+
+  <xacro:macro name="camera_joint" params="number y spin extrusion">
+    <joint name="camera${number}_joint" type="fixed">
+      <origin xyz="0 ${y*(extrusion_width-pseye_camera_width/2)} ${0-extrusion_height/2-pseye_camera_height/2}" rpy="0 ${pseye_camera_angle} ${spin}"/>
+      <parent link="${extrusion}"/>
+      <child link="pseye_camera${number}"/>
+    </joint>
+  </xacro:macro>
+
+  <xacro:macro name="camera_gazebo" params="number">
+    <gazebo reference="pseye_camera${number}">
+  		<material>Gazebo/Red</material>
+  		<sensor type="camera" name="cam${number}">
+  			<update_rate>120</update_rate> <!--fps? -->
+  			<camera name="camera${number}">
+  				<horizontal_fov>${pseye_FOV}</horizontal_fov>
+  				<image>
+  					<width>320</width>
+  					<height>240</height>
+  					<format>R8G8B8</format>
+  				</image>
+  				<clip> <!--distance (m) limits on where a camera can see an object need to find -->
+  					<near>0.02</near>
+  					<far>300</far>
+  				</clip>
+  				<noise>
+  					<type>gaussian</type>
+  					<mean>0.0</mean>
+  					<stddev>0.007</stddev>
+  				</noise>
+  			</camera>
+  			<plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+  				<alwaysOn>true</alwaysOn>
+  				<!--Nodes-->
+  				<updateRate>0.0</updateRate>
+  				<cameraName>camera/pseye_camera${number}</cameraName>
+  				<imageTopicName>image_raw</imageTopicName>
+  				<cameraInfoTopicName>camera_info</cameraInfoTopicName>
+  				<frameName>pseye_camera${number}</frameName>
+  				<!--May need to find? -->
+  				<hackBaseline>0.07</hackBaseline>
+  				<distortionK1>0.0</distortionK1>
+  				<distortionK2>0.0</distortionK2>
+  				<distortionK3>0.0</distortionK3>
+  				<distortionT1>0.0</distortionT1>
+  				<distortionT2>0.0</distortionT2>
+  			</plugin>
+  		</sensor>
+  	</gazebo>
+  </xacro:macro>
+
+  <xacro:macro name="camera_macro" params="number y extrusion spin">
+    <camera_link number="${number}" extrusion="${extrusion}"/>
+    <camera_joint number="${number}" y="${y}" spin="${spin}" extrusion="${extrusion}"/>
+    <camera_gazebo number="${number}"/>
+  </xacro:macro>
+
+</robot>

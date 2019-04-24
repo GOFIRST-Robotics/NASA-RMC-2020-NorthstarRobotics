@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<launch>
+  <!-- canbus_control.launch
+       Runs all the control when interfacing with the robot.
+       This is the only _control file needed to be called
+       from this package when using real robot.
+  -->
+
+  <!-- The Wheel odometry feedback sequence: canbus, wheel_fdbk, odom/wheel -->
+  <include file="$(find bigrdigr_control)/launch/nodes/can_to_wheel_fdbk_node.launch">
+  </include>
+  <include file="$(find bigrdigr_control)/launch/nodes/wheel_fdbk_to_odom_node.launch">
+  </include>
+
+  <!-- The Wheel command sequence: cmd_vel, wheel_cmd, canbus -->
+  <!-- cmd_vel -> wheel_cmd, from controler, bigrdigr_control.launch? Rework it -->
+  <include file="$(find bigrdigr_control)/launch/nodes/wheel_cmd_to_can_node.launch">
+  </include>
+
+  <!-- Launch canbus, trust to only do here -->
+  <node pkg="socketcan_bridge" type="socketcan_bridge_node" name="socketcan_bridge_node">
+    <param name="can_device" value="can0"/>
+  </node>
+
+</launch>

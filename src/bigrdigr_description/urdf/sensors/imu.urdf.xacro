@@ -1,0 +1,68 @@
+<?xml version="1.0" ?>
+<robot name="bigrdigr" xmlns:xacro="https://www.ros.org/wiki/xacro">
+
+  <!-- Main dimensions: meters, kg, seconds, rads -->
+  <xacro:property name="imu_length" value="0.025" />
+  <xacro:property name="imu_width" value="0.025" />
+  <xacro:property name="imu_height" value="0.01" />
+  <xacro:property name="imu_visual" value="true"/>
+
+
+  <xacro:macro name="imu_joint" params="number x y extrusion">
+    <joint name="imu${number}_joint" type="fixed">
+      <axis rpy="0 0 0" xyz="0 1 0"/>
+      <parent link="${extrusion}" />
+      <child link="imu${number}_link" />
+      <origin xyz="${x*(extrusion_length/2+imu_length/2)} ${y*extrusion_width/2} 0" rpy="0 0 0" />
+    </joint>
+  </xacro:macro>
+
+  <xacro:macro name="imu_link" params="number">
+    <link name="imu${number}_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${imu_length} ${imu_width} ${imu_height}" />
+        </geometry>
+        <materal name="blue"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${imu_length} ${imu_width} ${imu_height}" />
+        </geometry>
+      </collision>
+    </link>
+  </xacro:macro>
+
+  <xacro:macro name="imu_gazebo" params="number">
+    <gazebo reference="imu${number}_link">
+  		<gravity>true</gravity>
+  		<sensor type="imu" name="imu${number}">
+  			<always_on>true</always_on>
+  			<update_rate>100</update_rate>
+  			<visualize>${imu_visual}</visualize>
+  			<topic>imu_data</topic>
+  			<plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+  				<topicName>imu${number}/data</topicName>
+  				<bodyName>imu${number}_link</bodyName>
+  				<updateRateHZ>10.0</updateRateHZ>
+  				<gaussianNoise>0.0</gaussianNoise>
+  				<xyzOffset>0 0 0</xyzOffset>
+  				<rpyOffset>0 0 0</rpyOffset>
+  				<frameName>imu${number}_link</frameName>
+  			</plugin>
+  			<pose>0 0 0 0 0 0</pose>
+  		</sensor>
+  		<material>Gazebo/Blue</material>
+  	</gazebo>
+  </xacro:macro>
+
+  <xacro:macro name="imu" params="number x y extrusion">
+    <imu_joint number="${number}" x="${x}" y="${y}" extrusion="${extrusion}"/>
+    <imu_link number="${number}"/>
+    <imu_gazebo number="${number}"/>
+  </xacro:macro>
+
+</robot>

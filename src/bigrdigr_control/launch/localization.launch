@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Launch all localization nodes and configs.
+     Runs two EKFs, global and local. See interface.
+     Sub: (See configs)
+      imu0/data (sensor_msgs/Imu)
+      imu1/data (sensor_msgs/Imu)
+      odometry/wheel (nav_msgs/Odometry)
+      decawave0/odom (nav_msgs/Odometry)
+      decawave1/odom (nav_msgs/Odometry)
+      odometry/fiducial (nav_msgs/Odometry)
+    Pub:
+      odometry/filtered (nav_msgs/Odometry)
+      odometry/filtered_map (nav_msgs/Odometry)
+    TF:
+      map -> odom -> base_link
+-->
+<launch>
+  <!--
+   Sub: (See configs)
+    imu0/data (sensor_msgs/Imu)
+    imu1/data (sensor_msgs/Imu)
+    odometry/wheel (nav_msgs/Odometry)
+  Pub:
+    odometry/filtered (nav_msgs/Odometry)
+  -->
+  <node pkg="robot_localization" type="ekf_localization_node" name="local_ekf" output="screen" clear_params="true">
+    <rosparam command="load" file="$(find bigrdigr_control)/config/ekf_params.yaml"/>
+  </node>
+
+  <!--
+   Sub: (See configs)
+    imu0/data (sensor_msgs/Imu)
+    imu1/data (sensor_msgs/Imu)
+    odometry/wheel (nav_msgs/Odometry)
+    decawave0/odom (nav_msgs/Odometry)
+    decawave1/odom (nav_msgs/Odometry)
+    odometry/fiducial (nav_msgs/Odometry)
+  Pub:
+    odometry/filtered_map (nav_msgs/Odometry)
+  -->
+  <node pkg="robot_localization" type="ekf_localization_node" name="global_ekf" output="screen" clear_params="true">
+    <rosparam command="load" file="$(find bigrdigr_control)/config/ekf_params.yaml"/>
+    <rosparam command="load" file="$(find bigrdigr_control)/config/ekf_map_params.yaml"/>
+  </node>
+</launch>

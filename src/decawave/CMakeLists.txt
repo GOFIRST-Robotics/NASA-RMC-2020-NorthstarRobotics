@@ -9,8 +9,6 @@ add_compile_options(-std=c++11)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
-  rospy
-  std_msgs
   nav_msgs
 )
 find_package(serial)
@@ -30,7 +28,7 @@ find_package(serial)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES decawave
-  CATKIN_DEPENDS roscpp rospy std_msgs
+  CATKIN_DEPENDS roscpp nav_msgs
   #DEPENDS system_lib
 )
 
@@ -46,11 +44,11 @@ include_directories(
 )
 
 ## Declare a C++ library
-add_library(${PROJECT_NAME}
+add_library(decawave
   src/decawave.cpp
   include/decawave/decawave.h
 )
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(decawave
   ${catkin_LIBRARIES}
   serial
 )
@@ -68,7 +66,7 @@ target_link_libraries(${PROJECT_NAME}
 add_executable(decawave_node src/decawave_node.cpp)
 target_link_libraries(decawave_node
   ${catkin_LIBRARIES}
-  ${PROJECT_NAME}
+  decawave
 )
 
 ## Rename C++ executable without prefix

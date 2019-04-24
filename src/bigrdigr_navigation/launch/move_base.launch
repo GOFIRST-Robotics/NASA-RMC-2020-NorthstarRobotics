@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!-- Launch all bigrdigr navigation functions.
+     This does the following:
+
+     This does not (explicitly):
+
+     Interface:
+      Sub:
+        tf
+        odom
+        map
+        "sensor_topics"
+        
+      Pub:
+        cmd_vel
+
+-->
+<launch>
+  <!-- This was largly spawned from turtlebot_navigation & husky_navigation
+       turtlebot_nav also called the following files, see if useful. 
+  <include file="$(find turtlebot_navigation)/launch/includes/velocity_smoother.launch.xml"/>
+  <include file="$(find turtlebot_navigation)/launch/includes/safety_controller.launch.xml"/>
+  -->
+
+  <arg name="base_global_planner" default="navfn/NavfnROS"/>
+  <arg name="base_local_planner" default="dwa_local_planner/DWAPlannerROS"/>
+  
+  <arg name="odom_frame_id"   default="odom"/>
+  <arg name="base_frame_id"   default="base_footprint"/>
+  <arg name="global_frame_id" default="map"/>
+  <arg name="odom_topic" default="odom" />
+  <arg name="laser_topic" default="scan" />
+
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+  <!-- Most/all of these config files are from turtlebot. Left here for experiement;
+       don't keep in final impl -->
+
+    <!-- Load default parameters, and general planner parameters -->
+    <rosparam file="$(find bigrdigr_navigation)/config/move_base.yaml" command="load" />
+    <rosparam file="$(find bigrdigr_navigation)/config/dwa_local_planner.yaml" command="load" />
+    <rosparam file="$(find bigrdigr_navigation)/config/global_planner.yaml" command="load" />
+    <rosparam file="$(find bigrdigr_navigation)/config/navfn_global_planner.yaml" command="load" />
+
+    <!-- Chosen planners -->
+    <param name="base_global_planner" value="$(arg base_global_planner"/>
+    <param name="base_local_planner" value="$(arg base_local_planner"/>
+
+    <!-- Observation sources located in costmap_common.yaml -->
+    <rosparam file="$(find bigrdigr_navigation)/config/costmap_common.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find bigrdigr_navigation)/config/costmap_common.yaml" command="load" ns="local_costmap" />
+    <!-- <rosparam file="$(find bigrdigr_navigation)/config/r200_costmap_params.yaml" command="load"/> -->
+    <!-- This was from turtlebot, see this for style -->
+
+    <!-- local_costmap, needs size -->
+    <rosparam file="$(find bigrdigr_navigation)/config/costmap_local.yaml" command="load" />
+    <param name="local_costmap/width" value="10.0"/> <!-- From husky, idk if need here -->
+    <param name="local_costmap/height" value="10.0"/>
+
+    <!-- static global costmap, static map provides size -->
+    <rosparam file="$(find bigrdigr_navigation)/config/costmap_global.yaml" command="load" />
+
+    <!-- reset frame_id parameters using user input data; also uncertain about these -->
+    <param name="global_costmap/global_frame" value="$(arg global_frame_id)"/>
+    <param name="global_costmap/robot_base_frame" value="$(arg base_frame_id)"/>
+    <param name="local_costmap/global_frame" value="$(arg odom_frame_id)"/>
+    <param name="local_costmap/robot_base_frame" value="$(arg base_frame_id)"/>
+    <param name="DWAPlannerROS/global_frame_id" value="$(arg odom_frame_id)"/>
+
+    <!-- Leaving these in here, bad form, for dev/figuring out purposes -->
+    <remap from="odom" to="$(arg odom_topic)"/>
+    <remap from="scan" to="$(arg laser_topic)"/>
+  </node>
+</launch>

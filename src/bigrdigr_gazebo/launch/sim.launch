@@ -3,7 +3,7 @@
   <arg name="pause" default="false"/>
   <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find bigrdigr_gazebo)/worlds/emptyTest.world"/>
+    <!--<arg name="world_name" value="$(find bigrdigr_gazebo)/worlds/Rough1.world"/>-->
     <!-- more default parameters can be changed here -->
     <arg name="paused" value="$(arg pause)"/>
     <arg name="use_sim_time" value="true"/>
@@ -19,7 +19,7 @@
 
   <!-- Spawn a robot into Gazebo -->
   <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
-    args=" -urdf -model bigrdigr -x 0.0 -y 0.0 -z 0.4 -param robot_description" />
+    args=" -urdf -model bigrdigr -x 0.0 -y 0.0 -z 3.5 -param robot_description" />
 
   <rosparam file="$(find bigrdigr_control)/config/bigrdigr_control.yaml" command="load"/>
 
@@ -43,10 +43,11 @@
     <remap from="joint_states" to="bigrdigr/joint_states"/>
     <!-- <remap from="robot_description" to="bigrdigr_description" /> -->
   </node>
+  <!--
   <arg name="use_gui" value="True"/>
   <arg name="model" default="$(find bigrdigr_description)/urdf/bigrdigr.urdf.xacro"/>
   <arg name="rvizconfig" default="$(find bigrdigr_description)/rviz/config.rviz" />
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
-
+-->
 
 </launch>
