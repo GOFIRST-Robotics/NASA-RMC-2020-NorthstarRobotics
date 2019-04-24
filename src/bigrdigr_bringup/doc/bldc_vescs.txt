@@ -1,0 +1,47 @@
+Documentation on VESCS, chiefly on how to get CANBUS control and feedback
+Jude Sauve, Hunter Messner, 2019 Spring
+To turn on VESC, must be connected to battery/power supply - usb isn't enough.
+
+According to the bldc repo, github.com/vedderb/bldc, file /comm_can.c,
+there are the canbus commands comm_can_set_... which, for our interests, chiefly set rpm, current, or position.
+(Current control, speed control, and position holding). 
+They send over canbus extended canbus msgs:
+  (see datatypes.h: CAN_PACKET_SET_CURRENT=1, _SET_RPM=3, _SET_POS=4, 
+    CAN_PACKET_STATUS=9, _STATUS_2=14, _STATUS_3=15, _STATUS_4=16, _PING=17, _PONG=18)
+Messages to send to vesc:
+  ID = (CAN_PACKET_SET_... << 8) + VESC_CAN_ID/controller_id (VESC_CAN_ID configured in bldc_tool)
+  data/buffer = {current in mA, as int32; rpm as int32; position (in what?) * 10^6 as int32}, 4 byte msg
+  (pinging: ID=CAN_PACKET_PING<<8 + (target)controller_id; buffer[0] = (my)controller_id;
+    pong: ID=(_PONG<<8 + rxmsg[0]); buffer[0] = (my)controller_id;)
+
+The config send_can_status can be CAN_STATUS_1[_2[_3[_4]]], select 1-X to receive
+_STATUS* msg formats: ID = CAN_PACKET_STATUS* << 8 + controller_id (from whom); 
+  _STATUS   buffer: [int32 rpm; int16 total current filtered * 10; int16 duty cycle * 1000]
+  _STATUS_2 buffer: [int32 amp_hours * 10^4; int32 amp hours charged * 10^4]
+  _STATUS_3 buffer: [int32 watt hours * 10^4; int32 watt hours charged * 10^4]
+  _STATUS_4 buffer: [int16 temp_fet filtered * 10; int16 temp_motor filtered * 10; int16 tot current_in filtered * 10; int16 pid_pos_now * 50]
+
+How to set up the vesc to obey these cmds & send these statuses?
+// Tricky versioning on firmware/bldc tool
+You should be able to, in the tool, under Motor settings/General, setup motor with right specs. 
+If no sensor, and need feedback info, under motor settings/bldc, sensormode=sensorless, commutation mode = integrate. See his (really old, kinda sketch) post http://vedder.se/2014/08/startup-torque-on-sensorless-bldc-motors/
+If doing speed or position control, adjust PID in motor settings / pid controllers.
+App Setting stuff:
+There is a No App setting, under General. According to docs, for USB or CAN-bus, you don't have to change the app config because those interfaces are always active. So all settings should be under AppSettings/General. 
+The VESC ID is the above controller_id. I'm looking at the Version 0.95 bldc tool, and you just set the canbus baud, the status msg frequency, and whether (T/F) to send can status.
+According to comm_can.c, if the app config has uavcan_enable, it will never process the received msgs (can't be controlled). 
+If it gets a STATUS msg, it internally collects a bunch of samples of it's relevant stats.
+(useless to it if not using custom app?)
+But if uavcan_enable is false (aka will work if processing works), depending on what the app config has set for send_can_status, it will send all canbus msgs at the frequency chosen. 
+
+These settings seem to work: 
+Hardware version: 4.12
+Firmware version: 3.54
+VESCTool version: 1.08
+
+When I plugged in VESC #2, it sent these msgs:
+  can0  00001100   [1]  69
+  can0  00001101   [1]  69
+  can0  00001102   [1]  69
+I think they're ping msgs, with its own CAN ID equal to 69. I think VESC #3 CAN ID right now is 105. These don't seem to change in the app. Likewise, I can't change the CAN status msgs to send or the baud rate. 
+

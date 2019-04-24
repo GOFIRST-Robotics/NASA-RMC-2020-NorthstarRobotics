@@ -1,15 +1,27 @@
 #! /bin/bash
 # Note, make sure install can-utils
 echo "Starting CAN0 on VS Com interface"
-sudo modprobe slcan
-sudo modprobe can
-sudo modprobe can-raw
+#sudo modprobe slcan
+#sudo modprobe can
+#sudo modprobe can-raw
+if [ -z "$1" ] # If no arg 1
+  then
+    DEV=/dev/ttyUSB0
+  else
+    DEV=$1
+fi
+if [ -z "$2" ] # If no arg 2
+  then
+    BAUD=-s6
+  else
+    BAUD=$2
+fi
 echo "Wait..."
 sleep 1
 sudo ifconfig can0 down
 echo "Wait..."
 sleep 1
-sudo slcand -o -s5 -t hw -S 3000000 /dev/ttyUSB0 can0
+sudo slcand -o $BAUD -t hw -S 3000000 $DEV can0 # -s3=100k,-s4=125k,-s5=250k,-s6=500k,-s8=1000k
 echo "Wait..."
 sleep 1
 sudo ifconfig can0 txqueuelen 1000
