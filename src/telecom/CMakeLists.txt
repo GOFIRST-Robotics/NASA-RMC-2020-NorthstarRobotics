@@ -75,7 +75,7 @@ add_compile_options(-std=c++11)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES telecom
-#  CATKIN_DEPENDS controller_manager joint_state_controller robot_state_publisher
+#  CATKIN_DEPENDS
 #  DEPENDS system_lib
 )
 

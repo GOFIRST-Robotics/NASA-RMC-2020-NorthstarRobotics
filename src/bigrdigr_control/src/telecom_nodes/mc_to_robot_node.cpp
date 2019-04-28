@@ -1,24 +1,25 @@
 /*
- * mc_to_robot.cpp // // Note, global FILE_NAME is "example_node"
- * This node sends data from mission control to the robot and recieves data from the robot
- * VERSION: VERSION_NO
- * Last changed: 2019-04-27
- * Authors: Michael <lucke096@umn.edu>
- * Maintainers: Goldy <goldy@umn.edu>
+ * mc_to_robot_node.cpp
+ * Uses telecom to TX/RX ROS data from the Mission Control (MC) to the robot
+ * VERSION: 0.0.0
+ * Last changed: 2019-04-28
+ * Authors: Michael Lucke <lucke096@umn.edu>
+ * Maintainers: Michael Lucke <lucke096@umn.edu>
  * MIT License
  * Copyright (c) 2018 GOFIRST-Robotics
  */
 
 // ROS Libs
 #include <ros/ros.h>
+#include <geometry_msgs/Twist.h>
 
 // Native_Libs
 #include <string>
+#include <vector>
 
 // Custom Library
 #include "telecom/telecom.h"
-#include "formatter-string/Formatter.hpp"
-
+#include "formatter_string/formatter.hpp"
 
 // Subscribers (inputs)
 //    joy_sub (sensor_msgs/Joy): joy
@@ -49,17 +50,24 @@ ros::NodeHandle * pnh;
 std::string cmd_vel_topic = "cmd_vel";
 
 // ROS Callbacks
+void update_callback(const ros::TimerEvent&);
 void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr& msg);
 //void sub_name1_callback(const sub_name1_typeLHS::sub_name1_typeRHS::ConstPtr& msg);
 //void sub_name2_callback(const sub_name2_typeLHS::sub_name2_typeRHS::ConstPtr& msg);
 
 // ROS Params
+double frequency;
 std::string dst_addr;
 int dst_port;
 int src_port;
-// Global_Vars
-telecomm::Telecomm digr_comm;
 
+// Global_Vars
+Telecom *digr_com;
+Formatter *fmt;
+std::string recv_msg;
+std::vector<IV_float> cmd_vals = {{0,0}, {1,0}};
+
+// Formatters
 val_fmt cmd_msg_fmt = {
   "cmd_vel_msg",
   '!',
@@ -80,43 +88,53 @@ val_fmt cmd_fmt = {
     32767 // range
 };
 
-std::vector<IV_float> cmd_vals = {{0,0}, {1,0}};
 
 int main(int argc, char** argv){
   // Init ROS
-  ros::init(argc, argv, "mc_to_robot");
-  nh = new ros::NodeHandle()
+  ros::init(argc, argv, "mc_to_robot_node");
+  nh = new ros::NodeHandle();
   pnh = new ros::NodeHandle("~");
   
-  Formatter fmt = Formatter({cmd_msg_fmt, cmd_fmt});
-  // Subscribers
-  ros::Subscriber cmd_vel_sub = nh->subscribe(cmd_vel_topic, 1, cmd_vel_callback);
-
-  // Publishers
-
   // Params
   pnh->param<std::string>("dst_addr", dst_addr);
   pnh->param<int>("dst_port", dst_port);
   pnh->param<int>("src_port", src_port);
 
-  digr_comm = new telecomm::Telecomm(dst_addr, dst_port, src_port);
+  // Init variables
+  fmt = new Formatter({cmd_msg_fmt, cmd_fmt});
+  digr_com = new Telecom(dst_addr, dst_port, src_port);
+  // Error checking here
+
+  // Subscribers
+  ros::Timer update_timer = nh->createTimer(ros::Duration(1.0/frequency), update_callback);
+  ros::Subscriber cmd_vel_sub = nh->subscribe(cmd_vel_topic, 1, cmd_vel_callback);
+
+  // Publishers
+
   // Spin
   ros::spin();
 }
 
-
-void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr& msg){
-  digr_comm.update();
-  cmd_vals[0].v = msg->linear.x;
-  cmd_vals[1].v = msg->angular.z;
-  fmt.addFloat("cmd_vel_msg", cmd_vals, "cmd_In");
-  senddata = fmt.emit();
-  if (digr_comm.isCommClosed()){
-    digr_comm.reboot();
+void update_callback(const ros::TimerEvent&){
+  // Read from digr_com for msg
+  digr_com->update();
+  if (digr_com->isComClosed()){
+    digr_com->reboot();
   }
-  digr_comm::send(senddata);
+  if (digr_com->recvAvail()){
+    recv_msg = digr_com->recv();
+  }
+
 
 }
+
+void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr& msg){
+  cmd_vals[0].v = msg->linear.x;
+  cmd_vals[1].v = msg->angular.z;
+  fmt->addFloat("cmd_vel_msg", cmd_vals, "cmd_In");
+  digr_com->send(fmt->emit());
+}
+
 /*
 void sub_name2_callback(const sub_name2_typeLHS::sub_name2_typeRHS::ConstPtr& msg){
 }

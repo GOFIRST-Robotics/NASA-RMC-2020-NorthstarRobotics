@@ -1,7 +1,6 @@
-// Telecomm.cpp
-// VERSION 1.1.1
-
-#include "telecom/telecom.h"
+// telecom.cpp
+// VERSION: 2.0.0 Last Change: 2019-04-28
+// Author: Jude Sauve <sauve031@umn.edu>
 
 //#include <stdio.h>
 #include <cstdio>
@@ -21,6 +20,8 @@
 #include <netdb.h>
 #include <fcntl.h>
 
+#include "telecom/telecom.h"
+
 #define STDIN 0
 
 int sockfd = -1, maxfd;
@@ -35,11 +36,11 @@ timeval *tv_ptr = NULL, tv = {0};
 char buffer[256] = {0};
 bool throwError = true;
 
-void Telecomm::setFailureAction(bool thrwErr){
+void Telecom::setFailureAction(bool thrwErr){
   throwError = thrwErr;
 }
 
-void Telecomm::setBlockingTime(int sec_, int usec_){
+void Telecom::setBlockingTime(int sec_, int usec_){
   sec = sec_;
   usec = usec_;
 }
@@ -54,7 +55,7 @@ void deleteWithException(bool throwit){
     exit(1);
 }
 
-Telecomm::Telecomm(std::string dst_addr_, int dst_port_, int src_port_){
+Telecom::Telecom(std::string dst_addr_, int dst_port_, int src_port_){
   dst_addr = dst_addr_;
   dst_port = dst_port_;
   src_port = src_port_;
@@ -72,7 +73,7 @@ void resetMaxfd(){
   maxfd = (maxfd >= STDIN) ? maxfd : STDIN;
 }
 
-void Telecomm::reboot(){
+void Telecom::reboot(){
   // Clean up old sockfd
   FD_CLR(sockfd, &readfds);
   resetMaxfd();
@@ -159,27 +160,27 @@ void Telecomm::reboot(){
 
 }
 
-Telecomm::~Telecomm(){
+Telecom::~Telecom(){
   ret = 0;
   deleteWithException(false);
 }
 
-int Telecomm::getErrno(){ return errno; }
+int Telecom::getErrno(){ return errno; }
 
-int Telecomm::status(){ return ret; }
+int Telecom::status(){ return ret; }
 
-bool Telecomm::isCommClosed(){ return ret != 0; }
+bool Telecom::isComClosed(){ return ret != 0; }
 
-void Telecomm::fdAdd(int fd){
+void Telecom::fdAdd(int fd){
   FD_SET(fd, &readfds);
   maxfd = (maxfd < fd) ? fd : maxfd;
 }
 
-void Telecomm::fdRemove(int fd){ FD_CLR(fd, &readfds); }
+void Telecom::fdRemove(int fd){ FD_CLR(fd, &readfds); }
 
-bool Telecomm::fdReadAvail(int fd){ return FD_ISSET(fd, &resultfds); }
+bool Telecom::fdReadAvail(int fd){ return FD_ISSET(fd, &resultfds); }
 
-int Telecomm::update(){
+int Telecom::update(){
   // To be called at the beginning of every loop
   memcpy(&resultfds, &readfds, sizeof(resultfds));
 
@@ -217,11 +218,11 @@ int sendall(int s, char *buf, int *len) {
   return n==-1?-1:0; // return -1 on failure, 0 on success
 }
 
-bool Telecomm::stdioReadAvail(){
+bool Telecom::stdioReadAvail(){
   return FD_ISSET(STDIN, &resultfds);
 }
 
-std::string Telecomm::stdioRead(){
+std::string Telecom::stdioRead(){
   memset(buffer, 0, sizeof(buffer));
   len = 0;
   if(0 >= (len = read(STDIN, buffer, sizeof(buffer)))){
@@ -232,7 +233,7 @@ std::string Telecomm::stdioRead(){
   return std::string(buffer, len); 
 }
 
-int Telecomm::send(std::string msg){
+int Telecom::send(std::string msg){
   memset(buffer, 0, sizeof(buffer));
   std::strcpy(buffer, msg.c_str());
   len = msg.length();
@@ -245,7 +246,7 @@ int Telecomm::send(std::string msg){
   return ret;
 }
 
-int Telecomm::sendBytes(char* bytes, int len){
+int Telecom::sendBytes(char* bytes, int len){
   if(sendall(sockfd, bytes, &len) == -1) {
     perror("sendall");
     fprintf(stderr, "We only sent %d bytes b/c of error\n", len);
@@ -255,11 +256,11 @@ int Telecomm::sendBytes(char* bytes, int len){
   return ret;
 }
 
-bool Telecomm::recvAvail(){
+bool Telecom::recvAvail(){
   return FD_ISSET(sockfd, &resultfds);
 }
 
-std::string Telecomm::recv(){
+std::string Telecom::recv(){
   memset(buffer, 0, sizeof(buffer));
   // overwrite/define recv, want #include, use ::recv to get one def'd in global namespace
   // Set non-blocking mode
@@ -286,7 +287,7 @@ std::string Telecomm::recv(){
   return std::string(buffer, numbytes);
 }
 
-int Telecomm::recv(char*& buf){
+int Telecom::recv(char*& buf){
   memset(buf, 0, sizeof(buf));
   // overwrite/define recv, want #include, use ::recv to get one def'd in global namespace
   // Set non-blocking mode
@@ -313,7 +314,7 @@ int Telecomm::recv(char*& buf){
   return numbytes;
 }
 
-std::string Telecomm::simpleStatus(int i){
+std::string Telecom::simpleStatus(int i){
   switch(i){
     case -1: return "INIT_ERR";
     case 0: return "OK";
@@ -332,11 +333,11 @@ std::string Telecomm::simpleStatus(int i){
   }
 }
 
-std::string Telecomm::simpleStatus(){
+std::string Telecom::simpleStatus(){
   return simpleStatus(ret);
 }
 
-std::string Telecomm::verboseStatus(int i){
+std::string Telecom::verboseStatus(int i){
   switch(i){
     case -1: return "INIT_ERR";
     case 0: return "OK";
@@ -355,7 +356,7 @@ std::string Telecomm::verboseStatus(int i){
   }
 }
 
-std::string Telecomm::verboseStatus(){
+std::string Telecom::verboseStatus(){
   return verboseStatus(ret);
 }
 // END

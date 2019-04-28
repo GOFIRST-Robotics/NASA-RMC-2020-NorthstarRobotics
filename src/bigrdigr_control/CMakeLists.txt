@@ -10,10 +10,13 @@ add_compile_options(-std=c++11)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   controller_manager
-  #joint_state_controller
-  #robot_state_publisher
+  robot_state_publisher
+  joint_state_publisher
+  joint_state_controller
   sensor_msgs
   geometry_msgs
+  telecom
+  formatter_string
 )
 
 ## System dependencies are found with CMake's conventions
@@ -86,9 +89,19 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
+#  INCLUDE_DIRS include
 #  LIBRARIES bigrdigr_control
-  CATKIN_DEPENDS controller_manager joint_state_controller robot_state_publishe roscpp sensor_msgs geometry_msgsr
+  CATKIN_DEPENDS
+    roscpp
+    controller_manager
+    robot_state_publisher
+    joint_state_publisher
+    joint_state_controller
+    sensor_msgs
+    geometry_msgs
+    # include our pkgs
+    telecom
+    formatter_string
 #  DEPENDS system_lib
 )
 
@@ -99,7 +112,7 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-  include
+# include
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -120,10 +133,20 @@ include_directories(
 
 add_executable(teleop_twist_node src/teleop_twist_node.cpp)
 target_link_libraries(teleop_twist_node ${catkin_LIBRARIES})
-add_executable(robot_to_mc src/robot_to_mc.cpp)
-target_link_libraries(robot_to_mc ${catkin_LIBRARIES})
-add_executable(mc_to_robot src/mc_to_robot.cpp)
-target_link_libraries(mc_to_robot ${catkin_LIBRARIES})
+
+add_executable(robot_to_mc_node src/telecom_nodes/robot_to_mc_node.cpp)
+target_link_libraries(robot_to_mc_node
+  telecom
+  formatter_string
+  ${catkin_LIBRARIES}
+)
+
+add_executable(mc_to_robot_node src/telecom_nodes/mc_to_robot_node.cpp)
+target_link_libraries(mc_to_robot_node
+  telecom
+  formatter_string
+  ${catkin_LIBRARIES}
+)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -139,51 +162,3 @@ target_link_libraries(mc_to_robot ${catkin_LIBRARIES})
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
-
-#############
-## Install ##
-#############
-
-# all install targets should use catkin DESTINATION variables
-# See http://ros.org/doc/api/catkin/html/adv_user_guide/variables.html
-
-## Mark executable scripts (Python etc.) for installation
-## in contrast to setup.py, you can choose the destination
-# install(PROGRAMS
-#   scripts/my_python_script
-#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
-
-## Mark executables and/or libraries for installation
-# install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_node
-#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
-
-## Mark cpp header files for installation
-# install(DIRECTORY include/${PROJECT_NAME}/
-#   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-#   FILES_MATCHING PATTERN "*.h"
-#   PATTERN ".svn" EXCLUDE
-# )
-
-## Mark other files for installation (e.g. launch and bag files, etc.)
-# install(FILES
-#   # myfile1
-#   # myfile2
-#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-# )
-
-#############
-## Testing ##
-#############
-
-## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_bigrdigr_control.cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
-
-## Add folders to be run by python nosetests
-# catkin_add_nosetests(test)

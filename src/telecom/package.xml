@@ -7,9 +7,6 @@
   <maintainer email="sauve031@umn.edu">Jude Sauve</maintainer>
   <license>MIT</license>
 
-  <!-- <author email="jane.doe@example.com">Jane Doe</author> -->
-
-
   <!-- The *depend tags are used to specify dependencies -->
   <!-- Dependencies can be catkin packages or system dependencies -->
   <!-- Examples: -->
