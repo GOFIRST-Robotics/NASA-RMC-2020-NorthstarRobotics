@@ -4,9 +4,9 @@ To turn on VESC, must be connected to battery/power supply - usb isn't enough.
 
 According to the bldc repo, github.com/vedderb/bldc, file /comm_can.c,
 there are the canbus commands comm_can_set_... which, for our interests, chiefly set rpm, current, or position.
-(Current control, speed control, and position holding). 
+(Current control, speed control, and position holding).
 They send over canbus extended canbus msgs:
-  (see datatypes.h: CAN_PACKET_SET_CURRENT=1, _SET_RPM=3, _SET_POS=4, 
+  (see datatypes.h: CAN_PACKET_SET_CURRENT=1, _SET_RPM=3, _SET_POS=4,
     CAN_PACKET_STATUS=9, _STATUS_2=14, _STATUS_3=15, _STATUS_4=16, _PING=17, _PONG=18)
 Messages to send to vesc:
   ID = (CAN_PACKET_SET_... << 8) + VESC_CAN_ID/controller_id (VESC_CAN_ID configured in bldc_tool)
@@ -15,7 +15,7 @@ Messages to send to vesc:
     pong: ID=(_PONG<<8 + rxmsg[0]); buffer[0] = (my)controller_id;)
 
 The config send_can_status can be CAN_STATUS_1[_2[_3[_4]]], select 1-X to receive
-_STATUS* msg formats: ID = CAN_PACKET_STATUS* << 8 + controller_id (from whom); 
+_STATUS* msg formats: ID = CAN_PACKET_STATUS* << 8 + controller_id (from whom);
   _STATUS   buffer: [int32 rpm; int16 total current filtered * 10; int16 duty cycle * 1000]
   _STATUS_2 buffer: [int32 amp_hours * 10^4; int32 amp hours charged * 10^4]
   _STATUS_3 buffer: [int32 watt hours * 10^4; int32 watt hours charged * 10^4]
@@ -23,18 +23,18 @@ _STATUS* msg formats: ID = CAN_PACKET_STATUS* << 8 + controller_id (from whom);
 
 How to set up the vesc to obey these cmds & send these statuses?
 // Tricky versioning on firmware/bldc tool
-You should be able to, in the tool, under Motor settings/General, setup motor with right specs. 
+You should be able to, in the tool, under Motor settings/General, setup motor with right specs.
 If no sensor, and need feedback info, under motor settings/bldc, sensormode=sensorless, commutation mode = integrate. See his (really old, kinda sketch) post http://vedder.se/2014/08/startup-torque-on-sensorless-bldc-motors/
 If doing speed or position control, adjust PID in motor settings / pid controllers.
 App Setting stuff:
-There is a No App setting, under General. According to docs, for USB or CAN-bus, you don't have to change the app config because those interfaces are always active. So all settings should be under AppSettings/General. 
+There is a No App setting, under General. According to docs, for USB or CAN-bus, you don't have to change the app config because those interfaces are always active. So all settings should be under AppSettings/General.
 The VESC ID is the above controller_id. I'm looking at the Version 0.95 bldc tool, and you just set the canbus baud, the status msg frequency, and whether (T/F) to send can status.
-According to comm_can.c, if the app config has uavcan_enable, it will never process the received msgs (can't be controlled). 
+According to comm_can.c, if the app config has uavcan_enable, it will never process the received msgs (can't be controlled).
 If it gets a STATUS msg, it internally collects a bunch of samples of it's relevant stats.
 (useless to it if not using custom app?)
-But if uavcan_enable is false (aka will work if processing works), depending on what the app config has set for send_can_status, it will send all canbus msgs at the frequency chosen. 
+But if uavcan_enable is false (aka will work if processing works), depending on what the app config has set for send_can_status, it will send all canbus msgs at the frequency chosen.
 
-These settings seem to work: 
+These settings seem to work:
 Hardware version: 4.12
 Firmware version: 3.54
 VESCTool version: 1.08
@@ -43,5 +43,62 @@ When I plugged in VESC #2, it sent these msgs:
   can0  00001100   [1]  69
   can0  00001101   [1]  69
   can0  00001102   [1]  69
-I think they're ping msgs, with its own CAN ID equal to 69. I think VESC #3 CAN ID right now is 105. These don't seem to change in the app. Likewise, I can't change the CAN status msgs to send or the baud rate. 
+I think they're ping msgs, with its own CAN ID equal to 69. I think VESC #3 CAN ID right now is 105. These don't seem to change in the app. Likewise, I can't change the CAN status msgs to send or the baud rate.
 
+# Update 2019-04-26
+New VESC Tool version & firmware, don't switch, buggy?
+Found that msgs 2,3,4 from status are prob useless. Specifically, idk about the position from 4. At all. Might be better to ignore. Then we can ignore msgs 2,3.
+Also reduces bus usage (at 50 Hz vesc pub) from 5% to 1% (500k baud).
+In app config, keeping timeout 1sec, brake current 0, can status rate 50Hz.
+Fun fact, bash >>> while true; do cansend can0 0000010X#00.00.04.00; done # Makes bus 35% full
+
+# Update 2019-04-29
+Wiring is a pain. The VESCs have internal diff resistance 100Ohm. We tried to add resistance to them, in series with the canL, but they couldn't TX/RX. We took out all added resistance, & are trying to see how many we can have on canbus while still not getting problems. With 2, the diff res is 50Ohm, I think VESCS have been used in 4 before.
+
+Motors: Set vesc tool bat lim to 1.5x breaker
+Wheels (x4):
+  Breaker (A): 35
+  Alienware 6355s 50KV
+    Max Amp (A): 40
+  ID:
+    FL_DR: 1
+    RL_DR: 2
+    FR_DR: 3
+    RR_DR: 4
+
+Hold Conv:
+  Breaker (A): 35
+  Alienware 4260s 100KV
+    Max Amp (A): 50
+  ID:
+    HOLD_CONV: 5
+
+Lift (x2):
+  Breaker (A): 25
+  Alienware 4260s 100KV
+    Max Amp (A): 50
+  ID:
+    L_LIFT: 6
+    R_LIFT: 8
+
+Transf Conv:
+  Breaker (A): 20
+  Alienware 4260s 100KV
+    Max Amp (A): 50
+  ID:
+    TRNS_CONV: 7
+
+Drum:
+  Breaker (A): 40
+  Alienware 6355s 50KV
+    Max Amp (A): 40
+  ID:
+    DIGGER: 9
+
+Battery:
+Soft battery cutoff voltage: If voltage drops too low, won't let it run
+  We have 12 series of cells, 3V per cell is hard/abs minimum, danger
+  Soft (V): 12*3.4 = 40.8 // Want this much;
+  Hard (V): 12*3.0 = 38.0 // Jimmy says 38, don't want to get close to 36
+  Upper limit, so that regen wouldn't go up to much; 4.2V is max battery should be
+  Upper (V): 12*4.2 = 50.6
