@@ -1,10 +1,10 @@
 /*
  * teleop_twist_node.cpp
- * INSERT_DESC_HERE
+ * This is a node that is supposed to get the joystick values from a joystick topic and output them to /cmd_vel
  * VERSION: VERSION_NO
- * Last changed: 2018-09-24
- * Authors: My Name <myname@umn.edu>
- * Maintainers: Goldy <goldy@umn.edu>
+ * Last changed: 2019_4_17
+ * Authors: Michael <lucke096@umn.edu>
+ * Maintainers: Michael <lucke096@umn.edu>
  * MIT License
  * Copyright (c) 2018 GOFIRST-Robotics
  */
@@ -50,6 +50,10 @@ double angular_scale = 1.0;
 // Global_vars
 const int linear_axis = 1;
 const int angular_axis = 2;
+/*const int decrease_angular_scale_button = 6;
+const int decrease_linear_scale_button = 7;
+const int increase_linear_scale_button = 5;
+const int increase_angular_scale_button = 4;*/ //a bunch of debugging stuff I think
 //double linear_scale = 1.0;
 //double angular_scale = 1.0;
 //std::map<std::string, int> axis_linear_map;
@@ -71,9 +75,9 @@ int main(int argc, char** argv){
   
   // Params
   //nh->param<param_name1_type>(param_name1_path, param_name1, param_name1_default;
-  pnh->getParam("linear_scale", linear_scale);
-  pnh->getParam("angular_scale", angular_scale); 
-  std::cout << "Yo, scales: " << linear_scale << std::endl;
+  pnh->param<double>("linear_scale", linear_scale, angular_scale);
+  pnh->param<double>("angular_scale", angular_scale, angular_scale); 
+  //std::cout << "Yo, scales: " << linear_scale << std::endl;
   // Spin
   ros::spin();
 }
@@ -88,6 +92,18 @@ void joy_callback(const sensor_msgs::Joy::ConstPtr& msg){
   cmd_vel_msg.angular.y = 0;
   cmd_vel_msg.angular.z = (msg->axes[2])*angular_scale; // This spin
   cmd_vel_pub.publish(cmd_vel_msg);
+  /*if (msg->buttons[decrease_linear_scale_button] == 1){
+    linear_scale = linear_scale / 1.025;
+  }
+  if (msg->buttons[decrease_angular_scale_button] == 1){
+    angular_scale = angular_scale / 1.025;
+  }
+  if (msg->buttons[increase_linear_scale_button] == 1){
+    linear_scale = linear_scale * 1.025;
+  }
+  if (msg->buttons[increase_angular_scale_button] == 1){
+    angular_scale = angular_scale * 1.025;
+  }*/
 }
 /*
 void sub_name2_callback(const sub_name2_typeLHS::sub_name2_typeRHS::ConstPtr& msg){

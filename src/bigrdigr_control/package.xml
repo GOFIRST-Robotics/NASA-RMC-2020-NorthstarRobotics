@@ -3,31 +3,10 @@
   <name>bigrdigr_control</name>
   <version>0.0.0</version>
   <description>The bigrdigr_control package</description>
-
-  <!-- One maintainer tag required, multiple allowed, one person per tag -->
-  <!-- Example:  -->
-  <!-- <maintainer email="jane.doe@example.com">Jane Doe</maintainer> -->
-  <maintainer email="jennifer@todo.todo">jennifer</maintainer>
-
-
-  <!-- One license tag required, multiple allowed, one license per tag -->
-  <!-- Commonly used license strings: -->
-  <!--   BSD, MIT, Boost Software License, GPLv2, GPLv3, LGPLv2.1, LGPLv3 -->
-  <license>TODO</license>
-
-
-  <!-- Url tags are optional, but multiple are allowed, one per tag -->
-  <!-- Optional attribute type can be: website, bugtracker, or repository -->
-  <!-- Example: -->
-  <!-- <url type="website">http://wiki.ros.org/bigrdigr_control</url> -->
-
-
-  <!-- Author tags are optional, multiple are allowed, one per tag -->
-  <!-- Authors do not have to be maintainers, but could be -->
-  <!-- Example: -->
-  <!-- <author email="jane.doe@example.com">Jane Doe</author> -->
-
-
+  <author email="sauve031@umn.edu">Jude Sauve</author>
+  <maintainer email="sauve031@umn.edu">Jude Sauve</maintainer>
+  <license>MIT</license>
+  
   <!-- The *depend tags are used to specify dependencies -->
   <!-- Dependencies can be catkin packages or system dependencies -->
   <!-- Examples: -->
@@ -49,16 +28,17 @@
   <!-- Use doc_depend for packages you need only for building documentation: -->
   <!--   <doc_depend>doxygen</doc_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>controller_manager</build_depend>
-  <build_depend>joint_state_controller</build_depend>
-  <build_depend>robot_state_publisher</build_depend>
-  <build_export_depend>controller_manager</build_export_depend>
-  <build_export_depend>joint_state_controller</build_export_depend>
-  <build_export_depend>robot_state_publisher</build_export_depend>
-  <exec_depend>controller_manager</exec_depend>
-  <exec_depend>joint_state_conrtoller</exec_depend>
-  <exec_depend>robot_state_publisher</exec_depend>
+  <depend>roscpp</depend>
+  <depend>controller_manager</depend>
+  <depend>robot_state_publisher</depend>
+  <depend>joint_state_publisher</depend>
+  <depend>joint_state_controller</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
 
+  <!-- Workspace pkgs -->
+  <depend>telecom</depend>
+  <depend>formatter_string</depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

@@ -1,9 +1,10 @@
 // Formatter.cpp
 // VERSION 1.4.1
-#include "Formatter.hpp"
 #include <vector>
 #include <string>
 #include <cassert>
+
+#include "formatter_string/formatter.hpp"
 
 // Gen Funcs
 inline bool isValidSymbol(char c){

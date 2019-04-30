@@ -2,15 +2,21 @@ cmake_minimum_required(VERSION 2.8.3)
 project(bigrdigr_control)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
+  roscpp
   controller_manager
-  joint_state_controller
   robot_state_publisher
+  joint_state_publisher
+  joint_state_controller
+  sensor_msgs
+  geometry_msgs
+  telecom
+  formatter_string
 )
 
 ## System dependencies are found with CMake's conventions
@@ -73,26 +79,6 @@ find_package(catkin REQUIRED COMPONENTS
 #   std_msgs  # Or other packages containing msgs
 # )
 
-################################################
-## Declare ROS dynamic reconfigure parameters ##
-################################################
-
-## To declare and build dynamic reconfigure parameters within this
-## package, follow these steps:
-## * In the file package.xml:
-##   * add a build_depend and a exec_depend tag for "dynamic_reconfigure"
-## * In this file (CMakeLists.txt):
-##   * add "dynamic_reconfigure" to
-##     find_package(catkin REQUIRED COMPONENTS ...)
-##   * uncomment the "generate_dynamic_reconfigure_options" section below
-##     and list every .cfg file to be processed
-
-## Generate dynamic reconfigure parameters in the 'cfg' folder
-# generate_dynamic_reconfigure_options(
-#   cfg/DynReconf1.cfg
-#   cfg/DynReconf2.cfg
-# )
-
 ###################################
 ## catkin specific configuration ##
 ###################################
@@ -105,7 +91,17 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES bigrdigr_control
-#  CATKIN_DEPENDS controller_manager joint_state_controller robot_state_publisher
+  CATKIN_DEPENDS
+    roscpp
+    controller_manager
+    robot_state_publisher
+    joint_state_publisher
+    joint_state_controller
+    sensor_msgs
+    geometry_msgs
+    # include our pkgs
+    telecom
+    formatter_string
 #  DEPENDS system_lib
 )
 
@@ -135,6 +131,23 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/bigrdigr_control_node.cpp)
 
+add_executable(teleop_twist_node src/teleop_twist_node.cpp)
+target_link_libraries(teleop_twist_node ${catkin_LIBRARIES})
+
+add_executable(robot_to_mc_node src/telecom_nodes/robot_to_mc_node.cpp)
+target_link_libraries(robot_to_mc_node
+  telecom
+  formatter_string
+  ${catkin_LIBRARIES}
+)
+
+add_executable(mc_to_robot_node src/telecom_nodes/mc_to_robot_node.cpp)
+target_link_libraries(mc_to_robot_node
+  telecom
+  formatter_string
+  ${catkin_LIBRARIES}
+)
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -149,51 +162,3 @@ include_directories(
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
-
-#############
-## Install ##
-#############
-
-# all install targets should use catkin DESTINATION variables
-# See http://ros.org/doc/api/catkin/html/adv_user_guide/variables.html
-
-## Mark executable scripts (Python etc.) for installation
-## in contrast to setup.py, you can choose the destination
-# install(PROGRAMS
-#   scripts/my_python_script
-#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
-
-## Mark executables and/or libraries for installation
-# install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_node
-#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
-
-## Mark cpp header files for installation
-# install(DIRECTORY include/${PROJECT_NAME}/
-#   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-#   FILES_MATCHING PATTERN "*.h"
-#   PATTERN ".svn" EXCLUDE
-# )
-
-## Mark other files for installation (e.g. launch and bag files, etc.)
-# install(FILES
-#   # myfile1
-#   # myfile2
-#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-# )
-
-#############
-## Testing ##
-#############
-
-## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_bigrdigr_control.cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
-
-## Add folders to be run by python nosetests
-# catkin_add_nosetests(test)

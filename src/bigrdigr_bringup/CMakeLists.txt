@@ -110,8 +110,6 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/bigrdigr_bringup_node.cpp)
 
-add_executable(teleop_twist_node src/teleop_twist_node.cpp)
-target_link_libraries(teleop_twist_node ${catkin_LIBRARIES})
 add_executable(navx_node src/navx_node.cpp)
 target_link_libraries(navx_node ${catkin_LIBRARIES}) # Add AHRS
 
