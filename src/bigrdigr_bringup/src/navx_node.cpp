@@ -17,7 +17,7 @@
 #include <string>
 
 // Custom_Libs
-//#include "ahrs/AHRS.h"
+#include "ahrs/AHRS.h"
 
 // Subscribers (inputs)
 //    update_timer (Timer)
@@ -50,6 +50,7 @@ double frequency = 50.0;
 //param_name3_type param_name3 = param_name3_default;
 
 // Global_Vars
+AHRS com = AHRS("/dev/ttyACM0");
 // double global1 = 0.0;
 // int    global2 = 0;
 // std::string global3 = "";
@@ -78,6 +79,28 @@ int main(int argc, char** argv){
 
 void update_callback(const ros::TimerEvent&){
   sensor_msgs::Imu msg;
-
+  
+  msg.orientation.x = com.GetQuaternionX();
+  msg.orientation.y = com.GetQuaternionY();
+  msg.orientation.z = com.GetQuaternionZ();
+  msg.orientation.w = com.GetQuaternionW();
+  msg.orientation_covariance[0] = -1;
+  //msg.orientation_covariance[3] = ;
+  //msg.orientation_covariance[6] = ;
+  
+  msg.angular_velocity.x = 0;//com.GetPitch() * ((2.0 * 3.14159) / 360.0);
+  msg.angular_velocity.y = 0;//com.GetRoll() * ((2.0 * 3.14159) / 360.0);
+  msg.angular_velocity.z = com.GetRate() * ((2.0 * 3.14159) / 360.0);
+  msg.angular_velocity_covariance[0] = -1;
+  //msg.angular_velocity_covariance[3] = ;
+  //msg.angular_velocity_covariance[6] = ;
+  
+  msg.linear_acceleration.x = com.GetWorldLinearAccelX() * 9.81;
+  msg.linear_acceleration.y = com.GetWorldLinearAccelY() * 9.81;
+  msg.linear_acceleration.z = com.GetWorldLinearAccelZ() * 9.81;
+  msg.linear_acceleration_covariance[0] = 0.8825985;
+  msg.linear_acceleration_covariance[3] = 0.8825985;
+  msg.linear_acceleration_covariance[6] = 1.569064;
+  
   imu_pub.publish(msg);
 }

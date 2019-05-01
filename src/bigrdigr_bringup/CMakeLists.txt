@@ -113,7 +113,7 @@ include_directories(
 add_executable(teleop_twist_node src/teleop_twist_node.cpp)
 target_link_libraries(teleop_twist_node ${catkin_LIBRARIES})
 add_executable(navx_node src/navx_node.cpp)
-target_link_libraries(navx_node ${catkin_LIBRARIES}) # Add AHRS
+target_link_libraries(navx_node ${catkin_LIBRARIES} ahrs) # Add AHRS
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

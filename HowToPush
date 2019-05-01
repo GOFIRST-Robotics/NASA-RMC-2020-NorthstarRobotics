@@ -1,0 +1,6 @@
+git status //What files in what status
+git add . //What files to add, . means all in directory
+git status
+git commit -m "[package name] [message]"
+git pull //Adds the other code added since last pull
+git push
