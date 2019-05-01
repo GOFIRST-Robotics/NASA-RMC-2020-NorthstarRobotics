@@ -35,6 +35,8 @@
   <depend>joint_state_controller</depend>
   <depend>sensor_msgs</depend>
   <depend>geometry_msgs</depend>
+  <depend>can_msgs</depend>
+  <depend>socketcan_bridge</depend>
 
   <!-- Workspace pkgs -->
   <depend>telecom</depend>

@@ -6,11 +6,11 @@ According to the bldc repo, github.com/vedderb/bldc, file /comm_can.c,
 there are the canbus commands comm_can_set_... which, for our interests, chiefly set rpm, current, or position.
 (Current control, speed control, and position holding).
 They send over canbus extended canbus msgs:
-  (see datatypes.h: CAN_PACKET_SET_CURRENT=1, _SET_RPM=3, _SET_POS=4,
+  (see datatypes.h: CAN_PACKET_SET_CURRENT=1, _SET_RPM=3, _SET_POS=4, _SET_DUTY=0
     CAN_PACKET_STATUS=9, _STATUS_2=14, _STATUS_3=15, _STATUS_4=16, _PING=17, _PONG=18)
 Messages to send to vesc:
   ID = (CAN_PACKET_SET_... << 8) + VESC_CAN_ID/controller_id (VESC_CAN_ID configured in bldc_tool)
-  data/buffer = {current in mA, as int32; rpm as int32; position (in what?) * 10^6 as int32}, 4 byte msg
+  data/buffer = {current in mA, as int32; rpm as int32; position (in what?) * 10^6 as int32; duty * 10^5 as int32}, 4 byte msg
   (pinging: ID=CAN_PACKET_PING<<8 + (target)controller_id; buffer[0] = (my)controller_id;
     pong: ID=(_PONG<<8 + rxmsg[0]); buffer[0] = (my)controller_id;)
 
