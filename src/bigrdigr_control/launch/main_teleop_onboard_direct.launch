@@ -2,33 +2,13 @@
 <!-- Launch direct control from joystick plugged into
      the main computer, speaking directly to motors
      over canbus. Req forwarding to both buses.
-     //
-     Sub: (See configs)
-      imu0/data (sensor_msgs/Imu)
-      imu1/data (sensor_msgs/Imu)
-      odometry/wheel (nav_msgs/Odometry)
-      decawave0/odom (nav_msgs/Odometry)
-      decawave1/odom (nav_msgs/Odometry)
-      odometry/fiducial (nav_msgs/Odometry)
-    Pub:
-      odometry/filtered (nav_msgs/Odometry)
-      odometry/filtered_map (nav_msgs/Odometry)
-    TF:
-      map -> odom -> base_link
 -->
 <launch>
-  <!--
-   Sub: (See configs)
-    imu0/data (sensor_msgs/Imu)
-    imu1/data (sensor_msgs/Imu)
-    odometry/wheel (nav_msgs/Odometry)
-  Pub:
-    odometry/filtered (nav_msgs/Odometry)
-  -->
-
   <arg name="can_dev" default="/dev/ttyUSB0"/>
+  <arg name="js_dev" default="/dev/input/js0"/>
 
   <node pkg="joy" type="joy_node" name="joy" output="screen">
+    <param name="dev" value="$(arg js_dev)"/>
   </node>
 
   <node pkg="socketcan_bridge" type="socketcan_bridge_node" name="socketcan_bridge_node" output="screen"/>
@@ -36,9 +16,9 @@
   <node pkg="bigrdigr_control" type="joy_to_onboard_direct_node" name="main_joy2onDir" output="screen">
     <param name="linear_scale" value="1.0"/>
     <param name="angular_scale" value="1.0"/>
-    <param name="lift_current" value="4.0"/>
-    <param name="trans_conv_current" value="2.0"/>
-    <param name="digger_current" value="8.0"/>
+    <param name="lift_scale" value="0.25"/>
+    <param name="trans_conv_scale" value="0.5"/>
+    <param name="digger_scale" value="1.0"/>
     <param name="hold_conv_current" value="3.0"/>
   </node>
 
