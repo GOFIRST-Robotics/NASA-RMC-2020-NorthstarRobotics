@@ -1,26 +1,26 @@
-#ifndef TELECOMM_H
-#define TELECOMM_H
-// VERSION 1.1.1
+#ifndef TELECOM_H
+#define TELECOM_H
+// VERSION 2.0.0 : Last Changed 2019-04-28
 
 #include <string>
 
 /* 
-  Telecomm defines macros and functions to send and recieve data between two 
+  Telecom defines macros and functions to send and recieve data between two 
   computers performing intensive operations in parallel. If in a live stream
   control scenario, or the adjustment of state space, mode handling and state
   handling is not handled here. 
 
-  The handling of state is best done over another file, Protocal.h, which
-  should have macros defining the content of the message and thus how to 
+  The handling of state is best done over another file, formatter_string.h, which
+  should have tools defining the content of the message and thus how to 
   handle the message. Ex. post to user, update motors, etc. 
 */
 
-class Telecomm {
+class Telecom {
   public: 
-    // Initialize communications: Telecomm comm = new Telecomm("127.0.0.1", 5005, 5006);
-   // new Telecomm("192.168.1.117",5005,5005) is pi side, Telecomm("192.168.1.50",5005,5005) is laptop side
-    Telecomm(std::string dst_addr, int dst_port, int src_port);
-    ~Telecomm();
+    // Initialize communications: Telecom com = new Telecom("127.0.0.1", 5005, 5006);
+   // new Telecom("192.168.1.117",5005,5005) is robot side, Telecom("192.168.1.50",5005,5005) is mc side
+    Telecom(std::string dst_addr, int dst_port, int src_port);
+    ~Telecom();
 
     // In loop, call update; if != 0, error
     int update();
@@ -36,7 +36,7 @@ class Telecomm {
     int recv(char*& buf);
 
     // If connection is closed, do not continue, unless reboot'd
-    bool isCommClosed();
+    bool isComClosed();
     // reboot() fixes closed connection, but blocks until connectin is restored
     void reboot();
 
@@ -46,7 +46,7 @@ class Telecomm {
 
     // Set blocking time. If -1 (either), inf; if 0, immediate/no block
     void setBlockingTime(int sec, int usec);
-    // Blocking: Telecomm uses file descriptors and select
+    // Blocking: Telecom uses file descriptors and select
     // Can check other file descriptors as well, choose non-blocking I think?
     bool fdReadAvail(int fd);
     // Add file descriptor to be checked

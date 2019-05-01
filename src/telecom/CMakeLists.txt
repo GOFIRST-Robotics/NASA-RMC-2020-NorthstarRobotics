@@ -7,8 +7,7 @@ add_compile_options(-std=c++11)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS
-)
+# find_package(catkin REQUIRED COMPONENTS)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -76,7 +75,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES telecom
-#  CATKIN_DEPENDS controller_manager joint_state_controller robot_state_publisher
+#  CATKIN_DEPENDS
 #  DEPENDS system_lib
 )
 
@@ -88,7 +87,7 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
   include
-  ${catkin_INCLUDE_DIRS}
+  # ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library

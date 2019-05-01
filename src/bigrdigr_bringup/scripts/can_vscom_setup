@@ -12,7 +12,7 @@ if [ -z "$1" ] # If no arg 1
 fi
 if [ -z "$2" ] # If no arg 2
   then
-    BAUD=-s6
+    BAUD=-s5
   else
     BAUD=$2
 fi

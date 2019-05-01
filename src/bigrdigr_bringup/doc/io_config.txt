@@ -1,0 +1,24 @@
+Jude Sauve et. al.
+Started 2019-04-30
+
+Joystick:
+L trigger [] = unload/hold conv back
+R trigger [] = unload/hold conv fwd
+L bumper [] = door open
+R bumper [] = door close
+
+Up arrowpad [] = lift up
+Dn arrowpad [] = lift down
+
+X button(L) [] = trans conv toggle
+A button(D) [] = digger toggle
+
+L joystick Up/Dn [] = arcade mode fwd/bk
+R joystick L/R [] = arcade mode turn
+
+Canbus on Danfoss MC:
+CAN0 has {PC 0, L_LIFT 6, R_LIFT 8, TRNS_CONV 7, DIG 9}
+CAN1 has {FL_DR 1, RL_DR 2, FR_DR 3, RR_DR 4, HLD_CONV 5}
+Fdbk: ID = 0x9 << 8 + vesc_id, data[8] = {int32 rpm, int16 total current filtered * 10, int16 duty cycle * 1000}
+Ctrl: ID = vesc_id, data[4] = int32 (duty * 10^5), duty +-1.0
+
