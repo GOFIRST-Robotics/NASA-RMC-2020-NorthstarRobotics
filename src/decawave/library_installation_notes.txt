@@ -1,0 +1,255 @@
+ama@ama:~$ cd ~/serial/
+ama@ama:~/serial$ ls
+build           doc       package.xml             tests
+CHANGELOG.rst   examples  README.md               visual_studio
+changes.txt     include   serial.sublime-project
+CMakeLists.txt  Makefile  src
+ama@ama:~/serial$ make install
+cd build && make install
+make[1]: Entering directory '/home/ama/serial/build'
+make[2]: Entering directory '/home/ama/serial/build'
+make[3]: Entering directory '/home/ama/serial/build'
+make[3]: Leaving directory '/home/ama/serial/build'
+[ 66%] Built target serial
+make[3]: Entering directory '/home/ama/serial/build'
+make[3]: Leaving directory '/home/ama/serial/build'
+[100%] Built target serial_example
+make[2]: Leaving directory '/home/ama/serial/build'
+Install the project...
+-- Install configuration: ""
+-- Installing: /tmp/usr/local/_setup_util.py
+-- Installing: /tmp/usr/local/env.sh
+-- Installing: /tmp/usr/local/setup.bash
+-- Installing: /tmp/usr/local/setup.sh
+-- Installing: /tmp/usr/local/setup.zsh
+-- Installing: /tmp/usr/local/.rosinstall
+-- Installing: /tmp/usr/local/lib/pkgconfig/serial.pc
+-- Installing: /tmp/usr/local/share/serial/cmake/serialConfig.cmake
+-- Installing: /tmp/usr/local/share/serial/cmake/serialConfig-version.cmake
+-- Installing: /tmp/usr/local/share/serial/package.xml
+-- Installing: /tmp/usr/local/lib/libserial.so
+-- Installing: /tmp/usr/local/include/serial/serial.h
+-- Installing: /tmp/usr/local/include/serial/v8stdint.h
+make[1]: Leaving directory '/home/ama/serial/build'
+ama@ama:~/serial$ sud omake install
+No command 'sud' found, did you mean:
+ Command 'su' from package 'login' (main)
+ Command 'sur' from package 'subtle' (universe)
+ Command 'sup' from package 'sup' (universe)
+ Command 'sed' from package 'sed' (main)
+ Command 's3d' from package 's3d' (universe)
+ Command 'snd' from package 'snd-gtk-pulse' (universe)
+ Command 'snd' from package 'snd-gtk-jack' (universe)
+ Command 'snd' from package 'snd-nox' (universe)
+ Command 'sd' from package 'sd' (universe)
+ Command 'sum' from package 'coreutils' (main)
+ Command 'spd' from package 'spd' (universe)
+ Command 'sudo' from package 'sudo' (main)
+ Command 'sudo' from package 'sudo-ldap' (universe)
+sud: command not found
+ama@ama:~/serial$ sudo make install
+[sudo] password for ama: 
+cd build && make install
+make[1]: Entering directory '/home/ama/serial/build'
+make[2]: Entering directory '/home/ama/serial/build'
+make[3]: Entering directory '/home/ama/serial/build'
+make[3]: Leaving directory '/home/ama/serial/build'
+[ 66%] Built target serial
+make[3]: Entering directory '/home/ama/serial/build'
+make[3]: Leaving directory '/home/ama/serial/build'
+[100%] Built target serial_example
+make[2]: Leaving directory '/home/ama/serial/build'
+Install the project...
+-- Install configuration: ""
+-- Up-to-date: /tmp/usr/local/_setup_util.py
+-- Up-to-date: /tmp/usr/local/env.sh
+-- Up-to-date: /tmp/usr/local/setup.bash
+-- Up-to-date: /tmp/usr/local/setup.sh
+-- Up-to-date: /tmp/usr/local/setup.zsh
+-- Up-to-date: /tmp/usr/local/.rosinstall
+-- Up-to-date: /tmp/usr/local/lib/pkgconfig/serial.pc
+-- Up-to-date: /tmp/usr/local/share/serial/cmake/serialConfig.cmake
+-- Up-to-date: /tmp/usr/local/share/serial/cmake/serialConfig-version.cmake
+-- Up-to-date: /tmp/usr/local/share/serial/package.xml
+-- Up-to-date: /tmp/usr/local/lib/libserial.so
+-- Up-to-date: /tmp/usr/local/include/serial/serial.h
+-- Up-to-date: /tmp/usr/local/include/serial/v8stdint.h
+make[1]: Leaving directory '/home/ama/serial/build'
+ama@ama:~/serial$ ls
+build           doc       package.xml             tests
+CHANGELOG.rst   examples  README.md               visual_studio
+changes.txt     include   serial.sublime-project
+CMakeLists.txt  Makefile  src
+ama@ama:~/serial$ nano CMakeLists.txt 
+ama@ama:~/serial$ gedit CMakeLists.txt 
+ama@ama:~/serial$ gedit CMakeLists.txt 
+ama@ama:~/serial$ echo $CATKIN_GLOBAL_INCLUDE_DESTINATION
+
+ama@ama:~/serial$ cd build/
+ama@ama:~/serial/build$ ls
+catkin            CMakeFiles           gtest                 tests
+catkin_generated  cmake_install.cmake  install_manifest.txt
+CATKIN_IGNORE     CTestTestfile.cmake  Makefile
+CMakeCache.txt    devel                test_results
+ama@ama:~/serial/build$ ccmake..
+ccmake..: command not found
+ama@ama:~/serial/build$ ccmake ..
+The program 'ccmake' is currently not installed. You can install it by typing:
+sudo apt install cmake-curses-gui
+ama@ama:~/serial/build$ sudo apt install cmake-curses-gui
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+The following packages were automatically installed and are no longer required:
+  fltk1.3-doc fluid fonts-lato hddtemp libassimp-dev libassimp3v5
+  libcollada-dom2.4-dp-dev libcollada-dom2.4-dp0 libflann-dev libflann1.8
+  libfltk-cairo1.3 libfltk-forms1.3 libfltk-images1.3 libfltk1.3-dev
+  libgl2ps-dev libhdf5-mpi-dev libhdf5-openmpi-10 libhdf5-openmpi-dev
+  libignition-math2 libignition-math2-dev libinput-dev libjs-jquery-ui
+  libnetcdf-c++4 libnetcdf-cxx-legacy-dev libogg-dev libopenni-dev
+  libopenni-sensor-pointclouds0 libopenni0 libpcl-apps1.7 libpcl-common1.7
+  libpcl-dev libpcl-features1.7 libpcl-filters1.7 libpcl-io1.7
+  libpcl-kdtree1.7 libpcl-keypoints1.7 libpcl-octree1.7 libpcl-outofcore1.7
+  libpcl-people1.7 libpcl-recognition1.7 libpcl-registration1.7
+  libpcl-sample-consensus1.7 libpcl-search1.7 libpcl-segmentation1.7
+  libpcl-surface1.7 libpcl-tracking1.7 libpcl-visualization1.7 libpcl1.7
+  libpyside-py3-2.0 libpyside2-dev libpyside2.0 libqgsttools-p1 libqhull-dev
+  libqt5multimediaquick-p5 libqt5multimediawidgets5 libqt5quickparticles5
+  libqt5scripttools5 libqt5svg5-dev libqt5webkit5-dev libqt5x11extras5
+  libqt5x11extras5-dev libqt5xmlpatterns5-dev libqt5xmlpatterns5-private-dev
+  libqtwebkit-dev libqtwebkit4 libruby2.3 libshiboken-py3-2.0 libshiboken2-dev
+  libshiboken2.0 libtheora-dev libudev-dev liburdfdom-dev
+  liburdfdom-headers-dev liburdfdom-model-state0.4 liburdfdom-model0.4
+  liburdfdom-sensor0.4 liburdfdom-tools liburdfdom-world0.4 libvtk6-dev
+  libvtk6-java libvtk6-qt-dev libvtk6.2 libvtk6.2-qt libxss-dev
+  libyaml-cpp-dev libyaml-cpp0.5v5 linux-headers-4.15.0-32
+  linux-headers-4.15.0-32-generic linux-headers-4.15.0-33
+  linux-headers-4.15.0-33-generic linux-headers-4.15.0-34
+  linux-headers-4.15.0-34-generic linux-image-4.15.0-32-generic
+  linux-image-4.15.0-33-generic linux-image-4.15.0-34-generic
+  linux-modules-4.15.0-32-generic linux-modules-4.15.0-33-generic
+  linux-modules-4.15.0-34-generic linux-modules-extra-4.15.0-32-generic
+  linux-modules-extra-4.15.0-33-generic linux-modules-extra-4.15.0-34-generic
+  openni-utils pyqt5-dev python-attr python-autobahn python-cycler
+  python-imaging python-lz4 python-matplotlib python-matplotlib-data
+  python-mpi4py python-msgpack python-opengl python-pam python-psutil
+  python-pyasn1-modules python-pydot python-pyqt5 python-pyqt5.qtopengl
+  python-pyqt5.qtsvg python-pyqt5.qtwebkit python-pyside2
+  python-pyside2.qtconcurrent python-pyside2.qtcore python-pyside2.qtgui
+  python-pyside2.qthelp python-pyside2.qtnetwork python-pyside2.qtprintsupport
+  python-pyside2.qtqml python-pyside2.qtquick python-pyside2.qtquickwidgets
+  python-pyside2.qtscript python-pyside2.qtsql python-pyside2.qtsvg
+  python-pyside2.qttest python-pyside2.qtuitools python-pyside2.qtwebkit
+  python-pyside2.qtwebkitwidgets python-pyside2.qtwidgets
+  python-pyside2.qtx11extras python-pyside2.qtxml python-service-identity
+  python-sip python-sip-dev python-snappy python-twisted python-twisted-bin
+  python-twisted-core python-txaio python-tz python-vtk6 qtbase5-private-dev
+  qtdeclarative5-dev qtdeclarative5-private-dev qtmultimedia5-dev
+  qtscript5-dev qtscript5-private-dev qttools5-dev qttools5-private-dev rake
+  ros-kinetic-actionlib-tutorials ros-kinetic-angles ros-kinetic-bond
+  ros-kinetic-bond-core ros-kinetic-bondcpp ros-kinetic-bondpy
+  ros-kinetic-camera-calibration ros-kinetic-camera-calibration-parsers
+  ros-kinetic-camera-info-manager ros-kinetic-collada-parser
+  ros-kinetic-collada-urdf ros-kinetic-common-msgs
+  ros-kinetic-common-tutorials ros-kinetic-compressed-depth-image-transport
+  ros-kinetic-compressed-image-transport ros-kinetic-cv-bridge
+  ros-kinetic-depth-image-proc ros-kinetic-desktop
+  ros-kinetic-diagnostic-aggregator ros-kinetic-diagnostic-analysis
+  ros-kinetic-diagnostic-common-diagnostics ros-kinetic-diagnostics
+  ros-kinetic-eigen-stl-containers ros-kinetic-executive-smach
+  ros-kinetic-filters ros-kinetic-gazebo-msgs ros-kinetic-geometric-shapes
+  ros-kinetic-geometry ros-kinetic-geometry-tutorials
+  ros-kinetic-gl-dependency ros-kinetic-image-common
+  ros-kinetic-image-geometry ros-kinetic-image-pipeline ros-kinetic-image-proc
+  ros-kinetic-image-publisher ros-kinetic-image-rotate
+  ros-kinetic-image-transport ros-kinetic-image-transport-plugins
+  ros-kinetic-image-view ros-kinetic-interactive-marker-tutorials
+  ros-kinetic-interactive-markers ros-kinetic-joint-state-publisher
+  ros-kinetic-kdl-conversions ros-kinetic-kdl-parser
+  ros-kinetic-laser-assembler ros-kinetic-laser-filters
+  ros-kinetic-laser-geometry ros-kinetic-laser-pipeline
+  ros-kinetic-librviz-tutorial ros-kinetic-map-msgs ros-kinetic-media-export
+  ros-kinetic-mk ros-kinetic-nodelet ros-kinetic-nodelet-core
+  ros-kinetic-nodelet-topic-tools ros-kinetic-nodelet-tutorial-math
+  ros-kinetic-octomap ros-kinetic-opencv3 ros-kinetic-pcl-conversions
+  ros-kinetic-pcl-msgs ros-kinetic-pcl-ros ros-kinetic-perception
+  ros-kinetic-perception-pcl ros-kinetic-pluginlib-tutorials
+  ros-kinetic-polled-camera ros-kinetic-python-orocos-kdl
+  ros-kinetic-python-qt-binding ros-kinetic-qt-dotgraph ros-kinetic-qt-gui
+  ros-kinetic-qt-gui-cpp ros-kinetic-qt-gui-py-common
+  ros-kinetic-qwt-dependency ros-kinetic-random-numbers
+  ros-kinetic-resource-retriever ros-kinetic-robot ros-kinetic-robot-model
+  ros-kinetic-robot-state-publisher ros-kinetic-ros ros-kinetic-ros-base
+  ros-kinetic-ros-comm ros-kinetic-ros-core ros-kinetic-rosbash
+  ros-kinetic-rosboost-cfg ros-kinetic-roscpp-core ros-kinetic-roscreate
+  ros-kinetic-roslang ros-kinetic-roslint ros-kinetic-roslisp
+  ros-kinetic-rosmake ros-kinetic-rosnode ros-kinetic-roswtf
+  ros-kinetic-rqt-action ros-kinetic-rqt-bag ros-kinetic-rqt-bag-plugins
+  ros-kinetic-rqt-common-plugins ros-kinetic-rqt-console ros-kinetic-rqt-dep
+  ros-kinetic-rqt-graph ros-kinetic-rqt-gui ros-kinetic-rqt-gui-cpp
+  ros-kinetic-rqt-gui-py ros-kinetic-rqt-image-view ros-kinetic-rqt-launch
+  ros-kinetic-rqt-logger-level ros-kinetic-rqt-moveit ros-kinetic-rqt-msg
+  ros-kinetic-rqt-nav-view ros-kinetic-rqt-plot ros-kinetic-rqt-pose-view
+  ros-kinetic-rqt-publisher ros-kinetic-rqt-py-common
+  ros-kinetic-rqt-py-console ros-kinetic-rqt-reconfigure
+  ros-kinetic-rqt-robot-dashboard ros-kinetic-rqt-robot-monitor
+  ros-kinetic-rqt-robot-plugins ros-kinetic-rqt-robot-steering
+  ros-kinetic-rqt-runtime-monitor ros-kinetic-rqt-rviz
+  ros-kinetic-rqt-service-caller ros-kinetic-rqt-shell ros-kinetic-rqt-srv
+  ros-kinetic-rqt-tf-tree ros-kinetic-rqt-top ros-kinetic-rqt-topic
+  ros-kinetic-rqt-web ros-kinetic-rviz ros-kinetic-rviz-plugin-tutorials
+  ros-kinetic-rviz-python-tutorial ros-kinetic-self-test
+  ros-kinetic-shape-msgs ros-kinetic-smach ros-kinetic-smach-msgs
+  ros-kinetic-smach-ros ros-kinetic-smclib ros-kinetic-stage
+  ros-kinetic-stage-ros ros-kinetic-stereo-image-proc ros-kinetic-stereo-msgs
+  ros-kinetic-tf ros-kinetic-tf-conversions ros-kinetic-tf2-geometry-msgs
+  ros-kinetic-tf2-kdl ros-kinetic-theora-image-transport
+  ros-kinetic-turtle-actionlib ros-kinetic-turtle-tf ros-kinetic-turtle-tf2
+  ros-kinetic-urdf ros-kinetic-urdf-parser-plugin ros-kinetic-urdf-tutorial
+  ros-kinetic-vision-opencv ros-kinetic-visualization-marker-tutorials
+  ros-kinetic-visualization-msgs ros-kinetic-visualization-tutorials
+  ros-kinetic-viz ros-kinetic-webkit-dependency ros-kinetic-xacro ruby
+  ruby-did-you-mean ruby-minitest ruby-net-telnet ruby-power-assert
+  ruby-test-unit ruby2.3 rubygems-integration sbcl shiboken2 sip-dev
+  tango-icon-theme tcl-dev tcl-vtk6 tcl8.6-dev tk-dev tk8.6-dev ttf-liberation
+  vtk6 x11proto-scrnsaver-dev
+Use 'sudo apt autoremove' to remove them.
+The following NEW packages will be installed:
+  cmake-curses-gui
+0 upgraded, 1 newly installed, 0 to remove and 10 not upgraded.
+Need to get 1,276 kB of archives.
+After this operation, 4,292 kB of additional disk space will be used.
+Get:1 http://us.archive.ubuntu.com/ubuntu xenial-updates/universe amd64 cmake-curses-gui amd64 3.5.1-1ubuntu3 [1,276 kB]
+Fetched 1,276 kB in 1s (1,154 kB/s)         
+Selecting previously unselected package cmake-curses-gui.
+(Reading database ... 454561 files and directories currently installed.)
+Preparing to unpack .../cmake-curses-gui_3.5.1-1ubuntu3_amd64.deb ...
+Unpacking cmake-curses-gui (3.5.1-1ubuntu3) ...
+Processing triggers for man-db (2.7.5-1) ...
+Setting up cmake-curses-gui (3.5.1-1ubuntu3) ...
+ama@ama:~/serial/build$ ccmake ..
+
+
+ama@ama:~/serial/build$ make -j4
+[ 66%] Built target serial
+[100%] Built target serial_example
+ama@ama:~/serial/build$ sudo make install
+[ 66%] Built target serial
+[100%] Built target serial_example
+Install the project...
+-- Install configuration: ""
+-- Installing: /usr/local/_setup_util.py
+-- Installing: /usr/local/env.sh
+-- Installing: /usr/local/setup.bash
+-- Installing: /usr/local/setup.sh
+-- Installing: /usr/local/setup.zsh
+-- Installing: /usr/local/.rosinstall
+-- Installing: /usr/local/lib/pkgconfig/serial.pc
+-- Installing: /usr/local/share/serial/cmake/serialConfig.cmake
+-- Installing: /usr/local/share/serial/cmake/serialConfig-version.cmake
+-- Installing: /usr/local/share/serial/package.xml
+-- Installing: /usr/local/lib/libserial.so
+-- Installing: /usr/local/include/serial/serial.h
+-- Installing: /usr/local/include/serial/v8stdint.h
+ama@ama:~/serial/build$ 
+
