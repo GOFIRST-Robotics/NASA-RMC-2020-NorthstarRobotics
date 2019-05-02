@@ -10,7 +10,7 @@
   <node pkg="joy" type="joy_node" name="joy_node" output="screen">
   </node>
 
-  <node pkg="bigrdigr_bringup" type="teleop_twist_node" name="teleop_twist_node" output="screen">
+  <node pkg="bigrdigr_control" type="teleop_twist_node" name="teleop_twist_node" output="screen">
     <param name="scale_linear" type="double" value="0.0002" />
     <param name="scale_angular" type="double" value="0.0002" />
   </node>

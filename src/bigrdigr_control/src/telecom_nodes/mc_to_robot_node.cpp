@@ -56,10 +56,10 @@ void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr& msg);
 //void sub_name2_callback(const sub_name2_typeLHS::sub_name2_typeRHS::ConstPtr& msg);
 
 // ROS Params
-double frequency;
-std::string dst_addr;
-int dst_port;
-int src_port;
+double frequency = 50.0;
+std::string dst_addr = "127.0.0.1";
+int dst_port = 5005;
+int src_port = 5006;
 
 // Global_Vars
 Telecom *digr_com;
@@ -113,6 +113,7 @@ int main(int argc, char** argv){
 
   // Spin
   ros::spin();
+  std::cout << "mc node initialized" << std::endl;
 }
 
 void update_callback(const ros::TimerEvent&){
@@ -129,6 +130,11 @@ void update_callback(const ros::TimerEvent&){
 }
 
 void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr& msg){
+  std::cout << "calling cmd_vel_callback" << std::endl;
+  if (digr_com->isComClosed()){
+    digr_com->reboot();
+  }
+  //std::cout << "this is doing a callback with linear/angular" << msg->linear.x << msg->angular.z;
   cmd_vals[0].v = msg->linear.x;
   cmd_vals[1].v = msg->angular.z;
   fmt->addFloat("cmd_vel_msg", cmd_vals, "cmd_In");

@@ -145,8 +145,21 @@ target_link_libraries(robot_to_mc_node
   ${catkin_LIBRARIES}
 )
 
+add_executable(robot_joy_to_mc src/telecom_nodes/robot_joy_to_mc.cpp)
+target_link_libraries(robot_joy_to_mc
+  telecom
+  formatter_string
+  ${catkin_LIBRARIES}
+)
 add_executable(mc_to_robot_node src/telecom_nodes/mc_to_robot_node.cpp)
 target_link_libraries(mc_to_robot_node
+  telecom
+  formatter_string
+  ${catkin_LIBRARIES}
+)
+
+add_executable(mc_joy_to_robot src/telecom_nodes/mc_joy_to_robot.cpp)
+target_link_libraries(mc_joy_to_robot
   telecom
   formatter_string
   ${catkin_LIBRARIES}

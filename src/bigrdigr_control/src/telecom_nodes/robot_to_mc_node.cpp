@@ -40,7 +40,7 @@ ros::NodeHandle * pnh;
 ros::Publisher cmd_vel_pub;
 
 // ROS Topics
-std::string joy_topic = "cmd_vel";
+std::string joy_topic = "cmd_velout";
 
 // ROS Callbacks
 void update_callback(const ros::TimerEvent&);
@@ -49,9 +49,9 @@ void update_callback(const ros::TimerEvent&);
 
 // ROS Params
 double frequency = 100.0;
-std::string dst_addr;
-int dst_port;
-int src_port;
+std::string dst_addr = "127.0.0.1";
+int dst_port = 5006;
+int src_port = 5005;
 
 // Global_Vars
 Telecom *mc_com;
@@ -60,36 +60,36 @@ std::string recv_msg;
 
 // Formatters
 val_fmt cmd_msg_fmt = {
-  "cmd_vel_msg",
-  '!',
-  4,
-  0,
-  2000,  //max_val
-  1000,  //offset
-  1000 //scale
+        "cmd_vel_msg",
+        '!',
+        4,
+        0,
+        2000,  //max_val
+        1000,  //offset
+        1000 //scale
 };
 val_fmt cmd_fmt = {
-  "cmd_In",
-  '@',
-  6,
-  -32767, // Minval
-    32767, // Maxval
-    0, // offset
-    32767 // range
+        "cmd_In",
+        '@',
+        6,
+        -32767, // Minval
+        32767, // Maxval
+        0, // offset
+        32767 // range
 };
 
 int main(int argc, char** argv){
-  // Init ROS
-  ros::init(argc, argv, "robot_to_mc_node");
-  nh = new ros::NodeHandle();
-  pnh = new ros::NodeHandle("~");
-  
-  // Params
-  pnh->param<double>("frequency", frequency);
-  pnh->param<std::string>("dst_addr", dst_addr);
-  pnh->param<int>("dst_port", dst_port);
-  pnh->param<int>("src_port", src_port);
-  //nh->param<param_name1_type>(param_name1_path, param_name1, param_name1_default;
+        // Init ROS
+        ros::init(argc, argv, "robot_to_mc_node");
+        nh = new ros::NodeHandle();
+        pnh = new ros::NodeHandle("~");
+
+        // Params
+        pnh->param<double>("frequency", frequency);
+        pnh->param<std::string>("dst_addr", dst_addr);
+        pnh->param<int>("dst_port", dst_port);
+        pnh->param<int>("src_port", src_port);
+        //nh->param<param_name1_type>(param_name1_path, param_name1, param_name1_default;
   
   // Init variables
   fmt = new Formatter({cmd_msg_fmt, cmd_fmt});

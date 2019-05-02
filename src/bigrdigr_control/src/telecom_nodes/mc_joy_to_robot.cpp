@@ -1,3 +1,4 @@
+
 /*
  * mc_to_robot_node.cpp
  * Uses telecom to TX/RX ROS data from the Mission Control (MC) to the robot
@@ -11,9 +12,11 @@
 
 // ROS Libs
 #include <ros/ros.h>
+#include <sensor_msgs/Joy.h>
 
 // Native_Libs
 #include <string>
+#include <vector>
 
 // Custom Library
 #include "telecom/telecom.h"
@@ -45,28 +48,30 @@ ros::NodeHandle * nh;
 ros::NodeHandle * pnh;
 //ros::Publisher pub_name3_pub;
 // ROS Topics
-std::string cmd_vel_topic = "cmd_vel";
+std::string joy_topic = "joy";
 
 // ROS Callbacks
 void update_callback(const ros::TimerEvent&);
-void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr& msg);
+void joy_callback(const sensor_msgs::Joy::ConstPtr& msg);
 //void sub_name1_callback(const sub_name1_typeLHS::sub_name1_typeRHS::ConstPtr& msg);
 //void sub_name2_callback(const sub_name2_typeLHS::sub_name2_typeRHS::ConstPtr& msg);
 
 // ROS Params
-double frequency;
-std::string dst_addr;
-int dst_port;
-int src_port;
+double frequency = 50.0;
+std::string dst_addr = "127.0.0.1";
+int dst_port = 5017;
+int src_port = 5018;
 
 // Global_Vars
-telecom::Telecom *digr_com;
-Formatter *fmt
+Telecom *digr_com;
+Formatter *fmt;
+std::string recv_msg;
 std::vector<IV_float> cmd_vals = {{0,0}, {1,0}};
-
+std::vector<IV> btn_vals = {{0,0}};
+std::vector<IV> other_vals = {{0,0}};
 // Formatters
-val_fmt cmd_msg_fmt = {
-  "cmd_vel_msg",
+val_fmt axis_msg_fmt = {
+  "joy_msg",
   '!',
   4,
   0,
@@ -75,8 +80,8 @@ val_fmt cmd_msg_fmt = {
   1000 //scale
 };
 
-val_fmt cmd_fmt = {
-  "cmd_In",
+val_fmt axis_fmt = {
+  "joy_In",
   '@',
   6,
   -32767, // Minval
@@ -84,12 +89,39 @@ val_fmt cmd_fmt = {
     0, // offset
     32767 // range
 };
-
-
+/*
+val_fmt btn_fmt = {
+  "btn_In",
+  '#',
+  1,
+  0,
+  255,
+  0,
+  255
+}
+*/
+val_fmt btn_msg_fmt = {
+  "btn_msg",
+  '#',
+  1,
+  0,
+  255,
+  0,
+  255 
+};
+val_fmt something_fmt = { //for the other set of axes
+  "???_msg",
+  '?',
+  1,
+  0,
+  8,
+  0,
+  8
+};
 int main(int argc, char** argv){
   // Init ROS
-  ros::init(argc, argv, "mc_to_robot_node");
-  nh = new ros::NodeHandle()
+  ros::init(argc, argv, "mc_joy_to_robot");
+  nh = new ros::NodeHandle();
   pnh = new ros::NodeHandle("~");
   
   // Params
@@ -98,25 +130,26 @@ int main(int argc, char** argv){
   pnh->param<int>("src_port", src_port);
 
   // Init variables
-  fmt = new Formatter({cmd_msg_fmt, cmd_fmt});
-  digr_com = new telecom::Telecom(dst_addr, dst_port, src_port);
+  fmt = new Formatter({axis_msg_fmt, axis_fmt, btn_msg_fmt, something_fmt});
+  digr_com = new Telecom(dst_addr, dst_port, src_port);
   // Error checking here
 
   // Subscribers
   ros::Timer update_timer = nh->createTimer(ros::Duration(1.0/frequency), update_callback);
-  ros::Subscriber cmd_vel_sub = nh->subscribe(cmd_vel_topic, 1, cmd_vel_callback);
+  ros::Subscriber joy_sub = nh->subscribe(joy_topic, 1, joy_callback);
 
   // Publishers
 
   // Spin
   ros::spin();
+  std::cout << "mc node initialized" << std::endl;
 }
 
 void update_callback(const ros::TimerEvent&){
   // Read from digr_com for msg
-  digr_com->update() 
+  digr_com->update();
   if (digr_com->isComClosed()){
-    digr_com.reboot();
+    digr_com->reboot();
   }
   if (digr_com->recvAvail()){
     recv_msg = digr_com->recv();
@@ -125,10 +158,20 @@ void update_callback(const ros::TimerEvent&){
 
 }
 
-void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr& msg){
-  cmd_vals[0].v = msg->linear.x;
-  cmd_vals[1].v = msg->angular.z;
-  fmt->addFloat("cmd_vel_msg", cmd_vals, "cmd_In");
+void joy_callback(const sensor_msgs::Joy::ConstPtr& msg){
+  std::cout << "calling joy_callback" << std::endl;
+  if (digr_com->isComClosed()){
+    digr_com->reboot();
+  }
+  btn_vals[0].v = 128*msg->buttons[7] + 64*msg->buttons[6] + 32*msg->buttons[5] + 16*msg->buttons[4] + 8*msg->buttons[3] + 4*msg->buttons[2] + 2*msg->buttons[1] + msg->buttons[0];  
+  //std::cout << "this is doing a callback with linear/angular" << msg->linear.x << msg->angular.z;
+  cmd_vals[0].v = msg->axes[1];
+  cmd_vals[1].v = msg->axes[2];
+  
+  other_vals[0].v = msg->axes[4]+1+3*(msg->axes[5]+1);
+  fmt->addFloat("joy_msg", cmd_vals, "joy_In");
+  fmt->add("btn_msg", btn_vals, "btn_msg");
+  fmt->add("???_msg", other_vals, "???_msg");
   digr_com->send(fmt->emit());
 }
 
