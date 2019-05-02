@@ -52,7 +52,7 @@ double angular_scale = 1.0;
 double lift_scale = 0.25;
 double trans_conv_scale = 0.5;
 double digger_scale = 1.0;
-double hold_conv_current = 3.0;
+double hold_conv_scale = 0.5;
 
 // Global_vars
 void send_can(U32 id, S32 data);
@@ -75,7 +75,7 @@ int main(int argc, char** argv){
   pnh->param<double>("lift_scale", lift_scale);
   pnh->param<double>("trans_conv_scale", trans_conv_scale);
   pnh->param<double>("digger_scale", digger_scale);
-  pnh->param<double>("hold_conv_current", hold_conv_current);
+  pnh->param<double>("hold_conv_scale", hold_conv_scale);
 
   // Subscribers
   ros::Timer update_timer = nh->createTimer(ros::Duration(1.0/frequency), update_callback);
@@ -130,11 +130,11 @@ void update_callback(const ros::TimerEvent&){
   send_can(0x009, digger ? digger_scale * 100000.0 : 0.0);
   // Process hold conv
   if(buttons[6] > 0.1){
-    send_can(0x105, hold_conv_current * 1000.0);
+    send_can(0x005, hold_conv_scale * 100000.0);
   }else if(buttons[7] > 0.1){
-    send_can(0x105, hold_conv_current * -1000.0);
+    send_can(0x005, hold_conv_scale * -100000.0);
   }else{
-    send_can(0x105, 0);
+    send_can(0x005, 0);
   }
 }
 
