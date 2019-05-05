@@ -1,3 +1,6 @@
 [submodule "src/navx"]
 	path = src/navx
 	url = https://github.com/GOFIRST-Robotics/navXTimeSync.git
+[submodule "src/serial"]
+	path = src/serial
+	url = git@github.com:GOFIRST-Robotics/serial.git
