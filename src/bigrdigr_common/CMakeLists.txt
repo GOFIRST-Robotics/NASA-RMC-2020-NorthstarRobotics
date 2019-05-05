@@ -17,11 +17,24 @@ find_package(catkin REQUIRED)
 ## modules and global scripts declared therein get installed
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
 # catkin_python_setup()
-add_custom_command(
-  COMMAND git submodule update --init
-  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-  OUTPUT_VARIABLE GIT_VERSION
-)
+
+
+
+
+
+
+# Bash script to make sure the submodules are updated
+#Its not working right now
+#
+#add_custom_command(
+#  COMMAND git submodule update --init
+#  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+#  OUTPUT_VARIABLE GIT_VERSION
+#)
+
+
+
+
 
 ################################################
 ## Declare ROS messages, services and actions ##
