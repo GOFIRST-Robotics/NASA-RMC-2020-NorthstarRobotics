@@ -10,9 +10,13 @@
  * Copyright (c) 2018 GOFIRST-Robotics
  */
 
+/* Wifi Transmissions
+ * Robot Sends Joystick input
+ */
+
 // ROS Libs
 #include <ros/ros.h>
-#include <geometry_msgs/Twist.h>
+#include <sensor_msgs/Joy.h>
 
 // Native_Libs
 #include <string>
@@ -27,20 +31,29 @@
 //      subscribes to some sensor topics with data we want to transmit if we find one
 
 // Publishers (outputs)
-//    cmd_vel_pub (geometry_msgs/Twist): cmd_vel
-//      publishes data from joysticks obtained over the internet
+//    joy_pub (sensor_msgs/Joy): joy
+//      Publishes received joystick data
 
 // Parameters (settings)
-//    param_name1 (param_name1_type): default=param_name1_default(,param_name1_path)
+//    frequency (double): default = 50.0
+//      Hertz, to check for msgs and send
+//    dst_addr (string): default = "127.0.0.1"
+//      The IPv4 address of the target device
+//    dst_port (int): default = 5556
+//      The port on target device to target
+//    src_port (int): default = 5554
+//      The port on host device to use
+//    isTeleopCtrl (bool): default = true
+//      Whether teleop control is enabled by default, initially
 
 
 // ROS Node and Publishers
 ros::NodeHandle * nh;
 ros::NodeHandle * pnh;
-ros::Publisher cmd_vel_pub;
+ros::Publisher joy_pub;
 
 // ROS Topics
-std::string joy_topic = "cmd_velout";
+std::string joy_topic = "joy_out";
 
 // ROS Callbacks
 void update_callback(const ros::TimerEvent&);
@@ -49,86 +62,131 @@ void update_callback(const ros::TimerEvent&);
 
 // ROS Params
 double frequency = 100.0;
-std::string dst_addr = "127.0.0.1";
-int dst_port = 5006;
-int src_port = 5005;
+std::string dst_addr = "192.168.1.10";
+int dst_port = 5510;
+int src_port = 5519;
+bool isTeleopCtrl = true; 
 
 // Global_Vars
-Telecom *mc_com;
+Telecom *com;
 Formatter *fmt;
 std::string recv_msg;
+void joy_pub_fn();
+
+#define ERR_CHECK() \
+  do { if (com->status() != 0){ \
+    fprintf(stdout, "Error: %s\n", com->verboseStatus().c_str()); \
+    exit(com->status()); \
+  } } while(0)
 
 // Formatters
-val_fmt cmd_msg_fmt = {
-        "cmd_vel_msg",
-        '!',
-        4,
-        0,
-        2000,  //max_val
-        1000,  //offset
-        1000 //scale
+val_fmt js_axes_msg_fmt = {
+  "js_axes_msg_fmt",
+  '!',
+  6, // # bytes
+  0, // Min val
+  200000, // Max val
+  100000, // Offset
+  100000  // Scale
 };
-val_fmt cmd_fmt = {
-        "cmd_In",
-        '@',
-        6,
-        -32767, // Minval
-        32767, // Maxval
-        0, // offset
-        32767 // range
+
+// byte_msg_fmt
+val_fmt button_msg_fmt = {
+  "button_msg_fmt",
+  '@',
+  1,
+  0,
+  255,
+  0,
+  1
+};
+
+// pad_msg_fmt
+val_fmt pad_msg_fmt = {
+  "pad_msg_fmt",
+  '#',
+  1,
+  0,
+  255,
+  0,
+  1
 };
 
 int main(int argc, char** argv){
-        // Init ROS
-        ros::init(argc, argv, "robot_to_mc_node");
-        nh = new ros::NodeHandle();
-        pnh = new ros::NodeHandle("~");
+  // Init ROS
+  ros::init(argc, argv, "robot_to_mc_node");
+  nh = new ros::NodeHandle();
+  pnh = new ros::NodeHandle("~");
 
-        // Params
-        pnh->param<double>("frequency", frequency);
-        pnh->param<std::string>("dst_addr", dst_addr);
-        pnh->param<int>("dst_port", dst_port);
-        pnh->param<int>("src_port", src_port);
-        //nh->param<param_name1_type>(param_name1_path, param_name1, param_name1_default;
+  // Params
+  pnh->param<double>("frequency", frequency);
+  pnh->param<std::string>("dst_addr", dst_addr);
+  pnh->param<int>("dst_port", dst_port);
+  pnh->param<int>("src_port", src_port);
+  pnh->param<bool>("isTeleopCtrl", isTeleopCtrl);
   
   // Init variables
-  fmt = new Formatter({cmd_msg_fmt, cmd_fmt});
-  mc_com = new Telecom(dst_addr, dst_port, src_port);
+  fmt = new Formatter({js_axes_msg_fmt, button_msg_fmt, pad_msg_fmt});
+  com = new Telecom(dst_addr, dst_port, src_port);
   
   // Subscribers
   ros::Timer update_timer = nh->createTimer(ros::Duration(1.0/frequency), update_callback);
   //ros::Subscriber sub_name2_sub = nh->subscribe(sub_name2_topic, sub_name2_BUFLEN, sub_name2_callback);
 
   // Publishers
-  cmd_vel_pub = nh->advertise<geometry_msgs::Twist>(joy_topic, 1);
-  //pub_name2_pub = nh->advertise<pub_name2_typeLHS::pub_name2_typeRHS>(pub_name2_topic, pub_name2_BUFLEN);
+  joy_pub = nh->advertise<sensor_msgs::Joy>(joy_topic, 1);
 
   // Spin
   ros::spin();
 }
 
 void update_callback(const ros::TimerEvent&){
-  // Read from mc_com for msg
-  mc_com->update();
-  if (mc_com->isComClosed()){
-    mc_com->reboot();
-  }
-  if (mc_com->recvAvail()){
-    recv_msg = mc_com->recv();
-  }
+  com->update();
+  ERR_CHECK();
 
-  // joy_pub
-  geometry_msgs::Twist cmd_vel_msg;
-  std::vector<IV_float> vals = fmt->parseFloat(recv_msg, "cmd_vel_fmt", "cmd_fmt"); 
-  cmd_vel_msg.linear.x = vals[0].v;
-  cmd_vel_msg.linear.y = 0;
-  cmd_vel_msg.linear.z = 0;
-  cmd_vel_msg.angular.x = 0;
-  cmd_vel_msg.angular.y = 0;
-  cmd_vel_msg.angular.z = vals[1].v;
-  cmd_vel_pub.publish(cmd_vel_msg);
+  // Read from com for msg
+  if(com->recvAvail()){
+    recv_msg = com->recv();
 
-  // other pub
+    // Safety/bug?
+    while(com->isComClosed()){
+      printf("Rebooting connection\n");
+      com->reboot();
+    }
+
+    // For testing
+    if(!recv_msg.empty()) printf("Received message: %s\n", recv_msg.c_str());
+
+    // Process recv_msg
+    joy_pub_fn();
+
+    // other pub
+  }
+}
+
+void joy_pub_fn(){
+  sensor_msgs::Joy joy_msg;
+  joy_msg.axes.resize(6, 0.0);
+  joy_msg.buttons.resize(12, 0.0);
+  for(auto iv : fmt->parseFloat(recv_msg, "js_axes_msg_fmt")){
+    joy_msg.axes[iv.i] = iv.v;
+  }
+  for(auto iv : fmt->parse(recv_msg, "button_msg_fmt")){
+    joy_msg.buttons[iv.i] = iv.v;
+  }
+  for(auto iv : fmt->parse(recv_msg, "pad_msg_fmt")){
+    if(iv.v == 1){
+      joy_msg.axes[4] = 1.0;
+    }else if(iv.v == 2){
+      joy_msg.axes[4] = -1.0;
+    }else if(iv.v == 3){
+      joy_msg.axes[5] = 1.0;
+    }else if(iv.v == 4){
+      joy_msg.axes[5] = -1.0;
+    }
+  }
+  joy_msg.header.stamp = ros::Time::now();
+  joy_pub.publish(joy_msg);
 }
 
 /*

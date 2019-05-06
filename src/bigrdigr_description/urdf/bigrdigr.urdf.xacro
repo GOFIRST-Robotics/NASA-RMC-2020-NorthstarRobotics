@@ -73,7 +73,7 @@
   <!-- World Origin -->
 	<!-- world_origin is a fictitious link(frame) that is on the ground right below base_link origin -->
 	<!-- z axis is height -->
-	<link name="world_origin"/>
+  <!--<link name="world_origin"/>
   <gazebo reference="world_origin">
 		<turnGravityOff>false</turnGravityOff>
 	</gazebo>
@@ -82,7 +82,7 @@
 		<origin xyz="0 0 ${leg_height-leg_axle_height}" rpy="0 0 0" />
 		<parent link="world_origin" />
 		<child link="base_link" />
-	</joint>
+  </joint> -->
 
 	<link name="base_link">
 		<visual>

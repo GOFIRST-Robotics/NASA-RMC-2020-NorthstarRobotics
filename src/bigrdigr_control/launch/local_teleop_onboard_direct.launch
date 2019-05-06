@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<launch>
+  <!--
+    local_test_wifi_full_ctrl.launch
+    VERSION 0.0.0 Last Changed 2019-05-05
+    Launch teleop joystick control over wifi, speaking directly to the motors,
+    no improved control. 
+    Same as main_onboard_direct.launch but with wifi-ish stuff
+  -->
+  <!-- Interface: 
+    Pub: 
+      joy (sensor_msgs/Joy)
+      joy_out (sensor_msgs/Joy)
+      sent_messages (can_msgs/Frame)
+
+    Sub:
+      recv_messages (can_msgs/Frame)
+  -->
+
+  <arg name="js_dev" default="/dev/input/js0"/>
+
+  <node pkg="joy" type="joy_node" name="joy" output="screen" respawn="true">
+    <param name="dev" value="$(arg js_dev)"/>
+  </node>
+
+  <node pkg="bigrdigr_control" type="mc_to_robot_node" name="mc_to_robot_node" output="screen" respawn="true">
+    <param name="frequency" value="10.0"/>
+  </node>
+
+  <node pkg="bigrdigr_control" type="robot_to_mc_node" name="robot_to_mc_node" output="screen" respawn="true">
+    <param name="frequency" value="10.0"/>
+  </node>
+
+  <node pkg="bigrdigr_control" type="joy_to_onboard_direct_node" name="joy_to_onboard_direct_node" output="screen">
+    <param name="linear_scale" value="1.0"/>
+    <param name="angular_scale" value="1.0"/>
+    <param name="lift_scale" value="0.25"/>
+    <param name="trans_conv_scale" value="0.5"/>
+    <param name="digger_scale" value="1.0"/>
+    <param name="hold_conv_scale" value="0.5"/>
+  </node>
+
+  <node pkg="socketcan_bridge" type="socketcan_bridge_node" name="socketcan_bridge_node" output="screen"/>
+
+</launch>
