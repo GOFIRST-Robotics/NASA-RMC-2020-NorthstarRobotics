@@ -53,7 +53,7 @@ ros::NodeHandle * pnh;
 ros::Publisher joy_pub;
 
 // ROS Topics
-std::string joy_topic = "joy_out";
+std::string joy_topic = "joy";
 
 // ROS Callbacks
 void update_callback(const ros::TimerEvent&);
@@ -63,8 +63,8 @@ void update_callback(const ros::TimerEvent&);
 // ROS Params
 double frequency = 100.0;
 std::string dst_addr = "192.168.1.10";
-int dst_port = 5510;
-int src_port = 5519;
+int dst_port = 5556;
+int src_port = 5554;
 bool isTeleopCtrl = true; 
 
 // Global_Vars
@@ -155,7 +155,7 @@ void update_callback(const ros::TimerEvent&){
     }
 
     // For testing
-    if(!recv_msg.empty()) printf("Received message: %s\n", recv_msg.c_str());
+    //if(!recv_msg.empty()) printf("Received message: %s\n", recv_msg.c_str());
 
     // Process recv_msg
     joy_pub_fn();

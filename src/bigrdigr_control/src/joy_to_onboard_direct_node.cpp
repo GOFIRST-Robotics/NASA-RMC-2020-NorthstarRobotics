@@ -136,6 +136,8 @@ void update_callback(const ros::TimerEvent&){
   }else{
     send_can(0x005, 0);
   }
+  // Process door
+  send_can(0x11000, buttons[4] > 0 ? 1 : 0);
 }
 
 void send_can(U32 id, S32 data){
