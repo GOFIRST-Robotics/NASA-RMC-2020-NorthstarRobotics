@@ -2,11 +2,11 @@
 #include <cstring>
 #include <string>
 //http://wjwwood.io/serial/doc/1.1.0/classserial_1_1_serial.html
-#include "Telecomm.h"
+#include "telecom/telecom.h"
 #define ERR_CHECK \
-  do { if (comm.status() != 0){ \
-    fprintf(stdout, "Error: %s\n", comm.verboseStatus().c_str()); \
-    return comm.status(); \
+  do { if (com.status() != 0){ \
+    fprintf(stdout, "Error: %s\n", com.verboseStatus().c_str()); \
+    return com.status(); \
   } } while(0)
 
 int main(int argc, char *argv[]){
@@ -15,9 +15,9 @@ int main(int argc, char *argv[]){
     exit(1);
   }
 
-  Telecomm comm(argv[1], atoi(argv[2]), atoi(argv[3]));
-  comm.setFailureAction(false);
-  comm.setBlockingTime(0,0);
+  Telecom com(argv[1], atoi(argv[2]), atoi(argv[3]));
+  com.setFailureAction(false);
+  com.setBlockingTime(0,0);
   ERR_CHECK;
 
   time_t timer;
@@ -25,17 +25,17 @@ int main(int argc, char *argv[]){
 
   // Joystick js(); // #include "joystick.hh"
   // Exit if !js.isFound()
-  // comm.fdAdd(js.fd());
+  // com.fdAdd(js.fd());
 
   while(1){
-    comm.update();
+    com.update();
     ERR_CHECK;
 
     // JoystickEvent event;
 
     // Receive from remote
-    if(comm.recvAvail()){
-      std::string msg = comm.recv();
+    if(com.recvAvail()){
+      std::string msg = com.recv();
       //ERR_CHECK; // This makes it crash???
 
       if(!msg.empty())
@@ -44,29 +44,29 @@ int main(int argc, char *argv[]){
       if(!msg.compare("EOM\n")){ break; } // delete if not want remote close
     }
 
-    // Reboot if communication channel closed
-    while(comm.isCommClosed()){
+    // Reboot if comunication channel closed
+    while(com.isComClosed()){
       printf("Rebooting connection\n");
-      comm.reboot();
+      com.reboot();
     }
 
     // Get user stdio input to send
-    if(comm.stdioReadAvail()){
-      std::string msg = comm.stdioRead();
+    if(com.stdioReadAvail()){
+      std::string msg = com.stdioRead();
       ERR_CHECK;
 
       if(!msg.compare("EOM\n")){ // Assume desired for connection to close
-        comm.send(msg); // Delete for debug connection testing
+        com.send(msg); // Delete for debug connection testing
         printf("Received EOM closing\n");
         break;
       }
       
-      comm.send(msg);
+      com.send(msg);
       ERR_CHECK;
     }
 
     // Example if including joystick
-    // if(comm.fdReadAvail(js.fd()) && js.sample(&event)){
+    // if(com.fdReadAvail(js.fd()) && js.sample(&event)){
     //   ... process buttons and axis of event ... }
 
     // heartbeat

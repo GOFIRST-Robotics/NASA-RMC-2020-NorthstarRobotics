@@ -9,9 +9,14 @@
  * Copyright (c) 2018 GOFIRST-Robotics
  */
 
+/* Wifi Transmissions
+ * Robot Sends Jystick input
+ */
+
 // ROS Libs
 #include <ros/ros.h>
-#include <geometry_msgs/Twist.h>
+#include <sensor_msgs/Joy.h>
+#include <std_msgs/Bool.h>
 
 // Native_Libs
 #include <string>
@@ -23,71 +28,97 @@
 
 // Subscribers (inputs)
 //    joy_sub (sensor_msgs/Joy): joy
-//      subscribes to joystick data
-//      sub_name2_desc
-//    sub_name3 (sub_name3_type): sub_name3_TOPIC_VALUE
-//      sub_name3_desc
+//      Subscribes to joystick data
+//    state_sub (std_msgs/Bool): state_machine/isTeleopCtrl
+//      Subscribes to turn on/off teleop control, keeps coms open/sending
 
 // Publishers (outputs)
+//    state_sub (std_msgs/Bool): state_machine/isTeleopCtrl
+//      Receives 
 //    pub_name1 (pub_name1_type): pub_name1_TOPIC_VALUE
 //      pub_name1_desc
-//    pub_name2 (pub_name2_type): pub_name2_TOPIC_VALUE
-//      pub_name2_desc
-//    pub_name3 (pub_name3_type): pub_name3_TOPIC_VALUE
-//      pub_name3_desc
 
 // Parameters (settings)
-//    param_name1 (param_name1_type): default=param_name1_default(,param_name1_path)
-//    param_name2 (param_name2_type): default=param_name2_default(,param_name1_path)
-//    param_name3 (param_name3_type): default=param_name3_default(,param_name1_path)
-
+//    frequency (double): default = 50.0
+//      Hertz, to check for msgs and send
+//    dst_addr (string): default = "127.0.0.1"
+//      The IPv4 address of the target device
+//    dst_port (int): default = 5554
+//      The port on target device to target
+//    src_port (int): default = 5556
+//      The port on host device to use
+//    isTeleopCtrl (bool): default = true
+//      Whether teleop control is enabled by default, initially
 
 // ROS Node and Publishers
 ros::NodeHandle * nh;
 ros::NodeHandle * pnh;
 //ros::Publisher pub_name3_pub;
+
 // ROS Topics
-std::string cmd_vel_topic = "cmd_vel";
+std::string joy_topic = "joy";
+std::string state_topic = "state_machine/isTeleopCtrl";
 
 // ROS Callbacks
 void update_callback(const ros::TimerEvent&);
-void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr& msg);
-//void sub_name1_callback(const sub_name1_typeLHS::sub_name1_typeRHS::ConstPtr& msg);
-//void sub_name2_callback(const sub_name2_typeLHS::sub_name2_typeRHS::ConstPtr& msg);
+void joy_callback(const sensor_msgs::Joy::ConstPtr& msg);
+void state_callback(const std_msgs::Bool::ConstPtr& msg);
 
 // ROS Params
-double frequency = 50.0;
-std::string dst_addr = "127.0.0.1";
-int dst_port = 5005;
-int src_port = 5006;
+double frequency = 100.0;
+std::string dst_addr = "192.168.1.10";
+int dst_port = 5554;
+int src_port = 5556;
+bool isTeleopCtrl = true; // Want to be false by def
 
 // Global_Vars
-Telecom *digr_com;
+Telecom *com;
 Formatter *fmt;
 std::string recv_msg;
-std::vector<IV_float> cmd_vals = {{0,0}, {1,0}};
+double axes[6] = {0.0};
+std::vector<IV> buttons_iv = {{0,0}, {1,0}, {2,0}, {3,0}, {4,0}, {5,0}, {6,0},
+  {7,0}, {8,0}, {9,0}, {10,0}, {11,0}};
+std::vector<IV> pad_iv = {{0,0}};
+std::vector<IV_float> axes_iv = {{0,0.0}, {1,0.0}, {2,0.0}, {3,0.0}};
+
+#define ERR_CHECK() \
+  do { if (com->status() != 0){ \
+    fprintf(stdout, "Error: %s\n", com->verboseStatus().c_str()); \
+    exit(com->status()); \
+  } } while(0)
 
 // Formatters
-val_fmt cmd_msg_fmt = {
-  "cmd_vel_msg",
+val_fmt js_axes_msg_fmt = {
+  "js_axes_msg_fmt",
   '!',
-  4,
-  0,
-  2000,  //max_val
-  1000,  //offset
-  1000 //scale
+  6, // # bytes
+  0, // Min val
+  200000, // Max val
+  100000, // Offset
+  100000  // Scale
 };
 
-val_fmt cmd_fmt = {
-  "cmd_In",
+// byte_msg_fmt
+val_fmt button_msg_fmt = {
+  "button_msg_fmt",
   '@',
-  6,
-  -32767, // Minval
-    32767, // Maxval
-    0, // offset
-    32767 // range
+  1,
+  0,
+  255,
+  0,
+  1
 };
 
+// pad_msg_fmt
+val_fmt pad_msg_fmt = {
+  "pad_msg_fmt",
+  '#',
+  1,
+  0,
+  255,
+  0,
+  1
+};
 
 int main(int argc, char** argv){
   // Init ROS
@@ -96,52 +127,90 @@ int main(int argc, char** argv){
   pnh = new ros::NodeHandle("~");
   
   // Params
+  pnh->param<double>("frequency", frequency);
   pnh->param<std::string>("dst_addr", dst_addr);
   pnh->param<int>("dst_port", dst_port);
   pnh->param<int>("src_port", src_port);
+  pnh->param<bool>("isTeleopCtrl", isTeleopCtrl);
 
   // Init variables
-  fmt = new Formatter({cmd_msg_fmt, cmd_fmt});
-  digr_com = new Telecom(dst_addr, dst_port, src_port);
-  // Error checking here
+  fmt = new Formatter({js_axes_msg_fmt, button_msg_fmt, pad_msg_fmt});
+  com = new Telecom(dst_addr, dst_port, src_port);
+  com->setFailureAction(false);
+  com->setBlockingTime(0,0);
+  ERR_CHECK();
 
   // Subscribers
   ros::Timer update_timer = nh->createTimer(ros::Duration(1.0/frequency), update_callback);
-  ros::Subscriber cmd_vel_sub = nh->subscribe(cmd_vel_topic, 1, cmd_vel_callback);
+  ros::Subscriber joy_sub = nh->subscribe(joy_topic, 1, joy_callback);
 
   // Publishers
 
   // Spin
   ros::spin();
-  std::cout << "mc node initialized" << std::endl;
 }
 
 void update_callback(const ros::TimerEvent&){
-  // Read from digr_com for msg
-  digr_com->update();
-  if (digr_com->isComClosed()){
-    digr_com->reboot();
+  com->update();
+  ERR_CHECK();
+
+  // Read from com for msg
+  if(com->recvAvail()){
+    recv_msg = com->recv();
   }
-  if (digr_com->recvAvail()){
-    recv_msg = digr_com->recv();
+  // For testing
+  if(!recv_msg.empty())
+    printf("Received message: %s\n", recv_msg.c_str());
+  // Safety/bug?
+  while(com->isComClosed()){
+    printf("Rebooting connection\n");
+    com->reboot();
   }
 
-
+  // Process recv_msg
+  
+  // Send joystick
+  fmt->addFloat("js_axes_msg_fmt", axes_iv);
+  fmt->add("button_msg_fmt", buttons_iv);
+  fmt->add("pad_msg_fmt", pad_iv);
+  std::string msg_to_send = fmt->emit();
+  com->send(fmt->emit());
 }
 
-void cmd_vel_callback(const geometry_msgs::Twist::ConstPtr& msg){
-  std::cout << "calling cmd_vel_callback" << std::endl;
-  if (digr_com->isComClosed()){
-    digr_com->reboot();
+/* Transmition format
+ * A bit field byte of button states: 0-7 are
+ * X (TRNS CONV), A (DIGR), B (), Y ()
+ * LB (DOOR UP), RB (DOOR DN), LT (HOLD CONV OUT), RT (HOLD CONV IN)
+ * A value of pad states: 0-4 are
+ * 0 (NONE), LF (LF UP), RT (RT UP), UP (BOTH UP), DN (BOTH DN)
+ */
+void joy_callback(const sensor_msgs::Joy::ConstPtr& msg){
+  // Process buttons
+  buttons_iv[0].v = 0;
+  for(int i = 0; i < 12; ++i){
+    buttons_iv[i].v = msg->buttons[i];
   }
-  //std::cout << "this is doing a callback with linear/angular" << msg->linear.x << msg->angular.z;
-  cmd_vals[0].v = msg->linear.x;
-  cmd_vals[1].v = msg->angular.z;
-  fmt->addFloat("cmd_vel_msg", cmd_vals, "cmd_In");
-  digr_com->send(fmt->emit());
+  // Process axes
+  for(int i = 0; i < 6; ++i){
+    axes[i] = msg->axes[i];
+    if(i < 4){
+      axes_iv[i].v = axes[i];
+    }
+  }
+  // Process pad
+        if(axes[5] >  0.1){
+    pad_iv[0].v = 3;
+  }else if(axes[5] < -0.1){
+    pad_iv[0].v = 4;
+  }else if(axes[4] >  0.1){
+    pad_iv[0].v = 1;
+  }else if(axes[4] < -0.1){
+    pad_iv[0].v = 2;
+  }else{
+    pad_iv[0].v = 0;
+  }
 }
 
-/*
-void sub_name2_callback(const sub_name2_typeLHS::sub_name2_typeRHS::ConstPtr& msg){
+void state_callback(const std_msgs::Bool::ConstPtr& msg){
+  isTeleopCtrl = msg->data;
 }
-*/

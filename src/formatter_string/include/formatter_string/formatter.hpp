@@ -19,6 +19,12 @@
  * Parsing is similar, given a string message: it is handled for each data_t
  * and val_fmt, returned in index / float pairs (for simplicity). 
  * The vectors can be cheaply initiated by {{0,4},{1,5},{2,-3}} etc. 
+ * Floats: a float from -1.0 to 1.0 doesn't need a conv_from format, just
+ * apply the proper scaling with addFloat("_msg_fmt", _idv). Get back out
+ * as a float with parseFloat(recv_msg, "_msg_fmt"). If you want to conv to
+ * a different float scale, then use parseFloat with 2 fmts. If you want to
+ * keep the int repr after recv'ing it, use parse() with a second fmt with 
+ * scale=1, and shift bytes,min_val,max_val if want signed int else keep same.
  */
 
 #include <string>

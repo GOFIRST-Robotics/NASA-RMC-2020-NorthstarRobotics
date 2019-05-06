@@ -160,7 +160,7 @@ void Formatter::addFloat(std::string data_t, const std::vector<IV_float>& ids_va
   assert(fmt); // Check that code runs; this should 
   const val_fmt* preApp = NULL;
   if(apriori_data_t != ""){
-     preApp = getFormat(apriori_data_t);
+    preApp = getFormat(apriori_data_t);
     assert(preApp);
   }
   for(IV_float idv : ids_values){
