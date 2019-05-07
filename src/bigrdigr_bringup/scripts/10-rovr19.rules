@@ -6,17 +6,17 @@
 # NavX both have the same serial number (again, seems like no way to distinguish)
 # Decawaves have distinctive serial numbers and should work as intended
 
-ATTRS{idVendor}=="1415", ATTRS{idProduct}=="2000", KERNEL=="video1", SYMLINK+="pseye0"
-ATTRS{idVendor}=="1415", ATTRS{idProduct}=="2000", KERNEL=="video2", SYMLINK+="pseye1"
-ATTRS{idVendor}=="1415", ATTRS{idProduct}=="2000", KERNEL=="video3", SYMLINK+="pseye2"
-ATTRS{idVendor}=="1415", ATTRS{idProduct}=="2000", KERNEL=="video4", SYMLINK+="pseye3"
-ATTRS{idVendor}=="1415", ATTRS{idProduct}=="2000", KERNEL=="video5", SYMLINK+="pseye4"
+ATTRS{idVendor}=="1415", ATTRS{idProduct}=="2000", KERNEL=="video8", SYMLINK+="pseye0"
+ATTRS{idVendor}=="1415", ATTRS{idProduct}=="2000", KERNEL=="video9", SYMLINK+="pseye1"
+ATTRS{idVendor}=="1415", ATTRS{idProduct}=="2000", KERNEL=="video11", SYMLINK+="pseye2"
+ATTRS{idVendor}=="1415", ATTRS{idProduct}=="2000", KERNEL=="video10", SYMLINK+="pseye3"
+ATTRS{idVendor}=="1415", ATTRS{idProduct}=="2000", KERNEL=="video7", SYMLINK+="pseye4"
 
 ATTRS{idVendor}=="8086", ATTRS{idProduct}=="0b07", ATTRS{serial}=="825513025424", SYMLINK+="realsense0"
 ATTRS{idVendor}=="8086", ATTRS{idProduct}=="0b07", ATTRS{serial}=="825513025416", SYMLINK+="realsense1"
 
-ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5740", ATTRS{serial}=="00000000001A", SYMLINK+="imu0"
-ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5740", ATTRS{serial}=="00000000001A", SYMLINK+="imu1"
+ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5740", ATTRS{serial}=="00000000001A", KERNEL=="ACM0", SYMLINK+="imu0"
+ATTRS{idVendor}=="0483", ATTRS{idProduct}=="5740", ATTRS{serial}=="00000000001A", KERNEL=="ACM1", SYMLINK+="imu1"
 
 ATTRS{idVendor}=="1366", ATTRS{idProduct}=="0105", ATTRS{serial}=="000760023612", SYMLINK+="decawave0"
 ATTRS{idVendor}=="1366", ATTRS{idProduct}=="0105", ATTRS{serial}=="000760007539", SYMLINK+="decawave1"
