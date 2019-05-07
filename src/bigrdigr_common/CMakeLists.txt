@@ -24,7 +24,7 @@ find_package(catkin REQUIRED)
 #
 add_custom_target(
   UpdateSubmodule
-  COMMAND ./${CMAKE_CURRENT_SOURCE_DIR}/scripts/SubmoduleUpdateScript.sh
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/SubmoduleUpdateScript.sh
 )
 
 #execute_process(
