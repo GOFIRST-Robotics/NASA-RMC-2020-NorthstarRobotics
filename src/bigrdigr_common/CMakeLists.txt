@@ -22,9 +22,14 @@ find_package(catkin REQUIRED)
 # Bash script to make sure the submodules are updated
 #It is now WORKING
 #
-execute_process(
-  COMMAND ./../../SubmoduleUpdateScript.sh
+add_custom_target(
+  UpdateSubmodule
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/scripts/SubmoduleUpdateScript.sh
 )
+
+#execute_process(
+#  COMMAND ./../../SubmoduleUpdateScript.sh
+#)
 
 
 ################################################

@@ -1,13 +1,13 @@
 <?xml version="1.0" ?>
 <robot name="bigrdigr" xmlns:xacro="https://www.ros.org/wiki/xacro">
-	<!--here are a lot of the measurements. currently, all of them are just dummy values.
-	change these later when it will be useful to do so.-->
-	<!-- Main dimensions: meters, kg, seconds, rads -->
-	<xacro:property name="PI" value="3.141592653589793238462643383279502884197" />
-	<xacro:property name="wheel_width" value=".15" />
-	<xacro:property name="wheel_radius" value=".18035" />
-	<xacro:property name="wheel_mass" value="2" />
-
+	
+	<!-- Properties which define the robots wheels -->
+	  <!-- Main dimensions: meters, kg, seconds, rads -->
+	  <xacro:property name="PI" value="3.141592653589793238462643383279502884197" />
+	  <xacro:property name="wheel_width" value=".15" />
+	  <xacro:property name="wheel_radius" value=".18035" />
+	  <xacro:property name="wheel_mass" value="2" />
+  <!-- end properties -->
 
 
 	<!--here is a macro for a wheel -->

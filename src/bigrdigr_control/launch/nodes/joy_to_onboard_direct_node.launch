@@ -15,14 +15,17 @@
       recv_messages (can_msgs/Frame)
   -->
 
+  <node pkg="joy" type="joy_node" name="joy_node" output="screen" respawn="true"/>
+
   <node pkg="bigrdigr_control" type="joy_to_onboard_direct_node" name="joy_to_onboard_direct_node" output="screen">
     <param name="frequency" value="2.0"/>
     <param name="linear_scale" value="1.0"/>
     <param name="angular_scale" value="1.0"/>
-    <param name="lift_scale" value="0.25"/>
+    <param name="lift_scale_up" value="0.25"/>
+    <param name="lift_scale_down" value="0.06"/>
     <param name="trans_conv_scale" value="0.5"/>
-    <param name="digger_scale" value="1.0"/>
-    <param name="hold_conv_scale" value="0.5"/>
+    <param name="digger_scale" value="0.8"/>
+    <param name="hold_conv_scale" value="1.0"/>
   </node>
 
   <node pkg="socketcan_bridge" type="socketcan_bridge_node" name="socketcan_bridge_node" output="screen"/>

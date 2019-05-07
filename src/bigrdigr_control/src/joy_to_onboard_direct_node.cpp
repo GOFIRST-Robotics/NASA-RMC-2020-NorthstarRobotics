@@ -49,10 +49,11 @@ void joy_callback(const sensor_msgs::Joy::ConstPtr& msg);
 double frequency = 2.0;
 double linear_scale = 1.0;
 double angular_scale = 1.0;
-double lift_scale = 0.25;
+double lift_scale_up = 0.25;
+double lift_scale_down = 0.10;
 double trans_conv_scale = 0.5;
 double digger_scale = 1.0;
-double hold_conv_scale = 0.5;
+double hold_conv_scale = 1.0;
 
 // Global_vars
 void send_can(U32 id, S32 data);
@@ -72,7 +73,8 @@ int main(int argc, char** argv){
   pnh->param<double>("frequency", frequency);
   pnh->param<double>("linear_scale", linear_scale);
   pnh->param<double>("angular_scale", angular_scale);
-  pnh->param<double>("lift_scale", lift_scale);
+  pnh->param<double>("lift_scale_up", lift_scale_up);
+  pnh->param<double>("lift_scale_down", lift_scale_down);
   pnh->param<double>("trans_conv_scale", trans_conv_scale);
   pnh->param<double>("digger_scale", digger_scale);
   pnh->param<double>("hold_conv_scale", hold_conv_scale);
@@ -113,13 +115,16 @@ void update_callback(const ros::TimerEvent&){
   send_can(0x003, (axes[1]*linear_scale + axes[2]*angular_scale) * -100000);
   send_can(0x004, (axes[1]*linear_scale + axes[2]*angular_scale) * -100000);
   // Process lift
-  if(abs(axes[5]) > 0.1){ // Drive both
-    send_can(0x006, axes[5] * lift_scale * 100000.0);
-    send_can(0x008, axes[5] * lift_scale * 100000.0);
+  if(axes[5] > 0.1){ // Drive both up
+    send_can(0x006, lift_scale_up * 100000.0);
+    send_can(0x008, lift_scale_up * 100000.0);
+  }else if(axes[5] < -0.1){ // Drive both down
+    send_can(0x006, lift_scale_down * -100000.0);
+    send_can(0x008, lift_scale_down * -100000.0);
   }else if(axes[4] < -0.1){ // Right arrow, right side up
-    send_can(0x008, lift_scale * 100000.0);
+    send_can(0x008, lift_scale_up * 100000.0);
   }else if(axes[4] > 0.1){ // Left arrow, left side up
-    send_can(0x006, lift_scale * 100000.0);
+    send_can(0x006, lift_scale_up * 100000.0);
   }else{
     send_can(0x006, 0);
     send_can(0x008, 0);
@@ -137,7 +142,7 @@ void update_callback(const ros::TimerEvent&){
     send_can(0x005, 0);
   }
   // Process door
-  send_can(0x11000, buttons[4] > 0 ? 1 : 0);
+  send_can(0x191000, buttons[5] > 0 ? 1 : 0);
 }
 
 void send_can(U32 id, S32 data){
