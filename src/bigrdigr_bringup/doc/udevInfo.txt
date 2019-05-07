@@ -1,0 +1,14 @@
+Info for editing udev
+
+To edit and save changes:
+sudo vim /etc/udev/rules.d/10-rovr19.rules
+sudo udevadm control --reload-rules
+Then unplug and replug device (if already plugged in)
+
+To look up info (modify for different device):
+udevadm info -a -p $(udevadm info -q path -n /dev/video0)
+
+To test custom file (modify for different device):
+udevadm test $(udevadm info -q path -n /dev/video0)
+
+Use matchUSB.sh to link results of lsusb to files in /dev/
