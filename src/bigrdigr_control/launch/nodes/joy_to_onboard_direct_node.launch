@@ -8,20 +8,14 @@
   -->
   <!-- Interface: 
     Pub: 
-      joy (sensor_msgs/Joy)
       sent_messages (can_msgs/Frame)
 
     Sub:
+      joy (sensor_msgs/Joy)
       recv_messages (can_msgs/Frame)
   -->
 
-  <node pkg="bigrdigr_control" type="robot_to_mc_node" name="robot_to_mc_node" output="screen" respawn="true">
-    <param name="frequency" value="20.0" type="double"/>
-    <param name="dst_addr" value="192.168.1.10" type="str"/>
-    <param name="dst_port" value="5510" type="int"/>
-    <param name="src_port" value="5519" type="int"/>
-    <param name="isTeleopCtrl" value="true" type="bool"/>
-  </node>
+  <node pkg="joy" type="joy_node" name="joy_node" output="screen" respawn="true"/>
 
   <node pkg="bigrdigr_control" type="joy_to_onboard_direct_node" name="joy_to_onboard_direct_node" output="screen">
     <param name="frequency" value="2.0"/>
@@ -31,7 +25,7 @@
     <param name="lift_scale_down" value="0.10"/>
     <param name="trans_conv_scale" value="0.5"/>
     <param name="digger_scale" value="1.0"/>
-    <param name="hold_conv_scale" value="0.5"/>
+    <param name="hold_conv_scale" value="1.0"/>
   </node>
 
   <node pkg="socketcan_bridge" type="socketcan_bridge_node" name="socketcan_bridge_node" output="screen"/>

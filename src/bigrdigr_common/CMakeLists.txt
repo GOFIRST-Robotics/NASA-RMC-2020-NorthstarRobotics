@@ -19,21 +19,12 @@ find_package(catkin REQUIRED)
 # catkin_python_setup()
 
 
-
-
-
-
 # Bash script to make sure the submodules are updated
-#Its not working right now
+#It is now WORKING
 #
-#add_custom_command(
-#  COMMAND git submodule update --init
-#  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-#  OUTPUT_VARIABLE GIT_VERSION
-#)
-
-
-
+execute_process(
+  COMMAND ./../../SubmoduleUpdateScript.sh
+)
 
 
 ################################################

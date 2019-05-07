@@ -17,12 +17,12 @@
 #include "decawave/decawave.h"
 #include "serial/serial.h"
 
-Decawave::Decawave(){
+Decawave::Decawave(int port_num){
   int index=0; //from 0 to 7, for donut array
 
   //anchor positions - these don't change
-  coordinate anchor1Pos;
-  coordinate anchor2Pos;
+  decawave_coordinate anchor1Pos;
+  decawave_coordinate anchor2Pos;
   anchor1Pos.x=-0.825;
   anchor1Pos.y=0.0;
   anchor2Pos.x=0.825;
@@ -30,7 +30,7 @@ Decawave::Decawave(){
   anchorSeparation=anchor2Pos.x-anchor1Pos.x; //distance between the 2 anchors
 
   //connecting via serial
-  std::string port = "/dev/serial0"; // could be something else
+  std::string port = "/dev/decawave" + port_num; // could be something else (was /dev/serial0)
 
   // Find serial port with "SEGGER" (aka decawave attached)- currently doesn't work, defaults to ^
   std::vector<serial::PortInfo> devices_found = serial::list_ports();
@@ -75,8 +75,8 @@ void Decawave::updateSamples(){
   index+=1;
 }
 
-coordinate Decawave::getPos(){
-  //coordinate tagPos; //caculated tag position
+decawave_coordinate Decawave::getPos(){
+  //decawave_coordinate tagPos; //caculated tag position
 
   //average the distances
   double r1=0;
@@ -87,9 +87,9 @@ coordinate Decawave::getPos(){
   }
   r1=r1/8.0;
   r2=r2/8.0;
-  double d=anchorSeparation;
-  tagPos.x=(d*d-r2*r2+r1*r1)/(2.0*d); //These assume anchor 1 is at (0,0)... adjust later
-  tagPos.y=(1.0/(2.0*d))*sqrt(4.0*d*d*r1*r1-(d*d-r2*r2+r1*r1)*(d*d-r2*r2+r1*r1));
+
+  tagPos.x=r1; //These assume anchor 1 is at (0,0)... adjust later
+  tagPos.y=r2;
   /*
   //find angle
   double angleC= acos(((r1*r1)+(anchorSeparation*anchorSeparation)-(r2*r2))/(2.0*r1*anchorSeparation));//angle C in radians

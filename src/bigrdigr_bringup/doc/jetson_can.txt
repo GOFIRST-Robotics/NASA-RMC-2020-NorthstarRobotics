@@ -1,0 +1,17 @@
+How I fixed CANBUS (and the PS Eye)
+By Jude Sauve, 2019-05-04
+
+I installed the latest Jetpack, 4.2, L4T 32.1.0; 
+PSeye just worked (unlike previous), lsmod worked (unlike previous)
+We didn't need to compile ANYTHING!
+
+Run once?
+sudo modprobe can
+sudo modprobe mttcan
+sudo modprobe slcan
+sudo modprobe can_raw
+// I also commented out the /etc/modprobe.d/blacklist-mttcan.conf line, not useful?
+
+Run each time?
+sudo ip link set can0 type can bitrate 250000
+sudo ip link set up can0

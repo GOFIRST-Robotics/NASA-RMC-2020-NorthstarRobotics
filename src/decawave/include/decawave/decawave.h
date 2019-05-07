@@ -5,26 +5,26 @@
 #include <serial/serial.h>
 #include <memory>
 
-struct coordinate{
+struct decawave_coordinate{
   double x;
   double y;
 };
 
 class Decawave{
 public:
-  Decawave();
+  Decawave(int port_num);
   ~Decawave();
   void updateSamples();
-  coordinate getPos();
+  decawave_coordinate getPos();
   double anchor1[8];//was unsigned long int *was a double before...
   double anchor2[8];
 private:
   int index;
   std::shared_ptr<serial::Serial> my_serial;
 
-  coordinate anchor1Pos;
-  coordinate anchor2Pos;
-  coordinate tagPos;
+  decawave_coordinate anchor1Pos;
+  decawave_coordinate anchor2Pos;
+  decawave_coordinate tagPos;
   double anchorSeparation;
 };
 
