@@ -19,6 +19,7 @@
 // Custom_Libs
 #include "decawave/decawave.h"
 #include <serial/serial.h>
+#include "decawave/Range.h"
 
 // Subscribers (inputs)
 //    update_timer (Timer)
@@ -42,21 +43,23 @@ ros::NodeHandle * nh;
 ros::Publisher gps_pub;
 
 // ROS Topics
-std::string gps_topic = "odometry/gps";
+std::string gps_topic = "decawave/Range";//"odometry/gps";
 
 // ROS Callbacks
 void update_callback(const ros::TimerEvent&);
 
 // ROS Params
 double frequency = 50.0;
-//param_name2_type param_name2 = param_name2_default;
-//param_name3_type param_name3 = param_name3_default;
 
+int port_num = 0; //TODO: MOVE TO LAUNCH/INPUT
 // Global_Vars
-Decawave piTag;
-coordinate tagPos;
+Decawave piTag(port_num);
+decawave_coordinate tagPos;
+// Decawave piTag(1);
+// decawave_coordinate tagPos;
 
 int main(int argc, char** argv){
+  // ROS_INFO("Test");
   // Init ROS
   ros::init(argc, argv, "decawave_node");
   nh = new ros::NodeHandle("~");
@@ -65,7 +68,7 @@ int main(int argc, char** argv){
   ros::Timer update_timer = nh->createTimer(ros::Duration(1.0/frequency), update_callback);
 
   // Publishers
-  gps_pub = nh->advertise<nav_msgs::Odometry>(gps_topic, 10);
+  gps_pub = nh->advertise<decawave::Range>(gps_topic, 10);
 
   // Params
   nh->param<double>("frequency", frequency);
@@ -75,6 +78,7 @@ int main(int argc, char** argv){
   // Initialize
   // get initial decwave data
   for(int i = 0; i < 10; ++i){
+    // ROS_INFO("Updating Samples");
     piTag.updateSamples();
   }
 
@@ -82,24 +86,31 @@ int main(int argc, char** argv){
   ros::spin();
 }
 
-
+std::string frame_id = std::to_string(port_num);
 void update_callback(const ros::TimerEvent&){
-  nav_msgs::Odometry msg;
-  
+  decawave::Range msg;
+
   // update decawave data
   piTag.updateSamples();
 
   // get tag position from the decawave
   tagPos = piTag.getPos();
 
-  // put the position data into the message
-  msg.pose.pose.position.x = tagPos.x;
-  msg.pose.pose.position.y = tagPos.y;
-
+  msg.distance = tagPos.x;
+  msg.estimated_variance = 0.10;
   // fill out message header
   msg.header.stamp = ros::Time::now();
-  msg.header.frame_id = "odom";
-  msg.child_frame_id = "base_link"; //change to correct part
+  msg.header.frame_id = "decawave" + frame_id;//"decawave_" + port_num;
+  msg.child_frame_id = "decawave2_link"; //change to correct part
+
+  gps_pub.publish(msg);
+
+  msg.distance = tagPos.y;
+  msg.estimated_variance = 0.10;
+  // fill out message header
+  msg.header.stamp = ros::Time::now();
+  msg.header.frame_id = "decawave" + frame_id;//"decawave_" + port_num;
+  msg.child_frame_id = "decawave3_link"; //change to correct part
 
   gps_pub.publish(msg);
 }
