@@ -63,6 +63,7 @@ target_link_libraries(decawave
   ${catkin_LIBRARIES}
   serial
 )
+add_dependencies( decawave UpdateSubmodule )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
