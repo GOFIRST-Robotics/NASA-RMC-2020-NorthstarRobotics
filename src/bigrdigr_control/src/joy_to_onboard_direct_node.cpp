@@ -115,9 +115,12 @@ void update_callback(const ros::TimerEvent&){
   send_can(0x003, (axes[1]*linear_scale + axes[2]*angular_scale) * -100000);
   send_can(0x004, (axes[1]*linear_scale + axes[2]*angular_scale) * -100000);
   // Process lift
-  if(abs(axes[5]) > 0.1){ // Drive both
-    send_can(0x006, axes[5] * lift_scale_up * 100000.0);
-    send_can(0x008, axes[5] * lift_scale_up * 100000.0);
+  if(axes[5] > 0.1){ // Drive both up
+    send_can(0x006, lift_scale_up * 100000.0);
+    send_can(0x008, lift_scale_up * 100000.0);
+  }else if(axes[5] < -0.1){ // Drive both down
+    send_can(0x006, lift_scale_down * -100000.0);
+    send_can(0x008, lift_scale_down * -100000.0);
   }else if(axes[4] < -0.1){ // Right arrow, right side up
     send_can(0x008, lift_scale_up * 100000.0);
   }else if(axes[4] > 0.1){ // Left arrow, left side up

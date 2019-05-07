@@ -22,7 +22,7 @@
     <param name="linear_scale" value="1.0"/>
     <param name="angular_scale" value="1.0"/>
     <param name="lift_scale_up" value="0.25"/>
-    <param name="lift_scale_down" value="0.05"/>
+    <param name="lift_scale_down" value="0.06"/>
     <param name="trans_conv_scale" value="0.5"/>
     <param name="digger_scale" value="0.8"/>
     <param name="hold_conv_scale" value="1.0"/>

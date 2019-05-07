@@ -7,6 +7,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
   geometry_msgs
+  navx
 )
 
 ## System dependencies are found with CMake's conventions
@@ -80,7 +81,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES bigrdigr_bringup
-#  CATKIN_DEPENDS roscpp sensor_msgs geometry_msgs
+  CATKIN_DEPENDS roscpp sensor_msgs geometry_msgs navx
 #  DEPENDS system_lib
 )
 
@@ -111,7 +112,7 @@ include_directories(
 # add_executable(${PROJECT_NAME}_node src/bigrdigr_bringup_node.cpp)
 
 add_executable(navx_node src/navx_node.cpp)
-target_link_libraries(navx_node ${catkin_LIBRARIES} ahrs) # Add AHRS
+target_link_libraries(navx_node ${catkin_LIBRARIES})# ahrs) # Add AHRS; is catkin lib
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
