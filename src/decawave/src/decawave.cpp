@@ -30,17 +30,18 @@ Decawave::Decawave(int port_num){
   anchorSeparation=anchor2Pos.x-anchor1Pos.x; //distance between the 2 anchors
 
   //connecting via serial
-  std::string port = "/dev/decawave" + port_num; // could be something else (was /dev/serial0)
+  std::string port_s = std::to_string(port_num);
+  std::string port = "/dev/decawave"+ port_s; // could be something else (was /dev/serial0)
 
   // Find serial port with "SEGGER" (aka decawave attached)- currently doesn't work, defaults to ^
-  std::vector<serial::PortInfo> devices_found = serial::list_ports();
-  std::vector<serial::PortInfo>::iterator iter = devices_found.begin();
-  while(iter != devices_found.end()){
-    serial::PortInfo device = *iter++;
-    if(device.description.find("SEGGER") != std::string::npos){
-      port = device.port;
-    }
-  }
+  // std::vector<serial::PortInfo> devices_found = serial::list_ports();
+  // std::vector<serial::PortInfo>::iterator iter = devices_found.begin();
+  // while(iter != devices_found.end()){
+  //   serial::PortInfo device = *iter++;
+  //   if(device.description.find("SEGGER") != std::string::npos){
+  //     port = device.port;
+  //   }
+  // }
 
   //Serial connection to decawave (tag)
   my_serial.reset(new serial::Serial(port, 115200, serial::Timeout::simpleTimeout(1000)));//opens the port

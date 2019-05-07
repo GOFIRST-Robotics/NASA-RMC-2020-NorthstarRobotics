@@ -32,7 +32,7 @@ int dst_port, src_port;
 int rv = -1, ret = -1, iof = -1;
 int len = -1,  numbytes = 0, sec = -1, usec = -1, yes = 1;
 //struct timeval tv;
-timeval *tv_ptr = NULL, tv = {0};
+timeval *tv_ptr = NULL; 
 char buffer[256] = {0};
 bool throwError = true;
 
@@ -187,6 +187,7 @@ int Telecom::update(){
   if(sec < 0 || usec < 0){
     tv_ptr = NULL;
   }else{
+    timeval tv = {0};
     tv.tv_sec = sec;
     tv.tv_usec = usec;
     tv_ptr = &tv;

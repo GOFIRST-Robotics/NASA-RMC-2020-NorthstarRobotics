@@ -65,8 +65,8 @@ void joy_callback(const sensor_msgs::Joy::ConstPtr& msg);
 void state_callback(const std_msgs::Bool::ConstPtr& msg);
 
 // ROS Params
-double frequency = 100.0;
-std::string dst_addr = "192.168.1.10";
+double frequency = 5.0;
+std::string dst_addr = "192.168.1.19";
 int dst_port = 5554;
 int src_port = 5556;
 bool isTeleopCtrl = true; // Want to be false by def
@@ -74,6 +74,7 @@ bool isTeleopCtrl = true; // Want to be false by def
 // Global_Vars
 Telecom *com;
 Formatter *fmt;
+void update_fn();
 std::string recv_msg;
 double axes[6] = {0.0};
 std::vector<IV> buttons_iv = {{0,0}, {1,0}, {2,0}, {3,0}, {4,0}, {5,0}, {6,0},
@@ -151,20 +152,27 @@ int main(int argc, char** argv){
 }
 
 void update_callback(const ros::TimerEvent&){
+  update_fn();
+}
+
+void update_fn(){
   com->update();
   ERR_CHECK();
 
   // Read from com for msg
   if(com->recvAvail()){
     recv_msg = com->recv();
+    // For testing
+    if(!recv_msg.empty())
+      printf("Received message: %s\n", recv_msg.c_str());
   }
-  // For testing
-  if(!recv_msg.empty())
-    printf("Received message: %s\n", recv_msg.c_str());
   // Safety/bug?
   while(com->isComClosed()){
     printf("Rebooting connection\n");
     com->reboot();
+    if(!com->isComClosed()){
+      printf("Reconnected to %s:%i\n", dst_addr.c_str(), dst_port);
+    }
   }
 
   // Process recv_msg
@@ -173,7 +181,6 @@ void update_callback(const ros::TimerEvent&){
   fmt->addFloat("js_axes_msg_fmt", axes_iv);
   fmt->add("button_msg_fmt", buttons_iv);
   fmt->add("pad_msg_fmt", pad_iv);
-  std::string msg_to_send = fmt->emit();
   com->send(fmt->emit());
 }
 
@@ -209,6 +216,7 @@ void joy_callback(const sensor_msgs::Joy::ConstPtr& msg){
   }else{
     pad_iv[0].v = 0;
   }
+  update_fn();
 }
 
 void state_callback(const std_msgs::Bool::ConstPtr& msg){
