@@ -102,3 +102,9 @@ Soft battery cutoff voltage: If voltage drops too low, won't let it run
   Hard (V): 12*3.0 = 38.0 // Jimmy says 38, don't want to get close to 36
   Upper limit, so that regen wouldn't go up to much; 4.2V is max battery should be
   Upper (V): 12*4.2 = 50.6
+
+CANBUS
+  CAN PORT0:
+    6, 7, 8, 9, Jetson
+  CAN PORT1:
+    1, 2, 3, 4, 5

@@ -19,8 +19,9 @@
     <param name="dev" value="$(arg js_dev)"/>
   </node>
 
-  <node pkg="bigrdigr_control" type="mc_to_robot_node" name="mc_to_robot_node" output="screen" respawn="true">
-    <param name="frequency" value="100.0" type="double"/>
+  <node pkg="bigrdigr_control" type="mc_to_robot_node" name="mc_to_robot_node" output="screen">
+    <!--launch-prefix="xterm -e gdb - -args"-->
+    <param name="frequency" value="5.0" type="double"/>
     <param name="dst_addr" value="192.168.1.19" type="str"/>
     <param name="dst_port" value="5519" type="int"/>
     <param name="src_port" value="5510" type="int"/>
