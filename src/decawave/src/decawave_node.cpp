@@ -61,12 +61,11 @@ decawave_coordinate tagPos;
 // Decawave piTag(1);
 // decawave_coordinate tagPos;
 
-
 int main(int argc, char** argv){
   // Init ROS
-  ros::init(argc, argv, "decawave_node");
-  nh = new ros::NodeHandle("");
-  pnh = new ros::NodeHandle("~");
+  // ros::init(argc, argv, "decawave_node");
+  // nh = new ros::NodeHandle("");
+  // pnh = new ros::NodeHandle("~");
 
   // Params
   // pnh->param<double>("frequency", frequency);
@@ -81,7 +80,9 @@ int main(int argc, char** argv){
   printf("%i\n",port_num);
   // printf("%i\n",port_num_test);
   //nh->param<param_name3_type>(param_name3_path, param_name3, param_name3_default;
-
+  ros::init(argc, argv, "decawave_node" + std::to_string(port_num));
+  nh = new ros::NodeHandle("");
+  pnh = new ros::NodeHandle("~");
   // Initialize
   piTag = new Decawave(port_num);
   // get initial decwave data
@@ -96,6 +97,7 @@ int main(int argc, char** argv){
   ros::Timer update_timer = nh->createTimer(ros::Duration(1.0/frequency), update_callback);
 
   // Publishers
+  gps_topic = gps_topic + std::to_string(port_num);
   gps_pub = nh->advertise<decawave::Range>(gps_topic, 10);
 
   // Spin

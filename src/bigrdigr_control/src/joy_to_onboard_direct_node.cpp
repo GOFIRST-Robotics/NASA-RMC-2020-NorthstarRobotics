@@ -49,12 +49,12 @@ void joy_callback(const sensor_msgs::Joy::ConstPtr& msg);
 double frequency = 2.0;
 double linear_scale = 1.0;
 double angular_scale = 1.0;
-double lift_scale_up = 0.5;
-double lift_scale_down = 0.10;
-double trans_conv_scale = 0.5;
+double lift_scale_up = 0.25;
+double lift_scale_down = 0.07;
+double trans_conv_scale = 1.0;
 double digger_scale = 1.0;
 double hold_conv_scale_fwd = 1.0;
-double hold_conv_scale_back = 0.5;
+double hold_conv_scale_back = 0.35;
 
 // Global_vars
 void send_can(U32 id, S32 data);
@@ -120,15 +120,15 @@ void update_callback(const ros::TimerEvent&) {
 
   // Process lift
   if (axes[5] > 0.1) { // Drive both up
-    send_can(0x006, lift_scale_up * 100000.0);
-    send_can(0x008, lift_scale_up * 100000.0);
+    send_can(0x006, lift_scale_up * -100000.0);
+    send_can(0x008, lift_scale_up * -100000.0);
   } else if (axes[5] < -0.1) { // Drive both down
-    send_can(0x006, lift_scale_down * -100000.0);
-    send_can(0x008, lift_scale_down * -100000.0);
+    send_can(0x006, lift_scale_down * 100000.0);
+    send_can(0x008, lift_scale_down * 100000.0);
   } else if (axes[4] < -0.1) { // Right arrow, right side up
-    send_can(0x008, lift_scale_up * 100000.0);
+    send_can(0x008, lift_scale_up * -100000.0);
   } else if (axes[4] > 0.1) { // Left arrow, left side up
-    send_can(0x006, lift_scale_up * 100000.0);
+    send_can(0x006, lift_scale_up * -100000.0);
   } else {
     send_can(0x006, 0);
     send_can(0x008, 0);
