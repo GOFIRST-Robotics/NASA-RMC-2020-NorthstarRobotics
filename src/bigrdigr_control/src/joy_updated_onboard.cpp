@@ -63,6 +63,7 @@ double axes[6] = {0.0};
 double motors[9] = {0.0};
 bool trans_conv = false;
 bool digger = false;
+bool hold_conv_back = false;
 
 int main(int argc, char** argv){
   // Init ROS
@@ -78,8 +79,8 @@ int main(int argc, char** argv){
   pnh->param<double>("lift_scale_down", lift_scale_down);
   pnh->param<double>("trans_conv_scale", trans_conv_scale);
   pnh->param<double>("digger_scale", digger_scale);
-  pnh->param<double>("hold_conv_scale_fwd", hold_conv_scale_fwd);
-  pnh->param<double>("hold_conv_scale_back", hold_conv_scale_back);
+  pnh->param<double>("hold_conv_scale_fwd", hold_conv_scale);
+  pnh->param<double>("hold_conv_scale_back", hold_conv_scale);
 
   // Subscribers
   ros::Timer update_timer = nh->createTimer(ros::Duration(1.0/frequency), update_callback);
@@ -94,10 +95,10 @@ int main(int argc, char** argv){
 
 void joy_callback(const sensor_msgs::Joy::ConstPtr& msg){
   // Process toggle
-  if(buttons[0]==1 && msg->buttons[0]==0){
+  if(buttons[0] != msg->buttons[0]){
     trans_conv = !trans_conv;
   }
-  if(buttons[1]==1 && msg->buttons[1]==0){
+  if(buttons[1] != msg->buttons[1]){
     digger = !digger;
   }
   // Process buttons
@@ -149,7 +150,7 @@ void update_callback(const ros::TimerEvent&) {
   }
 
   // Process door
-  send_can(0x190010, buttons[5] > 0 ? 1 << 24: 0);
+  send_can(0x191000, buttons[5] > 0 ? 1 : 0);
 }
 
 void send_can(U32 id, S32 data){

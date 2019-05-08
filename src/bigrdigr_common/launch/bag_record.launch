@@ -10,6 +10,11 @@
 
   <node pkg="rosbag" type="record" name="rosbag_record_camera"
         args = "record -o $(find bigrdigr_common)/data/camera
+        /usb_cam_pseye0/image_raw/compressed
+        /usb_cam_pseye1/image_raw/compressed
+        /usb_cam_pseye2/image_raw/compressed
+        /usb_cam_pseye3/image_raw/compressed
+        /usb_cam_pseye4/image_raw/compressed
         "
         if="$(arg record_cameras)" />
 
