@@ -1,0 +1,4 @@
+bigrdigr_input
+/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/bigrdigr_input/lib/pkgconfig/bigrdigr_input.pc /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/lib/pkgconfig/bigrdigr_input.pc
+/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/bigrdigr_input/share/bigrdigr_input/cmake/bigrdigr_inputConfig-version.cmake /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/share/bigrdigr_input/cmake/bigrdigr_inputConfig-version.cmake
+/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/bigrdigr_input/share/bigrdigr_input/cmake/bigrdigr_inputConfig.cmake /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/share/bigrdigr_input/cmake/bigrdigr_inputConfig.cmake
