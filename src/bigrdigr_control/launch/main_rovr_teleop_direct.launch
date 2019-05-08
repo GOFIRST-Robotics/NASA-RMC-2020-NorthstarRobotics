@@ -27,8 +27,8 @@
     <param name="frequency" value="2.0"/>
     <param name="linear_scale" value="1.0"/>
     <param name="angular_scale" value="1.0"/>
-    <param name="lift_scale_up" value="0.25"/>
-    <param name="lift_scale_down" value="0.10"/>
+    <param name="lift_scale_up" value="0.5"/>
+    <param name="lift_scale_down" value="0.08"/>
     <param name="trans_conv_scale" value="0.5"/>
     <param name="digger_scale" value="1.0"/>
     <param name="hold_conv_scale_fwd" value="1.0"/>
@@ -37,7 +37,8 @@
 
   <node pkg="socketcan_bridge" type="socketcan_bridge_node" name="socketcan_bridge_node" output="screen"/>
 
+<!--
   <include file="$(find bigrdigr_bringup)/launch/sensors/pseye.launch"/>
   <include file="$(find bigrdigr_bringup)/launch/telecom_img/web_server.launch"/>
-
+-->
 </launch>

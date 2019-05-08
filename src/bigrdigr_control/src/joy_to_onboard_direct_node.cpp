@@ -49,7 +49,7 @@ void joy_callback(const sensor_msgs::Joy::ConstPtr& msg);
 double frequency = 2.0;
 double linear_scale = 1.0;
 double angular_scale = 1.0;
-double lift_scale_up = 0.25;
+double lift_scale_up = 0.5;
 double lift_scale_down = 0.10;
 double trans_conv_scale = 0.5;
 double digger_scale = 1.0;
@@ -58,6 +58,7 @@ double hold_conv_scale_back = 0.5;
 
 // Global_vars
 void send_can(U32 id, S32 data);
+void send_can_bool(U32 id, bool data);
 bool buttons[12] = {0};
 double axes[6] = {0.0};
 double motors[9] = {0.0};
@@ -149,7 +150,7 @@ void update_callback(const ros::TimerEvent&) {
   }
 
   // Process door
-  send_can(0x190010, buttons[5] > 0 ? 1 << 24: 0);
+  send_can_bool(0x190010, buttons[5] > 0);
 }
 
 void send_can(U32 id, S32 data){
@@ -163,5 +164,16 @@ void send_can(U32 id, S32 data){
   can_msg.data[2] = (data >> 8) & 0xFF;
   can_msg.data[1] = (data >> 16) & 0xFF;
   can_msg.data[0] = (data >> 24) & 0xFF;
+  can_pub.publish(can_msg);
+}
+
+void send_can_bool(U32 id, bool data){
+  can_msgs::Frame can_msg;
+  can_msg.is_rtr = false;
+  can_msg.is_extended = true;
+  can_msg.is_error = false;
+  can_msg.dlc = 1U;
+  can_msg.id = id;
+  can_msg.data[0] = data;
   can_pub.publish(can_msg);
 }
