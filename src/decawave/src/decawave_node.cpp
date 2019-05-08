@@ -61,6 +61,7 @@ decawave_coordinate tagPos;
 // Decawave piTag(1);
 // decawave_coordinate tagPos;
 
+
 int main(int argc, char** argv){
   // Init ROS
   ros::init(argc, argv, "decawave_node");
@@ -84,11 +85,11 @@ int main(int argc, char** argv){
   // Initialize
   piTag = new Decawave(port_num);
   // get initial decwave data
-  ROS_INFO("Dw created");
+  // ROS_INFO("Dw created");
   for(int i = 0; i < 10; ++i){
     // ROS_INFO("Updating Samples");
     piTag->updateSamples();
-    ROS_INFO("Updated Sample");
+    // ROS_INFO("Updated Sample");
   }
 
   // Subscribers
@@ -101,9 +102,9 @@ int main(int argc, char** argv){
   ros::spin();
 }
 
-std::string frame_id = std::to_string(port_num);
+
 void update_callback(const ros::TimerEvent&){
-  ROS_INFO("Publishing..");
+  // ROS_INFO("Publishing..");
   decawave::Range msg;
 
   // update decawave data
@@ -111,6 +112,9 @@ void update_callback(const ros::TimerEvent&){
 
   // get tag position from the decawave
   tagPos = piTag->getPos();
+
+  ros::param::get("~port_num",port_num);
+  std::string frame_id = std::to_string(port_num);
 
   msg.distance = tagPos.x;
   msg.estimated_variance = 0.10;
