@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Launch direct control from joystick plugged into
+     the main computer, speaking directly to motors
+     over canbus. Req forwarding to both buses.
+-->
+<launch>
+  <arg name="can_dev" default="/dev/ttyUSB0"/>
+  <arg name="js_dev" default="/dev/input/js0"/>
+
+  <node pkg="joy" type="joy_node" name="joy" output="screen">
+    <param name="dev" value="$(arg js_dev)"/>
+  </node>
+
+  <node pkg="socketcan_bridge" type="socketcan_bridge_node" name="socketcan_bridge_node" output="screen"/>
+
+  <node pkg="rovr_control" type="joy_to_onboard_direct_node" name="main_joy2onDir" output="screen">
+    <param name="linear_scale" value="1.0"/>
+    <param name="angular_scale" value="1.0"/>
+    <param name="lift_scale" value="0.25"/>
+    <param name="trans_conv_scale" value="0.5"/>
+    <param name="digger_scale" value="1.0"/>
+    <param name="hold_conv_scale" value="0.5"/>
+  </node>
+
+</launch>

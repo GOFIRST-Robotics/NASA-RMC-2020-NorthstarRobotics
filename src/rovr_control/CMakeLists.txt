@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(telecom)
+project(rovr_control)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11 -g -O0)
@@ -7,10 +7,28 @@ add_compile_options(-std=c++11 -g -O0)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-# find_package(catkin REQUIRED COMPONENTS)
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  controller_manager
+  robot_state_publisher
+  joint_state_publisher
+  joint_state_controller
+  sensor_msgs
+  geometry_msgs
+  can_msgs
+  telecom
+  formatter_string
+  socketcan_bridge
+)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
+
+
+## Uncomment this if the package has a setup.py. This macro ensures
+## modules and global scripts declared therein get installed
+## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
+# catkin_python_setup()
 
 ################################################
 ## Declare ROS messages, services and actions ##
@@ -73,9 +91,21 @@ add_compile_options(-std=c++11 -g -O0)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES telecom
-#  CATKIN_DEPENDS
+#  INCLUDE_DIRS include
+#  LIBRARIES rovr_control
+  CATKIN_DEPENDS
+    roscpp
+    controller_manager
+    robot_state_publisher
+    joint_state_publisher
+    joint_state_controller
+    sensor_msgs
+    geometry_msgs
+    can_msgs
+    socketcan_bridge
+    # include our pkgs
+    telecom
+    formatter_string
 #  DEPENDS system_lib
 )
 
@@ -86,20 +116,57 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-  include
-  # ${catkin_INCLUDE_DIRS}
+# include
+  ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
-add_library(telecom
-  src/telecom.cpp
-)
+# add_library(${PROJECT_NAME}
+#   src/${PROJECT_NAME}/rovr_control.cpp
+# )
+
+## Add cmake target dependencies of the library
+## as an example, code may need to be generated before libraries
+## either from message generation or dynamic reconfigure
 # add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/rovr_control_node.cpp)
+
+add_executable(teleop_twist_node src/teleop_twist_node.cpp)
+target_link_libraries(teleop_twist_node ${catkin_LIBRARIES})
+
+add_executable(robot_to_mc_node src/telecom_nodes/robot_to_mc_node.cpp)
+target_link_libraries(robot_to_mc_node
+  telecom
+  formatter_string
+  ${catkin_LIBRARIES}
+)
+
+add_executable(robot_joy_to_mc src/telecom_nodes/robot_joy_to_mc.cpp)
+target_link_libraries(robot_joy_to_mc
+  telecom
+  formatter_string
+  ${catkin_LIBRARIES}
+)
+add_executable(mc_to_robot_node src/telecom_nodes/mc_to_robot_node.cpp)
+target_link_libraries(mc_to_robot_node
+  telecom
+  formatter_string
+  ${catkin_LIBRARIES}
+)
+
+add_executable(mc_joy_to_robot src/telecom_nodes/mc_joy_to_robot.cpp)
+target_link_libraries(mc_joy_to_robot
+  telecom
+  formatter_string
+  ${catkin_LIBRARIES}
+)
+
+add_executable(joy_to_onboard_direct_node src/joy_to_onboard_direct_node.cpp)
+target_link_libraries(joy_to_onboard_direct_node ${catkin_LIBRARIES})
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

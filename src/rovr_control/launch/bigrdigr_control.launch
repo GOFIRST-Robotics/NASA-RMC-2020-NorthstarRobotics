@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<launch>
+
+  <rosparam file="$(find rovr_control)/config/rovr_control.yaml" command="load"/>
+
+  <!--Load Controllers-->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+    output="screen" ns="/rovr" args="front_left_wheel_position_controller front_right_wheel_position_controller
+    back_left_wheel_position_controller back_right_wheel_position_controller joint_state_controller"/>
+
+  <!--Convert Joint States to TF transforms for rviz-->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+    respawn="false" output="screen">
+    <remap from="/joint_states" to="/rovr/joint_states"/>
+    <remap from="robot_description" to="rovr_description" />
+  </node>
+
+</launch>

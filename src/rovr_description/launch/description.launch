@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!-- rovr_description description.launch -->
+<!-- The launch file for the rovr urdf, with
+  all passthrough arguments -->
+<launch>
+
+  <arg name="robot_namespace" default="/"/>
+  <arg name="useCameras" default="false"/>
+  <arg name="useRealsense" default="false"/>
+
+  <param name="robot_description" command="$(find xacro)/xacro
+    '$(find rovr_description)/urdf/rovr.urdf.xacro'
+    --inorder
+    cameras:=$(arg useCameras)
+    " />
+</launch>
