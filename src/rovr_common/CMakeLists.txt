@@ -7,7 +7,6 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
   geometry_msgs
-  navx
 )
 
 ## System dependencies are found with CMake's conventions
@@ -111,8 +110,8 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/rovr_bringup_node.cpp)
 
-add_executable(navx_node src/navx_node.cpp)
-target_link_libraries(navx_node ${catkin_LIBRARIES})# ahrs) # Add AHRS; is catkin lib
+#add_executable(navx_node src/navx_node.cpp)
+#target_link_libraries(navx_node ${catkin_LIBRARIES})# ahrs) # Add AHRS; is catkin lib
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
