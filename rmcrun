@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Runs a command inside the built docker image
+
+if [[ -f .image ]]; then
+  read image < .image
+  echo "rmcrun: Using image $image"
+  docker run -it -e "TERM=xterm-256color" $image /bin/bash -c "$@"
+else
+  echo "rmcrun: Could not find image. Please run rmcbuild first."
+fi

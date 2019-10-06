@@ -9,6 +9,9 @@
 /CMakeLists.txt
 /src/CMakeLists.txt
 
+# RMCBuild
+.image
+
 # Vim save files
 *.swp
 *.swo

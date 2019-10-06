@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Builds a docker image, then runs catkin_make on it, passing through any arguments
+# -t: emulate terminal. this allows us to do -e "TERM=xterm-256color" which gives us colored output.
+# the bash command sources the melodic setup, then runs catkin_make with our arguments
+
+# The benefit to this is a) one command to build and b) we can re-use the same image if nothing has changed.
+
+image=$(docker build -q .)
+
+echo "rmcbuild: using image $image"
+# Export the image ID so other commands can use it
+echo "$image" > .image
+
+make_cmd=". /opt/ros/melodic/setup.bash; catkin_make $@"
+
+echo "rmcbuild: command line: $make_cmd"
+
+docker run -t -e "TERM=xterm-256color" $image /bin/bash -c "$make_cmd"
