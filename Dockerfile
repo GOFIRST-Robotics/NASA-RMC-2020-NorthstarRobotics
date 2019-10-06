@@ -7,3 +7,4 @@ WORKDIR /app
 COPY devel/ /app/devel/
 COPY documentation/ /app/documentation/
 COPY src/ /app/src
+COPY .catkin_tools /app/.catkin_tools
