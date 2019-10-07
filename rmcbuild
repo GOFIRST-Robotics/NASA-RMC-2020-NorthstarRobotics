@@ -9,11 +9,14 @@
 image=$(docker build -q .)
 
 echo "rmcbuild: using image $image"
-# Export the image ID so other commands can use it
-echo "$image" > .image
 
 make_cmd=". /opt/ros/melodic/setup.bash; catkin_make $@"
 
 echo "rmcbuild: command line: $make_cmd"
 
-docker run -t -e "TERM=xterm-256color" $image /bin/bash -c "$make_cmd"
+docker rm --force rmc
+docker run --name rmc -t -e "TERM=xterm-256color" $image /bin/bash -c "$make_cmd"
+image=$(docker commit rmc)
+echo "rmcbuild: built new image $image"
+# Export the image ID so other commands can use it
+echo "$image" > .image
