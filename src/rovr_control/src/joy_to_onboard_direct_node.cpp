@@ -46,15 +46,15 @@ void update_callback(const ros::TimerEvent&);
 void joy_callback(const sensor_msgs::Joy::ConstPtr& msg);
 
 // ROS Params
-double frequency = 2.0;
-double linear_scale = 1.0;
-double angular_scale = 1.0;
-double lift_scale_up = 0.25;
-double lift_scale_down = 0.07;
-double trans_conv_scale = 1.0;
-double digger_scale = 1.0;
-double hold_conv_scale_fwd = 1.0;
-double hold_conv_scale_back = 0.35;
+double frequency;
+double linear_scale;
+double angular_scale;
+double lift_scale_up;
+double lift_scale_down;
+double trans_conv_scale;
+double digger_scale;
+double hold_conv_scale_fwd;
+double hold_conv_scale_back;
 
 // Global_vars
 void send_can(U32 id, S32 data);
@@ -72,15 +72,15 @@ int main(int argc, char** argv){
   pnh = new ros::NodeHandle("~");
 
   // Params
-  pnh->param<double>("frequency", frequency);
-  pnh->param<double>("linear_scale", linear_scale);
-  pnh->param<double>("angular_scale", angular_scale);
-  pnh->param<double>("lift_scale_up", lift_scale_up);
-  pnh->param<double>("lift_scale_down", lift_scale_down);
-  pnh->param<double>("trans_conv_scale", trans_conv_scale);
-  pnh->param<double>("digger_scale", digger_scale);
-  pnh->param<double>("hold_conv_scale_fwd", hold_conv_scale_fwd);
-  pnh->param<double>("hold_conv_scale_back", hold_conv_scale_back);
+  pnh->param<double>("frequency", frequency, 2.0);
+  pnh->param<double>("linear_scale", linear_scale, 1.0);
+  pnh->param<double>("angular_scale", angular_scale, 1.0);
+  pnh->param<double>("lift_scale_up", lift_scale_up, 0.25);
+  pnh->param<double>("lift_scale_down", lift_scale_down, 0.07);
+  pnh->param<double>("trans_conv_scale", trans_conv_scale, 1.0);
+  pnh->param<double>("digger_scale", digger_scale, 1.0);
+  pnh->param<double>("hold_conv_scale_fwd", hold_conv_scale_fwd, 1.0);
+  pnh->param<double>("hold_conv_scale_back", hold_conv_scale_back, 0.35);
 
   // Subscribers
   ros::Timer update_timer = nh->createTimer(ros::Duration(1.0/frequency), update_callback);
