@@ -61,11 +61,11 @@ void update_callback(const ros::TimerEvent&);
 //void sub_name2_callback(const sub_name2_typeLHS::sub_name2_typeRHS::ConstPtr& msg);
 
 // ROS Params
-double frequency = 100.0;
-std::string dst_addr = "192.168.1.10";
-int dst_port = 5556;
-int src_port = 5554;
-bool isTeleopCtrl = true; 
+double frequency;
+std::string dst_addr;
+int dst_port;
+int src_port;
+bool isTeleopCtrl; 
 
 // Global_Vars
 Telecom *com;
@@ -119,11 +119,11 @@ int main(int argc, char** argv){
   pnh = new ros::NodeHandle("~");
 
   // Params
-  pnh->param<double>("frequency", frequency);
-  pnh->param<std::string>("dst_addr", dst_addr);
-  pnh->param<int>("dst_port", dst_port);
-  pnh->param<int>("src_port", src_port);
-  pnh->param<bool>("isTeleopCtrl", isTeleopCtrl);
+  pnh->param<double>("frequency", frequency, 100.0);
+  pnh->param<std::string>("dst_addr", dst_addr, "192.168.1.10");
+  pnh->param<int>("dst_port", dst_port, 5556);
+  pnh->param<int>("src_port", src_port, 5554);
+  pnh->param<bool>("isTeleopCtrl", isTeleopCtrl, true);
   
   // Init variables
   fmt = new Formatter({js_axes_msg_fmt, button_msg_fmt, pad_msg_fmt});
