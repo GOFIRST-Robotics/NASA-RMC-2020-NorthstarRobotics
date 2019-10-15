@@ -65,11 +65,11 @@ void joy_callback(const sensor_msgs::Joy::ConstPtr& msg);
 void state_callback(const std_msgs::Bool::ConstPtr& msg);
 
 // ROS Params
-double frequency;
-std::string dst_addr;
-int dst_port;
-int src_port;
-bool isTeleopCtrl;
+double frequency = 20.0;
+std::string dst_addr = "192.168.1.19";
+int dst_port = 5554;
+int src_port = 5556;
+bool isTeleopCtrl = true;
 
 // Global_Vars
 Telecom *com;
@@ -128,11 +128,11 @@ int main(int argc, char** argv){
   pnh = new ros::NodeHandle("~");
   
   // Params
-  pnh->param<double>("frequency", frequency);
-  pnh->param<std::string>("dst_addr", dst_addr, "192.168.1.19");
-  pnh->param<int>("dst_port", dst_port, 5554);
-  pnh->param<int>("src_port", src_port, 5556);
-  pnh->param<bool>("isTeleopCtrl", isTeleopCtrl, true);
+  pnh->getParam("frequency", frequency);
+  pnh->getParam("dst_addr", dst_addr);
+  pnh->getParam("dst_port", dst_port);
+  pnh->getParam("src_port", src_port);
+  pnh->getParam("isTeleopCtrl", isTeleopCtrl);
 
   // Init variables
   fmt = new Formatter({js_axes_msg_fmt, button_msg_fmt, pad_msg_fmt});
