@@ -6,11 +6,11 @@
 # NavX both have the same serial number (again, seems like no way to distinguish)
 # Decawaves have distinctive serial numbers and should work as intended
 
-ATTRS{idVendor}=="1415", ATTRS{idProduct}=="2000", KERNEL=="video8", SYMLINK+="pseye0"
-ATTRS{idVendor}=="1415", ATTRS{idProduct}=="2000", KERNEL=="video9", SYMLINK+="pseye1"
-ATTRS{idVendor}=="1415", ATTRS{idProduct}=="2000", KERNEL=="video11", SYMLINK+="pseye2"
-ATTRS{idVendor}=="1415", ATTRS{idProduct}=="2000", KERNEL=="video10", SYMLINK+="pseye3"
-ATTRS{idVendor}=="1415", ATTRS{idProduct}=="2000", KERNEL=="video7", SYMLINK+="pseye4"
+ACTION=="add", KERNELS=="1-2.1:1.0", SYMLINK+="pseye0"
+ACTION=="add", KERNELS=="1-1.4:1.0", SYMLINK+="pseye1"
+#ACTION=="add", KERNELS=="video11", SYMLINK+="pseye2"
+ACTION=="add", KERNELS=="1-2.4:1.0", SYMLINK+="pseye3"
+ACTION=="add", KERNELS=="1-1.1:1.0", SYMLINK+="pseye4"
 
 #ATTRS{idVendor}=="8086", ATTRS{idProduct}=="0b07", ATTRS{serial}=="825513025424", SYMLINK+="realsense0"
 #ATTRS{idVendor}=="8086", ATTRS{idProduct}=="0b07", ATTRS{serial}=="825513025416", SYMLINK+="realsense1"
