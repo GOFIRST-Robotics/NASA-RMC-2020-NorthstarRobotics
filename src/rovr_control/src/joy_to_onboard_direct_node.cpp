@@ -72,15 +72,15 @@ int main(int argc, char** argv){
   pnh = new ros::NodeHandle("~");
 
   // Params
-  pnh->param<double>("frequency", frequency);
-  pnh->param<double>("linear_scale", linear_scale);
-  pnh->param<double>("angular_scale", angular_scale);
-  pnh->param<double>("lift_scale_up", lift_scale_up);
-  pnh->param<double>("lift_scale_down", lift_scale_down);
-  pnh->param<double>("trans_conv_scale", trans_conv_scale);
-  pnh->param<double>("digger_scale", digger_scale);
-  pnh->param<double>("hold_conv_scale_fwd", hold_conv_scale_fwd);
-  pnh->param<double>("hold_conv_scale_back", hold_conv_scale_back);
+  pnh->getParam("frequency", frequency);
+  pnh->getParam("linear_scale", linear_scale);
+  pnh->getParam("angular_scale", angular_scale);
+  pnh->getParam("lift_scale_up", lift_scale_up);
+  pnh->getParam("lift_scale_down", lift_scale_down);
+  pnh->getParam("trans_conv_scale", trans_conv_scale);
+  pnh->getParam("digger_scale", digger_scale);
+  pnh->getParam("hold_conv_scale_fwd", hold_conv_scale_fwd);
+  pnh->getParam("hold_conv_scale_back", hold_conv_scale_back);
 
   // Subscribers
   ros::Timer update_timer = nh->createTimer(ros::Duration(1.0/frequency), update_callback);

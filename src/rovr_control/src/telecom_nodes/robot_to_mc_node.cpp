@@ -119,11 +119,11 @@ int main(int argc, char** argv){
   pnh = new ros::NodeHandle("~");
 
   // Params
-  pnh->param<double>("frequency", frequency);
-  pnh->param<std::string>("dst_addr", dst_addr);
-  pnh->param<int>("dst_port", dst_port);
-  pnh->param<int>("src_port", src_port);
-  pnh->param<bool>("isTeleopCtrl", isTeleopCtrl);
+  pnh->getParam("frequency", frequency);
+  pnh->getParam("dst_addr", dst_addr);
+  pnh->getParam("dst_port", dst_port);
+  pnh->getParam("src_port", src_port);
+  pnh->getParam("isTeleopCtrl", isTeleopCtrl);
   
   // Init variables
   fmt = new Formatter({js_axes_msg_fmt, button_msg_fmt, pad_msg_fmt});
