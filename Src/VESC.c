@@ -19,9 +19,11 @@ void vesc_send_message(VESC* vesc, uint8_t type, uint8_t *buffer, int length) {
     enque_can_message(type << 8 | vesc->id, buffer, length);
 }
 
-VESC* create_vesc(uint8_t id) {
+VESC* create_vesc(uint8_t id, int pole_pairs) {
     VESC* vesc = (VESC*) malloc(sizeof(VESC));
+    memset(vesc, 0, sizeof(VESC));
     vesc->id = id;
+    vesc->pole_pairs = pole_pairs;
     vesc_map[id] = vesc;
     return vesc;
 }
@@ -31,6 +33,7 @@ void delete_vesc(VESC* vesc) {
     free(vesc);
 }
 
+# https://github.com/vedderb/bldc/blob/a141e750bb667cd828e9fd5e5b185724f22fae0b/comm_can.c#L1114
 void handle_vesc_can_recv(rmc_can_msg msg) {
     uint8_t vesc_id = msg.id & 0xFF;
     VESC* ptr = vesc_map[vesc_id];
@@ -43,7 +46,8 @@ void handle_vesc_can_recv(rmc_can_msg msg) {
                 if (msg.length < 8) {
                     break;
                 }
-                ptr->rpm = (float) buffer_pop_int32(buf, &index);
+                // To turn this into an actual RPM, divide by 6 for the turnigy motors
+                ptr->erpm = (float) buffer_pop_int32(buf, &index);
                 ptr->current = (float) buffer_pop_int16(buf, &index) / 10.0;
                 ptr->duty = (float) buffer_pop_int16(buf, &index) / 1000.0;
                 break;
@@ -114,16 +118,38 @@ void vesc_set_current(VESC* vesc, float current) {
     vesc_send_message(vesc, VESC_PACKET_SET_CURRENT, buffer, 4);
 }
 
+float vesc_get_rpm(VESC* vesc) {
+    return vesc->erpm / vesc->pole_pairs;
+}
+
+float vesc_get_position(VESC* vesc) {
+    return vesc->tacho_value / (6 * vesc->pole_pairs);
+}
+
 int32_t buffer_pop_int32(uint8_t *buffer, int *index) {
     int32_t buf;
-    memcpy(&buf, &buffer[*index], sizeof(int32_t));
-    (*index) += sizeof(int32_t);
+    buf = buffer[(*index)++] << 24;
+    buf |= buffer[(*index)++] << 16;
+    buf |= buffer[(*index)++] << 8;
+    buf |= buffer[(*index)++];
     return buf;
 }
 
 int16_t buffer_pop_int16(uint8_t *buffer, int *index) {
     int16_t buf;
-    memcpy(&buf, &buffer[*index], sizeof(int16_t));
-    (*index) += sizeof(int16_t);
+    buf |= buffer[(*index)++] << 8;
+    buf |= buffer[(*index)++];
     return buf;
+}
+
+void buffer_put_int32(uint8_t *buffer, int *index, int32_t value) {
+    buffer[(*index)++] = (value << 24) & 0xFF;
+    buffer[(*index)++] = (value << 16) & 0xFF;
+    buffer[(*index)++] = (value << 8) & 0xFF;
+    buffer[(*index)++] = value & 0xFF;
+}
+
+void buffer_put_int16(uint8_t *buffer, int *index, int16_t value) {
+    buffer[(*index)++] = (value << 8) & 0xFF;
+    buffer[(*index)++] = value & 0xFF;
 }

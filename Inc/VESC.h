@@ -20,9 +20,12 @@
 #define VESC_PACKET_PING 17
 #define VESC_PACKET_PONG 18
 
+#define VESC_TACHO_CPR 42
+
 typedef struct {
     uint8_t id;
-    float rpm;
+    int pole_pairs;
+    float erpm;
     float current;
     float duty;
     float amp_hours;
@@ -37,7 +40,7 @@ typedef struct {
     float v_in;
 } VESC;
 
-VESC* create_VESC(uint8_t id);
+VESC* create_VESC(uint8_t id, int pole_pairs);
 void vesc_send_message(VESC* vesc, uint8_t type, uint8_t* message, int length);
 
 void vesc_system_init();
@@ -51,6 +54,14 @@ int32_t buffer_pop_int32(uint8_t* buffer, int* index);
  * Pops a value off the buffer starting at index of the specified length and increments index to match
  */
 int16_t buffer_pop_int16(uint8_t* buffer, int* index);
+/**
+ * Puts a value into the buffer starting at index of the specified length and increments index to match
+ */
+void buffer_put_int32(uint8_t* buffer, int* index, int32_t value);
+/**
+ * Puts a value into the the buffer starting at index of the specified length and increments index to match
+ */
+void buffer_put_int16(uint8_t* buffer, int* index, int16_t value);
 
 /**
  * Set duty cycle to specified VESC
@@ -59,7 +70,7 @@ int16_t buffer_pop_int16(uint8_t* buffer, int* index);
  */
 void vesc_set_duty_cycle(VESC* vesc, float duty_cycle);
 /**
- * Set velocity to selected VESC
+ * Set target velocity to selected VESC
  * @param vesc
  * @param rpm Velocity in RPM
  */
@@ -76,6 +87,20 @@ void vesc_set_current(VESC* vesc, float current);
  * @param position Position in ?
  */
 void vesc_set_position(VESC* vesc, float position);
+
+/**
+ * Get the actual RPM of the motor as returned by the VESC
+ * @param vesc
+ * @return The latest speed of the motor
+ */
+float vesc_get_rpm(VESC* vesc);
+
+/**
+ * Get the position of the motor in revolutions
+ * @param vesc
+ * @return The position of the motor
+ */
+float vesc_get_position(VESC* vesc);
 
 
 #endif //NASA_RMC_RT_VESC_H
