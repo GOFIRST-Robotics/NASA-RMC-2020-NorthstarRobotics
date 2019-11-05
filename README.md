@@ -35,5 +35,5 @@ ACHOO
 | Command    | ID   | Broadcasts/Listens  | Length | Data |
 |------------|------|---------------------|--------|------|
 | Set kneel  |  40  | Listens             |   1    | 0: Stand<br>1: Kneel |
-| Kneel state|  41  | Broadcasts (10 Hz)  |   2    | 00: Standing<br>01: Moving up<br>10: Moving Down<br>11: Kneeling |
+| Kneel state|  41  | Broadcasts (10 Hz)  |   1    | 0: Standing<br>1: Moving up<br>2: Moving Down<br>3: Kneeling |
 

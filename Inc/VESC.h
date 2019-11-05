@@ -80,9 +80,9 @@ void vesc_set_rpm(VESC* vesc, float rpm);
  */
 void vesc_set_current(VESC* vesc, float current);
 /**
- * Set position
+ * Set target position
  * @param vesc
- * @param position Position in ?
+ * @param position Position in degrees
  */
 void vesc_set_position(VESC* vesc, float position);
 
@@ -94,7 +94,7 @@ void vesc_set_position(VESC* vesc, float position);
 float vesc_get_rpm(VESC* vesc);
 
 /**
- * Get the position of the motor in revolutions
+ * Get the position of the motor in degrees
  * @param vesc
  * @return The position of the motor
  */
