@@ -24,7 +24,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "can_manager.hpp"
+#include "can_manager.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -52,6 +52,7 @@ osThreadId defaultTaskHandle;
 osThreadId canTxTaskHandle;
 uint32_t canTxTaskBuffer[ 128 ];
 osStaticThreadDef_t canTxTaskControlBlock;
+osThreadId achooControllerHandle;
 /* USER CODE BEGIN PV */
 QueueHandle_t xCanTxQueue;
 /* USER CODE END PV */
@@ -64,6 +65,7 @@ static void MX_CAN_Init(void);
 static void MX_ADC1_Init(void);
 void StartDefaultTask(void const * argument);
 extern void canTxTaskFunc(void const * argument);
+extern void achooControllerFunc(void const * argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -133,6 +135,10 @@ int main(void)
   /* definition and creation of canTxTask */
   osThreadStaticDef(canTxTask, canTxTaskFunc, osPriorityNormal, 0, 128, canTxTaskBuffer, &canTxTaskControlBlock);
   canTxTaskHandle = osThreadCreate(osThread(canTxTask), NULL);
+
+  /* definition and creation of achooController */
+  osThreadDef(achooController, achooControllerFunc, osPriorityNormal, 0, 128);
+  achooControllerHandle = osThreadCreate(osThread(achooController), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

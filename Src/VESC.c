@@ -3,7 +3,7 @@
 //
 
 #include "VESC.h"
-#include "can_manager.hpp"
+#include "can_manager.h"
 #include "stdint.h"
 #include "stdlib.h"
 #include "string.h"
@@ -33,7 +33,7 @@ void delete_vesc(VESC* vesc) {
     free(vesc);
 }
 
-# https://github.com/vedderb/bldc/blob/a141e750bb667cd828e9fd5e5b185724f22fae0b/comm_can.c#L1114
+// https://github.com/vedderb/bldc/blob/a141e750bb667cd828e9fd5e5b185724f22fae0b/comm_can.c#L1114
 void handle_vesc_can_recv(rmc_can_msg msg) {
     uint8_t vesc_id = msg.id & 0xFF;
     VESC* ptr = vesc_map[vesc_id];
