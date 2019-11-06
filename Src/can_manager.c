@@ -2,26 +2,25 @@
 // Created by nick on 10/22/19.
 //
 
-extern "C" {
 #include <stm32f3xx.h>
 #include "FreeRTOS.h"
 #include "queue.h"
 #include "task.h"
 #include "cmsis_os.h"
 #include "main.h"
-}
-#include <cstring>
-#include <vector>
-#include "can_manager.hpp"
+
+#include "string.h"
+#include "can_manager.h"
 
 
-extern "C" CAN_HandleTypeDef hcan;
-extern "C" QueueHandle_t xCanTxQueue;
+extern CAN_HandleTypeDef hcan;
+extern QueueHandle_t xCanTxQueue;
 uint32_t TxMailbox;
 CAN_TxHeaderTypeDef TxHeader;
 CAN_RxHeaderTypeDef   RxHeader;
 uint8_t               RxData[8];
-std::vector<CANMsgHandlerPair> msgHandlers;
+CANMsgHandlerPair msgHandlers[CAN_HANDLERS_SIZE];
+int canHandlersCt = 0;
 
 void do_send_can_message(unsigned int id, uint8_t* buf, int length) {
     TxHeader.IDE = CAN_ID_EXT;
@@ -41,7 +40,6 @@ bool enque_can_message(unsigned int id, uint8_t* buf, int length) {
     return xQueueSend(xCanTxQueue, &message, 0) == pdTRUE;
 }
 
-extern "C" {
 void canTxTaskFunc(void *params) {
     TickType_t lastWakeTime;
     while (1) {
@@ -53,13 +51,12 @@ void canTxTaskFunc(void *params) {
         }
     }
 }
-}
 
 void registerCANMsgHandler(unsigned int mask, void (*callback)(rmc_can_msg msg)) {
-    msgHandlers.push_back({.mask = mask, .callback = callback});
+    msgHandlers[canHandlersCt++] = (CANMsgHandlerPair){.mask = mask, .callback = callback};
 }
 
-extern "C" void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan_) {
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan_) {
     /* Get RX message */
     if (HAL_CAN_GetRxMessage(hcan_, CAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK)
     {
@@ -70,8 +67,8 @@ extern "C" void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan_) {
     msg.id = RxHeader.ExtId;
     msg.length = RxHeader.DLC;
     memcpy(&msg.buf, RxData, msg.length);
-    for (auto it = msgHandlers.begin(); it < msgHandlers.end(); ++it) {
-        CANMsgHandlerPair handlerPair = *it;
+    for (int i = 0; i < canHandlersCt; ++i) {
+        CANMsgHandlerPair handlerPair = msgHandlers[i];
         if (msg.id & handlerPair.mask) {
             handlerPair.callback(msg);
         }

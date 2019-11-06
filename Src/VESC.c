@@ -3,7 +3,7 @@
 //
 
 #include "VESC.h"
-#include "can_manager.hpp"
+#include "can_manager.h"
 #include "stdint.h"
 #include "stdlib.h"
 #include "string.h"
@@ -33,7 +33,7 @@ void delete_vesc(VESC* vesc) {
     free(vesc);
 }
 
-# https://github.com/vedderb/bldc/blob/a141e750bb667cd828e9fd5e5b185724f22fae0b/comm_can.c#L1114
+// https://github.com/vedderb/bldc/blob/a141e750bb667cd828e9fd5e5b185724f22fae0b/comm_can.c#L1114
 void handle_vesc_can_recv(rmc_can_msg msg) {
     uint8_t vesc_id = msg.id & 0xFF;
     VESC* ptr = vesc_map[vesc_id];
@@ -98,13 +98,17 @@ void vesc_set_duty_cycle(VESC* vesc, float duty_cycle) {
 }
 
 void vesc_set_rpm(VESC* vesc, float rpm) {
+    // Normalize rpm to erpm
+    rpm *= vesc->pole_pairs;
     uint8_t buffer[4];
     int32_t val = (int32_t)(rpm);
     memcpy(buffer, &val, sizeof(uint8_t)*4);
     vesc_send_message(vesc, VESC_PACKET_SET_RPM, buffer, 4);
 }
 
-void vesc_set_pos(VESC* vesc, float pos) {
+void vesc_set_position(VESC* vesc, float pos) {
+    // Multiply degrees to encoder counts
+    pos *= (6 * vesc->pole_pairs);
     uint8_t buffer[4];
     int32_t val = (int32_t)(pos * 1000000.0);
     memcpy(buffer, &val, sizeof(uint8_t)*4);
@@ -123,7 +127,7 @@ float vesc_get_rpm(VESC* vesc) {
 }
 
 float vesc_get_position(VESC* vesc) {
-    return vesc->tacho_value / (6 * vesc->pole_pairs);
+    return 360.0F * vesc->tacho_value / (6 * vesc->pole_pairs);
 }
 
 int32_t buffer_pop_int32(uint8_t *buffer, int *index) {

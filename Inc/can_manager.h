@@ -1,12 +1,14 @@
 //
 // Created by nick on 10/22/19.
 //
+#ifndef NASA_RMC_RT_CAN_MANAGER_H
+#define NASA_RMC_RT_CAN_MANAGER_H
 
-#ifndef NASA_RMC_RT_CAN_MANAGER_HPP
-#define NASA_RMC_RT_CAN_MANAGER_HPP
+#include "stdint.h"
+#include "stdbool.h"
 
-#include <stdint.h>
-#include <stdbool.h>
+#define CAN_ALL_TYPES_MASK 0x7FFFFF00
+#define CAN_HANDLERS_SIZE 10
 
 typedef struct {unsigned int id; uint8_t buf[8]; int length;} rmc_can_msg;
 
@@ -17,4 +19,4 @@ typedef struct {unsigned int mask; void (*callback)(rmc_can_msg msg);} CANMsgHan
 
 void registerCANMsgHandler(unsigned int mask, void (*callback)(rmc_can_msg msg));
 
-#endif //NASA_RMC_RT_CAN_MANAGER_HPP
+#endif //NASA_RMC_RT_CAN_MANAGER_H

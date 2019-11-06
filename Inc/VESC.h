@@ -6,7 +6,7 @@
 #define NASA_RMC_RT_VESC_H
 
 #include "stdint.h"
-#include "can_manager.hpp"
+#include "can_manager.h"
 
 #define VESC_PACKET_SET_CURRENT 1
 #define VESC_PACKET_SET_RPM 3
@@ -19,8 +19,6 @@
 #define VESC_PACKET_STATUS_5 27
 #define VESC_PACKET_PING 17
 #define VESC_PACKET_PONG 18
-
-#define VESC_TACHO_CPR 42
 
 typedef struct {
     uint8_t id;
@@ -40,7 +38,7 @@ typedef struct {
     float v_in;
 } VESC;
 
-VESC* create_VESC(uint8_t id, int pole_pairs);
+VESC* create_vesc(uint8_t id, int pole_pairs);
 void vesc_send_message(VESC* vesc, uint8_t type, uint8_t* message, int length);
 
 void vesc_system_init();
@@ -82,9 +80,9 @@ void vesc_set_rpm(VESC* vesc, float rpm);
  */
 void vesc_set_current(VESC* vesc, float current);
 /**
- * Set position
+ * Set target position
  * @param vesc
- * @param position Position in ?
+ * @param position Position in degrees
  */
 void vesc_set_position(VESC* vesc, float position);
 
@@ -96,7 +94,7 @@ void vesc_set_position(VESC* vesc, float position);
 float vesc_get_rpm(VESC* vesc);
 
 /**
- * Get the position of the motor in revolutions
+ * Get the position of the motor in degrees
  * @param vesc
  * @return The position of the motor
  */
