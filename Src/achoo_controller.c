@@ -12,7 +12,7 @@
 
 KneelState targetState = KNEELING;
 KneelState currentState = KNEELING;
-float pos_target = 0;
+float pos_target = ACHOO_KNEEL_SETPOINT;
 VESC* leftMotor;
 VESC* rightMotor;
 
@@ -33,15 +33,16 @@ void achooCANCallback(rmc_can_msg msg) {
 }
 
 void achooControllerFunc(void const * argument) {
+    // System setup
     registerCANMsgHandler(ACHOO_SYS_ID, &achooCANCallback);
     leftMotor = create_vesc(ACHOO_MOTOR_L, ACHOO_MOTOR_POLE_PAIRS);
     rightMotor = create_vesc(ACHOO_MOTOR_R, ACHOO_MOTOR_POLE_PAIRS);
 
     TickType_t lastWakeTime;
     while (1) {
-        vTaskDelayUntil(&lastWakeTime, 100 * portTICK_RATE_MS);
+        vTaskDelayUntil(&lastWakeTime, ACHOO_LOOP_MS * portTICK_RATE_MS);
 
-        // Handle state transitions
+        // Handle target state transitions
         if (targetState == KNEELING && (currentState == STANDING || currentState == MOVING_STAND)) {
             pos_target = ACHOO_KNEEL_SETPOINT;
             currentState = MOVING_KNEEL;
@@ -50,7 +51,7 @@ void achooControllerFunc(void const * argument) {
             pos_target = ACHOO_STAND_SETPOINT;
             currentState = MOVING_STAND;
         }
-
+        // Check if our movement has completed
         bool inThreshold = abs(getACHOOError()) < ACHOO_ERROR_THRESHOLD;
         if (currentState == MOVING_KNEEL && inThreshold) {
             currentState = KNEELING;
@@ -59,6 +60,7 @@ void achooControllerFunc(void const * argument) {
             currentState = STANDING;
         }
 
+        // Continuously set VESC position PID target
         vesc_set_position(leftMotor, pos_target / ACHOO_DEG_MM_CONV);
         vesc_set_position(rightMotor, pos_target / ACHOO_DEG_MM_CONV);
 
@@ -73,4 +75,8 @@ float getACHOOError() {
     float lerr = pos_target - vesc_get_position(leftMotor) * ACHOO_DEG_MM_CONV;
     float rerr = pos_target - vesc_get_position(rightMotor) * ACHOO_DEG_MM_CONV;
     return (lerr + rerr) / 2;
+}
+
+KneelState getACHOOState() {
+    return currentState;
 }

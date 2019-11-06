@@ -25,6 +25,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "can_manager.h"
+#include "VESC.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -82,7 +83,7 @@ extern void achooControllerFunc(void const * argument);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+  vesc_system_init();
   /* USER CODE END 1 */
   
 

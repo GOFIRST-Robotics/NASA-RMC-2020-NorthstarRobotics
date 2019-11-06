@@ -16,6 +16,7 @@ typedef enum {
 #define ACHOO_MSG_SET_KNEEL 40
 #define ACHOO_MSG_STATUS 41
 
+#define ACHOO_LOOP_MS 100
 #define ACHOO_KNEEL_SETPOINT 0 // mm
 #define ACHOO_STAND_SETPOINT 20 // mm
 #define ACHOO_DEG_MM_CONV 0.00278 // mm per degree
@@ -24,5 +25,6 @@ typedef enum {
 void achooCANCallback(rmc_can_msg msg);
 
 float getACHOOError();
+KneelState getACHOOState();
 
 #endif //NASA_RMC_RT_ACHOO_CONTROLLER_H
