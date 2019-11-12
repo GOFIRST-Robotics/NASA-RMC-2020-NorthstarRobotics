@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
+  <env name="GAZEBO_RESOURCE_PATH" value="$(find rovr_gazebo)"/>
   <arg name="pause" default="false"/>
   <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <!--<arg name="world_name" value="$(find rovr_gazebo)/worlds/Rough1.world"/>-->
+    <arg name="world_name" value="worlds/Rough1.world"/>
     <!-- more default parameters can be changed here -->
     <arg name="paused" value="$(arg pause)"/>
     <arg name="use_sim_time" value="true"/>
@@ -34,14 +35,14 @@
     front_left_wheel_position_controller
     front_right_wheel_position_controller
     back_left_wheel_position_controller
-    back_right_wheel_position_controller-->
+    back_right_wheel_position_controller -->
 
   <!--Convert Joint States to TF transforms for rviz-->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
     respawn="false" output="screen">
     <param name="publish_frequency" type="double" value="50.0" />
     <remap from="joint_states" to="rovr/joint_states"/>
-    <!-- <remap from="robot_description" to="rovr_description" /> -->
+    <remap from="robot_description" to="rovr_description" />
   </node>
   <!--
   <arg name="use_gui" value="True"/>
