@@ -46,7 +46,7 @@
     <!-- Equation for inertial matrix of box/prisim -->
     <xacro:macro name="box_inertial_matrix" params="m l w h">
     	<inertia ixx="${(m*(w*w+h*h))/12.0}" ixy = "0.0" ixz = "0.0"
-       				 iyy="${(m*(l*l+h*h))/12.0}" iyz = "0.0"
+       				 iyy="${(m*(l*l+h*h))/12.0}" iyz = "-1*base_width/20.0"
        				 izz="${(m*(l*l+w*w))/12.0}" />
     </xacro:macro>
     <!-- Equation for inertial matrix of cylinder (rotating around y axis) -->
@@ -58,15 +58,15 @@
 
     <!-- Main dimensions: meters, kg, seconds, rads --> 
     
-    <!-- Rectangular Body Frame-->
-    <xacro:property name="base_height" value=".500" /> <!--z-->
-	  <xacro:property name="base_length" value="0.500" /> <!--x-->
+    <!-- Rectangular Body Frame (Gray)-->
+    <xacro:property name="base_height" value="0.500" /> <!--z-->
+	  <xacro:property name="base_length" value=".500" /> <!--x-->
 	  <xacro:property name="base_width" value="0.7808" /> <!--y-->
 	  <xacro:property name="base_mass" value="72.0" />
 
     <!--Part that extends from Body (Blue)-->
-    <xacro:property name="leg_height" value=".0635"/>
-    <xacro:property name="leg_length" value="0.739775"/>
+    <xacro:property name="leg_height" value="0.0635"/>
+    <xacro:property name="leg_length" value="${base_length}"/>
     <xacro:property name="leg_width" value="0.0508"/>
     <xacro:property name="leg_mass" value="4"/>
 
@@ -75,12 +75,13 @@
 	  <xacro:property name="leg_y_origin_to_axle" value="0.0254" />
 	  <xacro:property name="leg_axle_height" value="0.10535" />
 
-    <!-- Rectangular representation of Drum (Purple)-->
-    <xacro:property name="drum_height" value=".0635"/>
-    <xacro:property name="drum_length" value="${base_length+.01}"/>
-    <xacro:property name="drum_width" value=".110"/>
+    <!--Rectangular representation of Drum (Purple)-->
+    <xacro:property name="drum_height" value="0.0635"/> 
+    <xacro:property name="drum_length" value="0.110"/>
+    <xacro:property name="drum_width" value="${base_width-2*leg_width}"/> 
     <xacro:property name="drum_mass" value="2"/>
-    <xacro:property name="drum_y_origin_to_base_origin" value="${base_width/2-drum_width/2}"/>
+    <xacro:property name="drum_x_origin_to_base_origin" value=".195"/>
+    <xacro:property name="drum_y_origin_to_base_origin" value="0"s/>  
     
   <!-- End macros and properties -->
 
@@ -91,7 +92,7 @@
 	    <link name="base_link">
 		    <!-- visual is the model shown in gazebo / rviz -->
 		    <visual>
-			    <origin xyz="0 0 ${base_height/2.0}" rpy="0 0 0"/>
+			    <origin xyz="0 0 ${base_height/2.0}" rpy="0 0 0"/> 
 			    <geometry>
 				    <box size=" ${base_length} ${base_width} ${base_height}" />
 			    </geometry>
@@ -211,7 +212,7 @@
     <!-- Attaching the drum to the robot frame -->
     <!-- joint defines position relationship of the child to the parent-->
     <joint name="drum_joint" type="fixed">
-		  <origin xyz="0 ${drum_y_origin_to_base_origin} ${-drum_height/2}" rpy="0 0 0" />
+		  <origin xyz="${drum_x_origin_to_base_origin} ${drum_y_origin_to_base_origin} ${-drum_height/2}" rpy="0 0 0" />
 		  <parent link="base_link" />
 		  <child link="drum" />
 	  </joint>
@@ -260,17 +261,15 @@
     <wheel prefix="back_right" leg="right_leg" x="-1" y="-1"/>
 
     <!-- extrusions for cameras / sensors -->
-    
     <extrusion prefix="front_left" x="1" y="1"/>
     <extrusion prefix="front_right" x="1" y="-1"/>
     <extrusion prefix="back_left" x="-1" y="1"/>
     <extrusion prefix="back_right" x="-1" y="-1"/>
-
   <!-- End wheels and extrusions -->
   
   
-  <!-- The following represent the camera placementon the extrusions -->
-  
+  <!-- The following represent the camera placement on the extrusions -->
+  <!--
     <xacro:arg name="cameras" default="false"/>
     <xacro:property name="useCams" value="$(arg cameras)"/>
 
