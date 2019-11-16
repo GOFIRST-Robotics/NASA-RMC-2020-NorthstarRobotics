@@ -258,17 +258,17 @@
     <wheel prefix="back_right" leg="right_leg" x="-1" y="-1"/>
 
     <!-- extrusions for cameras / sensors -->
-    <!--
+    
     <extrusion prefix="front_left" x="1" y="1"/>
     <extrusion prefix="front_right" x="1" y="-1"/>
     <extrusion prefix="back_left" x="-1" y="1"/>
     <extrusion prefix="back_right" x="-1" y="-1"/>
-    -->
+
   <!-- End wheels and extrusions -->
   
   
   <!-- The following represent the camera placementon the extrusions -->
-  <!--
+  
     <xacro:arg name="cameras" default="false"/>
     <xacro:property name="useCams" value="$(arg cameras)"/>
 
@@ -278,7 +278,7 @@
       <camera_macro number="3" y="1" extrusion="back_left_extrusion" spin="${PI}"/>
       <camera_macro number="4" y="-1" extrusion="back_right_extrusion" spin="${PI}"/>
     </xacro:if>
-    -->
+    
   <!-- End cameras -->
   
   <!-- The following defines the positions of the IMU and Decawave sensors -->
