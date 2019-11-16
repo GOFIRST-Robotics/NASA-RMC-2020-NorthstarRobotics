@@ -292,7 +292,7 @@
 	    <wheelSeparation>${2*base_width}</wheelSeparation>
 	    <wheelDiameter>${2*wheel_radius}</wheelDiameter>
 	    <robotBaseFrame>base_link</robotBaseFrame>
-	    <torque>20</torque>
+	    <torque>1000</torque>
 	    <broadcastTF>true</broadcastTF>
 			<legacyMode>false</legacyMode>
 	  </plugin>
