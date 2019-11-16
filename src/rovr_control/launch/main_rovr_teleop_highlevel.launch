@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Launch control from joystick plugged into
-     the main computer, sending high-level command messages
+<!-- Launch control from teleop, sending high-level command messages
 -->
 <launch>
-  <arg name="js_dev" default="/dev/input/js0"/>
-
-  <node pkg="joy" type="joy_node" name="joy" output="screen">
-    <param name="dev" value="$(arg js_dev)"/>
+  <node pkg="rovr_control" type="robot_to_mc_node" name="robot_to_mc_node" output="screen" respawn="true">
+    <param name="frequency" value="20.0" type="double"/>
+    <param name="dst_addr" value="192.168.1.10" type="str"/>
+    <param name="dst_port" value="5554" type="int"/>
+    <param name="src_port" value="5519" type="int"/>
+    <param name="isTeleopCtrl" value="true" type="bool"/>
   </node>
 
-  <node pkg="rovr_control" type="teleop_twist_node" name="main_teleop_twist" output="screen">
-  </node>
+  <include file="highlevel_control.launch" />
 
 </launch>

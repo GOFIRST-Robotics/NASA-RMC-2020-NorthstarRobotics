@@ -301,7 +301,7 @@
 	    <wheelSeparation>${2*base_width}</wheelSeparation>
 	    <wheelDiameter>${2*wheel_radius}</wheelDiameter>
 	    <robotBaseFrame>base_link</robotBaseFrame>
-	    <torque>1000</torque>
+	    <torque>10000</torque>
 	    <broadcastTF>true</broadcastTF>
 			<legacyMode>false</legacyMode>
 	  </plugin>
@@ -314,38 +314,4 @@
     <legacyMode>false</legacyMode>
   </plugin>
   </gazebo>
-  
-  <!-- <gazebo>
-	  <plugin name="differential_drive_controller1" filename="libgazebo_ros_diff_drive.so">
-	    <alwaysOn>true</alwaysOn>
-	    <updateRate>100</updateRate>
-	    <leftJoint>front_left_wheel_joint</leftJoint>
-	    <rightJoint>front_right_wheel_joint</rightJoint>
-	    <wheelSeparation>${2*base_x_origin_to_wheel_origin}</wheelSeparation>
-	    <wheelDiameter>${2*wheel_radius}</wheelDiameter>
-	    <torque>20</torque>
-	    <commandTopic>cmd_vel</commandTopic>
-	    <odometryTopic>odom</odometryTopic>
-	    <odometryFrame>odom</odometryFrame>
-	    <robotBaseFrame>world_origin</robotBaseFrame>
-			<legacyMode>false</legacyMode>
-	  </plugin>
-	</gazebo>
-
-	<gazebo>
-	  <plugin name="differential_drive_controller2" filename="libgazebo_ros_diff_drive.so">
-	    <alwaysOn>true</alwaysOn>
-	    <updateRate>100</updateRate>
-	    <leftJoint>back_left_wheel_joint</leftJoint>
-	    <rightJoint>back_right_wheel_joint</rightJoint>
-	    <wheelSeparation>${2*base_x_origin_to_wheel_origin}</wheelSeparation>
-	    <wheelDiameter>${2*wheel_radius}</wheelDiameter>
-	    <torque>20</torque>
-	    <commandTopic>cmd_vel</commandTopic>
-	    <odometryTopic>odom</odometryTopic>
-	    <odometryFrame>odom</odometryFrame>
-	    <robotBaseFrame>world_origin</robotBaseFrame>
-			<legacyMode>false</legacyMode>
-	  </plugin>
-	</gazebo> -->
 </robot>

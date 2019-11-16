@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Translate joystick messages into high-level control messages
+    This launch file shouldn't be called directly, use one of the main_ files instead.
+-->
+<launch>
+  <node pkg="rovr_control" type="teleop_twist_node" name="main_teleop_twist" output="screen">
+    <param name="twist_topic" value="/cmd_vel" />
+  </node>
+
+</launch>
