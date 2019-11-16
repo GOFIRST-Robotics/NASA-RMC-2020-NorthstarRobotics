@@ -54,26 +54,32 @@
        				 izz="${(m*(3*r*r+h*h))/12.0}"  />
     </xacro:macro>
 
-    <!-- Main dimensions: meters, kg, seconds, rads -->
-    <xacro:property name="base_height" value="0.54" /> <!--z-->
-	  <xacro:property name="base_length" value="0.864925" /> <!--x-->
-	  <xacro:property name="base_width" value="0.740" /> <!--y-->
+    <!-- Main dimensions: meters, kg, seconds, rads --> 
+    
+    <!-- Rectangular Body Frame-->
+    <xacro:property name="base_height" value=".500" /> <!--z-->
+	  <xacro:property name="base_length" value="0.500" /> <!--x-->
+	  <xacro:property name="base_width" value="0.7808" /> <!--y-->
 	  <xacro:property name="base_mass" value="72.0" />
 
-    <xacro:property name="leg_height" value="0.127"/>
+    <!--Part that extends from Body (Blue)-->
+    <xacro:property name="leg_height" value=".0635"/>
     <xacro:property name="leg_length" value="0.739775"/>
     <xacro:property name="leg_width" value="0.0508"/>
     <xacro:property name="leg_mass" value="4"/>
 
+    <!--Distance from Leg to Center-->
     <xacro:property name="leg_x_origin_to_axle" value="${leg_length/2-.10835}" />
 	  <xacro:property name="leg_y_origin_to_axle" value="0.0254" />
 	  <xacro:property name="leg_axle_height" value="0.10535" />
 
-    <xacro:property name="drum_height" value=".11809"/>
+    <!-- Rectangular representation of Drum (Purple)-->
+    <xacro:property name="drum_height" value=".0635"/>
     <xacro:property name="drum_length" value="${base_length+.01}"/>
-    <xacro:property name="drum_width" value=".34"/>
+    <xacro:property name="drum_width" value=".110"/>
     <xacro:property name="drum_mass" value="2"/>
     <xacro:property name="drum_y_origin_to_base_origin" value="${base_width/2-drum_width/2}"/>
+    
   <!-- End macros and properties -->
 
 
@@ -243,7 +249,6 @@
     <!-- End drum description -->
   <!-- End links and joints -->
   
-  
   <!-- The following represent extrusions from the frame and drivetrain
        which are defined in wheel.urdf.xacro and extrusion.urdf.xacro -->
     <!-- wheels -->
@@ -253,14 +258,17 @@
     <wheel prefix="back_right" leg="right_leg" x="-1" y="-1"/>
 
     <!-- extrusions for cameras / sensors -->
+    <!--
     <extrusion prefix="front_left" x="1" y="1"/>
     <extrusion prefix="front_right" x="1" y="-1"/>
     <extrusion prefix="back_left" x="-1" y="1"/>
     <extrusion prefix="back_right" x="-1" y="-1"/>
+    -->
   <!-- End wheels and extrusions -->
   
   
   <!-- The following represent the camera placementon the extrusions -->
+  <!--
     <xacro:arg name="cameras" default="false"/>
     <xacro:property name="useCams" value="$(arg cameras)"/>
 
@@ -270,6 +278,7 @@
       <camera_macro number="3" y="1" extrusion="back_left_extrusion" spin="${PI}"/>
       <camera_macro number="4" y="-1" extrusion="back_right_extrusion" spin="${PI}"/>
     </xacro:if>
+    -->
   <!-- End cameras -->
   
   <!-- The following defines the positions of the IMU and Decawave sensors -->
