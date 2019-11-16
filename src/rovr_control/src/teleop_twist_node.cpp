@@ -35,7 +35,7 @@ ros::Publisher cmd_vel_pub;
 
 // ROS Topics
 std::string joy_topic = "joy";
-std::string cmd_vel_topic = "cmd_vel";
+std::string cmd_vel_topic = "/rovr/cmd_vel";
 
 // ROS Callbacks
 void joy_callback(const sensor_msgs::Joy::ConstPtr& msg);
@@ -49,7 +49,7 @@ double angular_scale = 1.0;
 
 // Global_vars
 const int linear_axis = 1;
-const int angular_axis = 2;
+const int angular_axis = 4;
 /*const int decrease_angular_scale_button = 6;
 const int decrease_linear_scale_button = 7;
 const int increase_linear_scale_button = 5;

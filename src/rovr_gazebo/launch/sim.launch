@@ -4,7 +4,7 @@
   <arg name="pause" default="true"/>
   <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="worlds/Rough1.world"/>
+    <arg name="world_name" value="worlds/frc2016.world"/>
     <!-- more default parameters can be changed here -->
     <arg name="paused" value="$(arg pause)"/>
     <arg name="use_sim_time" value="true"/>
@@ -20,15 +20,13 @@
 
   <!-- Spawn a robot into Gazebo -->
   <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
-    args=" -urdf -model rovr -x 0.0 -y 0.0 -z 3.5 -param robot_description" />
+    args=" -urdf -model rovr -x 0.0 -y 0.0 -z 1 -param robot_description" />
 
   <rosparam file="$(find rovr_control)/config/rovr_control.yaml" command="load"/>
 
   <!--Load Gazebo Controllers-->
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
     output="screen" ns="/rovr" args="
-
-    drum_position_controller
     joint_state_controller
     front_left_wheel_position_controller
     front_right_wheel_position_controller
@@ -40,7 +38,6 @@
     respawn="false" output="screen">
     <param name="publish_frequency" type="double" value="50.0" />
     <remap from="joint_states" to="rovr/joint_states"/>
-    <remap from="robot_description" to="rovr_description" />
   </node>
   
   <!--<arg name="use_gui" value="True"/>

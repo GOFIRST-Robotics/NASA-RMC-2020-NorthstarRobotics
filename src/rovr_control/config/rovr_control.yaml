@@ -1,4 +1,4 @@
-rovr:
+/rovr:
   # Publish all joint states
   joint_state_controller:
     type: joint_state_controller/JointStateController
@@ -26,10 +26,22 @@ rovr:
     type: position_controllers/JointPositionController
     joint: drum_joint
 
-gazebo_ros_control:
-  pid_gains:
-    drum_joint: {p: 100.0, i: 0.01, d: 10.0}
-    # front_left_wheel_joint: {p: 100.0, i: 0.01, d: 10.0}
-    # front_right_wheel_joint: {p: 100.0, i: 0.01, d: 10.0}
-    # back_left_wheel_joint: {p: 100.0, i: 0.01, d: 10.0}
-    # back_right_wheel_joint: {p: 100.0, i: 0.01, d: 10.0}
+  gazebo_ros_control:
+    pid_gains:
+      drum_joint: {p: 100.0, i: 0.01, d: 10.0}
+      front_left_wheel_joint: 
+        p: 100.0
+        i: 0.01
+        d: 10.0
+      front_right_wheel_joint: 
+        p: 100.0 
+        i: 0.01
+        d: 10.0
+      back_left_wheel_joint: 
+        p: 100.0
+        i: 0.01
+        d: 10.0
+      back_right_wheel_joint: 
+        p: 100.0
+        i: 0.01
+        d: 10.0
