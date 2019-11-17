@@ -65,8 +65,8 @@
 	  <xacro:property name="base_mass" value="72.0" />
 
     <!--Part that extends from Body (Blue)-->
-    <xacro:property name="leg_height" value="0.0635"/>
-    <xacro:property name="leg_length" value="${base_length}"/>
+    <xacro:property name="leg_height" value=".1"/>
+    <xacro:property name="leg_length" value="0.5"/>
     <xacro:property name="leg_width" value="0.0508"/>
     <xacro:property name="leg_mass" value="4"/>
 
@@ -75,10 +75,10 @@
 	  <xacro:property name="leg_y_origin_to_axle" value="0.0254" />
 	  <xacro:property name="leg_axle_height" value="0.10535" />
 
-    <!--Rectangular representation of Drum (Purple)-->
-    <xacro:property name="drum_height" value="0.0635"/> 
-    <xacro:property name="drum_length" value="0.110"/>
-    <xacro:property name="drum_width" value="${base_width-2*leg_width}"/> 
+    <!-- Rectangular representation of Drum (Purple)-->
+    <xacro:property name="drum_height" value=".0300"/>
+    <xacro:property name="drum_length" value="${base_length+.01}"/>
+    <xacro:property name="drum_width" value=".110"/>
     <xacro:property name="drum_mass" value="2"/>
     <xacro:property name="drum_x_origin_to_base_origin" value=".195"/>
     <xacro:property name="drum_y_origin_to_base_origin" value="0"s/>  
