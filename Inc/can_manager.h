@@ -17,7 +17,6 @@ typedef struct {
 } rmc_can_msg;
 
 void do_send_can_message(unsigned int id, uint8_t* buf, int length);
-bool enque_can_message(unsigned int id, uint8_t* buf, int length);
 
 typedef struct {
   unsigned int mask;

@@ -5,6 +5,7 @@
 #include "achoo_controller.h"
 #include <FreeRTOS.h>
 #include <can_manager.h>
+#include <math.h>
 #include <rt_conf.h>
 #include <task.h>
 #include "VESC.h"
@@ -12,7 +13,7 @@
 
 KneelState targetState = KNEELING;
 KneelState currentState = KNEELING;
-float pos_target = ACHOO_KNEEL_SETPOINT;
+float pos_target = ACHOO_STAND_SETPOINT;
 VESC* leftMotor;
 VESC* rightMotor;
 
@@ -53,7 +54,7 @@ void achooControllerFunc(void const* argument) {
       currentState = MOVING_STAND;
     }
     // Check if our movement has completed
-    bool inThreshold = abs(getACHOOError()) < ACHOO_ERROR_THRESHOLD;
+    bool inThreshold = fabsf(getACHOOError()) < ACHOO_ERROR_THRESHOLD;
     if (currentState == MOVING_KNEEL && inThreshold) {
       currentState = KNEELING;
     } else if (currentState == MOVING_STAND && inThreshold) {
@@ -67,7 +68,7 @@ void achooControllerFunc(void const* argument) {
     // Send status message
     uint8_t data[1];
     data[0] = currentState;
-    enque_can_message((ACHOO_MSG_STATUS << 8) | ACHOO_SYS_ID, data, 1);
+    do_send_can_message((ACHOO_MSG_STATUS << 8) | ACHOO_SYS_ID, data, 1);
   }
 }
 
