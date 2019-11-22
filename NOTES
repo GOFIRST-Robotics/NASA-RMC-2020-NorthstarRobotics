@@ -1,0 +1,12 @@
+The VESC times out and shuts down its motors after 1000ms of no message.
+Thus the minimum update rate is 1 Hz.
+
+To calculate baud rate timings, use http://www.bittiming.can-wiki.info/ with settings
+STMicro bxCAN
+Clock rate 36 MHz
+Sample point 87.5%
+SJW 1
+
+Put the parameters prescaler, bit length 1, and bit length 2 in CAN->Bit Timing Parameters
+
+1 MbPS has been tested at PS 3, 10 qt1, 1 qt2

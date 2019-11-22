@@ -8,35 +8,36 @@
 #include "stdlib.h"
 #include "string.h"
 
-#define VESC_MAP_SIZE 32
-VESC* vesc_map[VESC_MAP_SIZE] = {NULL};
+#define VESC_MAP_SIZE 16
+VESC vesc_map[VESC_MAP_SIZE] = {};
+int vesc_count = 0;
 
 void vesc_system_init() {
   registerCANMsgHandler(0xFFFFFFFF, handle_vesc_can_recv);
 }
 
 void vesc_send_message(VESC* vesc, uint8_t type, uint8_t* buffer, int length) {
-  enque_can_message(type << 8 | vesc->id, buffer, length);
+  do_send_can_message(type << 8 | vesc->id, buffer, length);
 }
 
 VESC* create_vesc(uint8_t id, int pole_pairs) {
-  VESC* vesc = (VESC*)malloc(sizeof(VESC));
+  VESC* vesc = &vesc_map[vesc_count++];
   memset(vesc, 0, sizeof(VESC));
   vesc->id = id;
   vesc->pole_pairs = pole_pairs;
-  vesc_map[id] = vesc;
   return vesc;
-}
-
-void delete_vesc(VESC* vesc) {
-  vesc_map[vesc->id] = NULL;
-  free(vesc);
 }
 
 // https://github.com/vedderb/bldc/blob/a141e750bb667cd828e9fd5e5b185724f22fae0b/comm_can.c#L1114
 void handle_vesc_can_recv(rmc_can_msg msg) {
   uint8_t vesc_id = msg.id & 0xFF;
-  VESC* ptr = vesc_map[vesc_id];
+  VESC* ptr = NULL;
+  for (int i = 0; i < vesc_count; ++i) {
+    if (vesc_map[i].id == vesc_id) {
+      ptr = &vesc_map[i];
+      break;
+    }
+  }
   if (ptr != NULL) {
     uint8_t cmd_id = msg.id >> 8;
     int index = 0;
@@ -93,7 +94,8 @@ void handle_vesc_can_recv(rmc_can_msg msg) {
 void vesc_set_duty_cycle(VESC* vesc, float duty_cycle) {
   uint8_t buffer[4];
   int32_t val = (int32_t)(duty_cycle * 100000.0);
-  memcpy(buffer, &val, sizeof(uint8_t) * 4);
+  int index = 0;
+  buffer_put_int32(buffer, &index, val);
   vesc_send_message(vesc, VESC_PACKET_SET_DUTY, buffer, 4);
 }
 
@@ -102,7 +104,8 @@ void vesc_set_rpm(VESC* vesc, float rpm) {
   rpm *= vesc->pole_pairs;
   uint8_t buffer[4];
   int32_t val = (int32_t)(rpm);
-  memcpy(buffer, &val, sizeof(uint8_t) * 4);
+  int index = 0;
+  buffer_put_int32(buffer, &index, val);
   vesc_send_message(vesc, VESC_PACKET_SET_RPM, buffer, 4);
 }
 
@@ -144,11 +147,11 @@ int16_t buffer_pop_int16(uint8_t* buffer, int* index) {
   return buf;
 }
 
-void buffer_put_int32(uint8_t* buffer, int* index, int32_t value) {
-  buffer[(*index)++] = (value << 24) & 0xFF;
-  buffer[(*index)++] = (value << 16) & 0xFF;
-  buffer[(*index)++] = (value << 8) & 0xFF;
-  buffer[(*index)++] = value & 0xFF;
+void buffer_put_int32(uint8_t* buffer, int* index, int32_t number) {
+  buffer[(*index)++] = number >> 24;
+  buffer[(*index)++] = number >> 16;
+  buffer[(*index)++] = number >> 8;
+  buffer[(*index)++] = number;
 }
 
 void buffer_put_int16(uint8_t* buffer, int* index, int16_t value) {

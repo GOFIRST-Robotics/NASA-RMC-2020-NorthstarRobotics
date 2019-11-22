@@ -13,7 +13,7 @@
 #include "string.h"
 
 extern CAN_HandleTypeDef hcan;
-extern QueueHandle_t xCanTxQueue;
+extern UART_HandleTypeDef huart2;
 uint32_t TxMailbox;
 CAN_TxHeaderTypeDef TxHeader;
 CAN_RxHeaderTypeDef RxHeader;
@@ -31,35 +31,15 @@ void do_send_can_message(unsigned int id, uint8_t* buf, int length) {
   int retval = HAL_CAN_AddTxMessage(&hcan, &TxHeader, buf, &TxMailbox);
 }
 
-bool enque_can_message(unsigned int id, uint8_t* buf, int length) {
-  rmc_can_msg message;
-  message.id = id;
-  memcpy(&message.buf, buf, length * sizeof(uint8_t));
-  message.length = length;
-  return xQueueSend(xCanTxQueue, &message, 0) == pdTRUE;
-}
-
-void canTxTaskFunc(void* params) {
-  TickType_t lastWakeTime;
-  while (1) {
-    vTaskDelayUntil(&lastWakeTime, 1 * portTICK_RATE_MS);
-
-    rmc_can_msg message;
-    if (xQueueReceive(xCanTxQueue, &message, 0) == pdTRUE) {
-      do_send_can_message(message.id, message.buf, message.length);
-    }
-  }
-}
-
 void registerCANMsgHandler(unsigned int mask,
                            void (*callback)(rmc_can_msg msg)) {
   msgHandlers[canHandlersCt++] =
       (CANMsgHandlerPair){.mask = mask, .callback = callback};
 }
 
-void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan_) {
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
   /* Get RX message */
-  if (HAL_CAN_GetRxMessage(hcan_, CAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK) {
+  if (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData) != HAL_OK) {
     /* Reception Error */
     Error_Handler();
   }
