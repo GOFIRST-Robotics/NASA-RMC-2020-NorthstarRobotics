@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Launches direct control robot side
+    This shouldn't be called directly. Use one of the main_ launch files instead.
+-->
+<launch>
+  <node pkg="socketcan_bridge" type="socketcan_bridge_node" name="socketcan_bridge_node" output="screen"/>
+
+  <node pkg="rovr_control" type="joy_to_onboard_direct_node" name="main_joy2onDir" output="screen">
+    <param name="linear_scale" value="1.0"/>
+    <param name="angular_scale" value="1.0"/>
+    <param name="lift_scale" value="0.25"/>
+    <param name="trans_conv_scale" value="0.5"/>
+    <param name="digger_scale" value="1.0"/>
+    <param name="hold_conv_scale" value="0.5"/>
+  </node>
+
+</launch>
