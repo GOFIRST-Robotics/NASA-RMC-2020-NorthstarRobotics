@@ -17,22 +17,9 @@
 #include "decawave/decawave.h"
 #include "serial/serial.h"
 
-Decawave::Decawave(int port_num){
-  int index=0; //from 0 to 7, for donut array
-
-  //anchor positions - these don't change
-  decawave_coordinate anchor1Pos;
-  decawave_coordinate anchor2Pos;
-  anchor1Pos.x=-0.825;
-  anchor1Pos.y=0.0;
-  anchor2Pos.x=0.825;
-  anchor2Pos.y=0.0;
-  anchorSeparation=anchor2Pos.x-anchor1Pos.x; //distance between the 2 anchors
-
+Decawave::Decawave(std::string port_name){
   //connecting via serial
-  std::string port_s = std::to_string(port_num);
-  std::string port = "/dev/decawave"+ port_s; // could be something else (was /dev/serial0)
-
+  std::string port =port_name; // could be something else (was /dev/serial0)
   // Find serial port with "SEGGER" (aka decawave attached)- currently doesn't work, defaults to ^
   // std::vector<serial::PortInfo> devices_found = serial::list_ports();
   // std::vector<serial::PortInfo>::iterator iter = devices_found.begin();
@@ -44,66 +31,72 @@ Decawave::Decawave(int port_num){
   // }
 
   //Serial connection to decawave (tag)
-  my_serial.reset(new serial::Serial(port, 115200, serial::Timeout::simpleTimeout(1000)));//opens the port
+  // /dev/ assumes a linux environment
+  my_serial.reset(new serial::Serial(("/dev/"+port), 115200, serial::Timeout::simpleTimeout(1000)));//opens the port
 }
 
-void Decawave::updateSamples(){
-  //sending command: dwm_loc_get (see 4.3.9 in dwm1001 api)
+std::vector<anchor> Decawave::updateSamples(){
+  unsigned char coords_updated=0;
+  std::vector<anchor> anchors={};
   if(my_serial->isOpen()){
-    my_serial->write((std::vector <unsigned char>){0x0c,0x00});
+    //first check if the decawave has new information
+    //sending command 4.3.19  dwm_status_get uses code {0x32,0x00}
+    my_serial->write((std::vector <unsigned char>){0x32,0x00});
+    //output is a single byte, read into class variable
+    if(my_serial->read(&coords_updated, 1)==0){//handle no bytes read
+      coords_updated=0;//false
+    }
+    if(coords_updated){
+    //sending command: dwm_loc_get (see 4.3.9 in dwm1001 api)
+      my_serial->write((std::vector <unsigned char>){0x0c,0x00});
+    }else{//no new data
+      return(anchors);
+    }
   }
-
   //array to hold bytes received from decawave
-  unsigned char result[61];
-  std::memset(result, 0, sizeof result);
-
-  //read bytes from decawave
-  int counter =0;
-  while (counter<61 && my_serial->isOpen()){
-    counter+= my_serial->read(result+counter, 61-counter);
+  unsigned char result[26];//maximum size to be read at once
+  int bytesread=my_serial->read(result, 26);
+  std::cout << '\n' << "====== message back ======" << '\n'<< '\n';
+  for(int i =0; i<bytesread;i++){
+      std::cout << "byte " << (i+1) << ": " << (int) result[i] << '\n';
   }
+  if (bytesread==26){
+    if (result[1]==0){//check no error code
+      int num_anchors=(int) result[25];
+      std::cout << (int)result[25] << '\n';
+      int i=0;
+      anchor anchor;
+      while(i<num_anchors){
+        if (my_serial->read(result, 20)!=20){
+          return (anchors);
+        }//read one anchor of data
+        anchor.id= ((int)result[0]) | ((int)result[1]<<8);
+        anchor.distance= ((int)result[2]) | ((int)result[3]<<8) | ((int)result[4]<<16) | ((int)result[5]<<24);
+        anchor.distance_quality= (int)result[6];
+        anchor.position[0]=((int)result[7]) | ((int)result[8]<<8) | ((int)result[9]<<16) | ((int)result[10]<<24);//x
+        anchor.position[1]=((int)result[11]) | ((int)result[12]<<8) | ((int)result[13]<<16) | ((int)result[14]<<24);//y
+        anchor.position[2]=((int)result[15]) | ((int)result[16]<<8) | ((int)result[17]<<16) | ((int)result[18]<<24);//z
+        anchor.quality_factor=(int)result[19];
+        anchors.push_back(anchor);
+        i++;
 
-  //convert 2 sets of 4 byte anchor distances to ints (measured in milimeters, not real precise)
-  unsigned long int an1dist= (result[23]) | (result[24]<<8) | (result[25]<<16) | (result[26]<<24);
-  unsigned long int an2dist= (result[43]) | (result[44]<<8) | (result[45]<<16) | (result[46]<<24);
-
-  //store distnaces in array, keep 8 most recent
-  if (index>7){
-    index=0;
+      }
+    }
+  }else{//error returns empty vector
+    return(anchors);
   }
-  anchor1[index]=static_cast<double>(an1dist)/1000.0;
-  anchor2[index]=static_cast<double>(an2dist)/1000.0;
-  index+=1;
+  return (anchors);
 }
 
-decawave_coordinate Decawave::getPos(){
-  //decawave_coordinate tagPos; //caculated tag position
-
-  //average the distances
-  double r1=0;
-  double r2=0;
-  for(int i = 0; i < 8; ++i){
-    r1+=anchor1[i];
-    r2+=anchor2[i];
-  }
-  r1=r1/8.0;
-  r2=r2/8.0;
-
-  tagPos.x=r1; //These assume anchor 1 is at (0,0)... adjust later
-  tagPos.y=r2;
-  /*
-  //find angle
-  double angleC= acos(((r1*r1)+(anchorSeparation*anchorSeparation)-(r2*r2))/(2.0*r1*anchorSeparation));//angle C in radians
-  //x and y coords
-  tagPos.x=r1*sin(angleC)+anchor1Pos.x;
-  tagPos.y=r1*sin(angleC)+anchor1Pos.y;
-  std::cout<<r1<<" "<<r2<<" "<<std::endl;
-  std::cout<<(((r2*r2)-(anchorSeparation*anchorSeparation)-(r1*r1))/(-2.0*r1*anchorSeparation));
-  */
-  //std::cout<<tagPos.x<<" "<<tagPos.y<<std::endl;
-  return tagPos;
-}
 
 Decawave::~Decawave(){
   my_serial->close();//close the serial port
 }
+
+//serial library
+// http://wjwwood.io/serial/doc/1.1.0/classserial_1_1_serial.html
+
+
+//decawave manuals, (firmware API guide)
+// https://www.decawave.com/sites/default/files/dwm1001-api-guide.pdf
+//https://www.digikey.com/product-detail/en/decawave-limited/DWM1001-DEV/1479-1005-ND/7394533

@@ -36,7 +36,6 @@
 //    param_name2 (param_name2_type): default=param_name2_default(,param_name1_path)
 //    param_name3 (param_name3_type): default=param_name3_default(,param_name1_path)
 
-
 // ROS Node and Publishers
 ros::NodeHandle * nh;
 ros::NodeHandle * pnh;
@@ -50,54 +49,30 @@ void update_callback(const ros::TimerEvent&);
 
 // ROS Params
 double frequency = 50.0;
-int port_num = 0;
+std::string port_name= "ttyACM0";
 // for(int i = 0; i < argc; ++i){
 // int port_num = atoi(argv[1]);
 // }
-
 // Global_Vars
 Decawave *piTag;
-decawave_coordinate tagPos;
-// Decawave piTag(1);
-// decawave_coordinate tagPos;
 
 int main(int argc, char** argv){
-  // Init ROS
-  // ros::init(argc, argv, "decawave_node");
-  // nh = new ros::NodeHandle("");
-  // pnh = new ros::NodeHandle("~");
-
   // Params
-  // pnh->param<double>("frequency", frequency);
-  // nh->param<int>("port_num",port_num);
-  // port_num = nh->getParam("port_num",port_num);
-  // int port_num_test = ros::param::get("~port_num",port_num);
-  ros::param::get("~port_num",port_num);
-  // debug:
-  // std::string s = std::to_string(port_num);
-  // char const *pchar = s.c_str();  //use char const* as target type
-  // ROS_INFO(pchar);
-  printf("%i\n",port_num);
-  // printf("%i\n",port_num_test);
-  //nh->param<param_name3_type>(param_name3_path, param_name3, param_name3_default;
-  ros::init(argc, argv, "decawave_node" + std::to_string(port_num));
+  ros::param::get("~port_name",port_name);
+
+  // Init this ROS node
+  ros::init(argc, argv, port_name);
   nh = new ros::NodeHandle("");
   pnh = new ros::NodeHandle("~");
-  // Initialize
-  piTag = new Decawave(port_num);
-  // get initial decwave data
-  // ROS_INFO("Dw created");
-  for(int i = 0; i < 10; ++i){
-    // ROS_INFO("Updating Samples");
-    piTag->updateSamples();
-    // ROS_INFO("Updated Sample");
-  }
+
+  // Init Decawave
+  piTag = new Decawave(port_name);
 
   // Subscribers
   ros::Timer update_timer = nh->createTimer(ros::Duration(1.0/frequency), update_callback);
 
   // Publishers
-  gps_topic = gps_topic + std::to_string(port_num);
+  gps_topic = gps_topic + port_name;
   gps_pub = nh->advertise<decawave::Range>(gps_topic, 10);
 
   // Spin
@@ -110,29 +85,26 @@ void update_callback(const ros::TimerEvent&){
   decawave::Range msg;
 
   // update decawave data
-  piTag->updateSamples();
+  std::vector<anchor> anchors = piTag->updateSamples();
 
-  // get tag position from the decawave
-  tagPos = piTag->getPos();
+  ros::param::get("~port_num",port_name);
+  std::string frame_id = port_name;
 
-  ros::param::get("~port_num",port_num);
-  std::string frame_id = std::to_string(port_num);
-
-  msg.distance = tagPos.x;
-  msg.estimated_variance = 0.10;
-  // fill out message header
-  msg.header.stamp = ros::Time::now();
-  msg.header.frame_id = "decawave" + frame_id;//"decawave_" + port_num;
-  msg.child_frame_id = "decawave2_link"; //change to correct part
-
-  gps_pub.publish(msg);
-
-  msg.distance = tagPos.y;
-  msg.estimated_variance = 0.10;
-  // fill out message header
-  msg.header.stamp = ros::Time::now();
-  msg.header.frame_id = "decawave" + frame_id;//"decawave_" + port_num;
-  msg.child_frame_id = "decawave3_link"; //change to correct part
-
-  gps_pub.publish(msg);
+  int j=anchors.size();
+  int i=0;
+  anchor m_anchor;
+  while (i<j){
+    m_anchor=anchors[i];//get new anchor
+    msg.distance = ((float)m_anchor.distance)/1000;
+    msg.distance_quality = m_anchor.distance_quality;
+    msg.quality_factor=m_anchor.quality_factor;
+    msg.position={((float)m_anchor.position[0])/1000,
+      ((float)m_anchor.position[1])/1000,
+      ((float)m_anchor.position[3])/1000};
+    // fill out message header
+    msg.header.stamp = ros::Time::now();
+    msg.header.frame_id = "decawave" + frame_id;//"decawave_" + port_num;
+    msg.child_frame_id = "decawave2_link"; //change to correct part
+    gps_pub.publish(msg);
+  }
 }
