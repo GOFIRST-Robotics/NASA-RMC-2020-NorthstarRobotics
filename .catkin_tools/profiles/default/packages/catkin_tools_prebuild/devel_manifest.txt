@@ -1,9 +1,0 @@
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/build/catkin_tools_prebuild
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/catkin_tools_prebuild/_setup_util.py /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/./_setup_util.py
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/catkin_tools_prebuild/setup.sh /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/./setup.sh
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/catkin_tools_prebuild/setup.zsh /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/./setup.zsh
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/catkin_tools_prebuild/setup.bash /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/./setup.bash
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/catkin_tools_prebuild/env.sh /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/./env.sh
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/catkin_tools_prebuild/lib/pkgconfig/catkin_tools_prebuild.pc /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/lib/pkgconfig/catkin_tools_prebuild.pc
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/catkin_tools_prebuild/share/catkin_tools_prebuild/cmake/catkin_tools_prebuildConfig-version.cmake /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/share/catkin_tools_prebuild/cmake/catkin_tools_prebuildConfig-version.cmake
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/catkin_tools_prebuild/share/catkin_tools_prebuild/cmake/catkin_tools_prebuildConfig.cmake /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/share/catkin_tools_prebuild/cmake/catkin_tools_prebuildConfig.cmake
