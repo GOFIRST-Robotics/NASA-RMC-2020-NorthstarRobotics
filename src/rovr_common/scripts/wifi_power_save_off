@@ -1,0 +1,4 @@
+# Disables wifi power saving mode
+# Prevents high latency spikes
+
+sudo iw dev wlan0 set power_save off
