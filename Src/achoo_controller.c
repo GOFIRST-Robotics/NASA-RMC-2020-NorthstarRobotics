@@ -19,9 +19,9 @@ VESC* rightMotor;
 
 void achooCANCallback(rmc_can_msg msg) {
   // Because of the mask we only get messages that have our ID
-  unsigned int msg_type = msg.id >> 8;
+  U32 msg_type = msg.id >> 8u;
   if (msg_type == ACHOO_MSG_SET_KNEEL && msg.length >= 1) {
-    uint8_t param = msg.buf[0];
+    U8 param = msg.buf[0];
     switch (param) {
       case 1:
         targetState = KNEELING;
@@ -66,9 +66,9 @@ void achooControllerFunc(void const* argument) {
     vesc_set_position(rightMotor, pos_target / ACHOO_DEG_MM_CONV);
 
     // Send status message
-    uint8_t data[1];
+    U8 data[1];
     data[0] = currentState;
-    do_send_can_message((ACHOO_MSG_STATUS << 8) | ACHOO_SYS_ID, data, 1);
+    do_send_can_message((ACHOO_MSG_STATUS << 8u) | ACHOO_SYS_ID, data, 1);
   }
 }
 

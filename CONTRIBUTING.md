@@ -12,7 +12,10 @@ https://www.jetbrains.com/student/
 
 Contributing Guidelines
 ===
-Follow best C practices.
+C guidelines:
+- Use explicit signed/unsigned and sized types (U32, S16, etc) from `types.h`
+- Mark everything const unless necessary (write as <type> const [*] for safety)
+
 No C++ is allowed.
 Make sure to run clang-format before committing (run-format.sh).
 Keep configurable parameters in header files, and keep IDs that interact in `rt_conf.h`.
