@@ -53,10 +53,10 @@ izz="${(m*(3*r*r+h*h))/12.0}" />
 
 <!-- Main dimensions: meters, kg, seconds, rads --> 
 <!-- Rectangular Body Frame-->
-<xacro:property name="base_height" value=".500" /> <!--z-->
-<xacro:property name="base_length" value="0.500" /> <!--x-->
-<xacro:property name="base_width" value="0.7808" /> <!--y-->
-<xacro:property name="base_mass" value="72.0" />
+<xacro:property name="base_height" value=".500" /> 
+<xacro:property name="base_length" value="0.500" /> 
+<xacro:property name="base_width" value="0.7808" /> 
+<xacro:property name="base_mass" value="60.0" />
 <!--Part that extends from Body (Blue)-->
 <xacro:property name="leg_height" value=".1"/>
 <xacro:property name="leg_length" value="0.5"/>
@@ -68,17 +68,9 @@ izz="${(m*(3*r*r+h*h))/12.0}" />
 <xacro:property name="leg_y_origin_to_axle" value="0.0254" />
 <xacro:property name="leg_axle_height" value="0.10535" />
 
-<!-- Rectangular representation of Drum (Purple)-->
-<xacro:property name="drum_height" value=".0300"/>
-<xacro:property name="drum_length" value="${base_length+.01}"/>
-<xacro:property name="drum_width" value=".110"/>
-<xacro:property name="drum_mass" value="2"/>
-<xacro:property name="drum_x_origin_to_base_origin" value=".195"/>
-<xacro:property name="drum_y_origin_to_base_origin" value="0"s/> 
 <!-- End macros and properties -->
     
   <!-- End macros and properties -->
-
 
   <!-- The following links and joints define the robots components
        and their relationship to eachother -->
@@ -168,7 +160,7 @@ izz="${(m*(3*r*r+h*h))/12.0}" />
         <child link="right_leg" />
       </joint>
 
-      <!-- RIGHT_LEG represents the left of the drive train -->
+      <!-- RIGHT_LEG represents the right of the drive train -->
       <link name="right_leg">
         <!-- visual is the model shown in gazebo / rviz -->
         <visual>
@@ -202,48 +194,6 @@ izz="${(m*(3*r*r+h*h))/12.0}" />
       </gazebo>
     <!-- End right_leg_joint(right drive train) description -->
   
-  
-    <!-- Attaching the drum to the robot frame -->
-    <!-- joint defines position relationship of the child to the parent-->
-    <joint name="drum_joint" type="fixed">
-		  <origin xyz="${drum_x_origin_to_base_origin} ${drum_y_origin_to_base_origin} ${-drum_height/2}" rpy="0 0 0" />
-		  <parent link="base_link" />
-		  <child link="drum" />
-	  </joint>
-    
-    <!-- DRUM represents the digging wheel -->
-	  <link name="drum">
-      <!-- visual is the model shown in gazebo / rviz -->
-      <visual>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <geometry>
-          <box size=" ${drum_length} ${drum_width} ${drum_height}" />
-        </geometry>
-        <material name="purple"/>
-      </visual>
-
-      <!-- collision and inertial are used by the physics model used
-           in simulation -->
-      <collision>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <geometry>
-          <box size="${drum_length} ${drum_width} ${drum_width}"/>
-        </geometry>
-      </collision>
-
-      <inertial>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <mass value="${drum_mass}"/>
-        <box_inertial_matrix m="${drum_mass}" h="${drum_height}" l="${drum_length}" w="${drum_width}" />
-      </inertial>
-	  </link>
-    
-    <!-- Gazebo element covers assigning values not handled by the URDF file format -->
-    <gazebo reference="drum">
-      <material>Gazebo/Purple</material>
-      <turnGravityOff>false</turnGravityOff>
-    </gazebo>
-    <!-- End drum description -->
   <!-- End links and joints -->
   
   <!-- The following represent extrusions from the frame and drivetrain
@@ -253,36 +203,7 @@ izz="${(m*(3*r*r+h*h))/12.0}" />
     <wheel prefix="front_right" leg="right_leg" x="1" y="-1"/>
     <wheel prefix="back_left" leg="left_leg" x="-1" y="1"/>
     <wheel prefix="back_right" leg="right_leg" x="-1" y="-1"/>
-
-    <!-- extrusions for cameras / sensors -->
-    
-    <extrusion prefix="front_left" x="1" y="1"/>
-    <extrusion prefix="front_right" x="1" y="-1"/>
-    <extrusion prefix="back_left" x="-1" y="1"/>
-    <extrusion prefix="back_right" x="-1" y="-1"/>
-
   <!-- End wheels and extrusions -->
-  
-  
-  <!-- The following represent the camera placementon the extrusions -->
-  
-    <xacro:arg name="cameras" default="false"/>
-    <xacro:property name="useCams" value="$(arg cameras)"/>
-
-    <xacro:if value="${useCams == 'true'}">
-      <camera_macro number="1" y="1" extrusion="front_left_extrusion" spin="0"/>
-      <camera_macro number="2" y="-1" extrusion="front_right_extrusion" spin="0"/>
-      <camera_macro number="3" y="1" extrusion="back_left_extrusion" spin="${PI}"/>
-      <camera_macro number="4" y="-1" extrusion="back_right_extrusion" spin="${PI}"/>
-    </xacro:if>
-    
-  <!-- End cameras -->
-  
-  <!-- The following defines the positions of the IMU and Decawave sensors -->
-    <!-- imu and deca front left, back right. in front of extrusion -->
-    <imu number="1" x="1" y="1" extrusion="front_left_extrusion"/>
-    <imu number="2" x="1" y="-1" extrusion="back_right_extrusion"/>
-  <!-- End sensors -->
 
   <!-- skid steer plugin handles driving for us -->
 	<gazebo>
