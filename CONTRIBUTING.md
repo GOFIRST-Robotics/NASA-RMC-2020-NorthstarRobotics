@@ -4,6 +4,9 @@ This project uses STM32CubeMX to generate peripheral configuration code.
 You can get this for free [here.](https://www.st.com/en/development-tools/stm32cubemx.html)
 It's not strictly necessary to use this, but makes it a lot easier.
 
+Git has a tendency to overwrite the configuration file for this. 
+Make sure your settings are preserved during merges.
+
 Building
 ===
 Bare CMake is possible, but using CLion is *highly* recommended.
