@@ -103,8 +103,10 @@ void update_callback(const ros::TimerEvent&){
       ((float)m_anchor.position[3])/1000};
     // fill out message header
     msg.header.stamp = ros::Time::now();
-    msg.header.frame_id = "decawave" + frame_id;//"decawave_" + port_num;
+    msg.header.frame_id = "decawave_" + frame_id;//"decawave_" + port_num;
     msg.child_frame_id = "decawave2_link"; //change to correct part
+    msg.id=(int)m_anchor.id;
     gps_pub.publish(msg);
+    i++;
   }
 }

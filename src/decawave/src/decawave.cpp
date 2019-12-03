@@ -3,8 +3,8 @@
  * Interfaces with Decawave 1001 module over USB
  * VERSION: 0.0
  * Last changed: 2019-04-01
- * Authors: {insert molly} <@umn.edu>
- * Maintainers: {insert molly} <@umn.edu>
+ * Authors: favou005@umn.edu>
+ * Maintainers: favou005@umn.edu
  * MIT License
  * Copyright (c) 2018 GOFIRST-Robotics
  */
@@ -56,14 +56,15 @@ std::vector<anchor> Decawave::updateSamples(){
   //array to hold bytes received from decawave
   unsigned char result[26];//maximum size to be read at once
   int bytesread=my_serial->read(result, 26);
+  /* used for testing prints out first X bytes read
   std::cout << '\n' << "====== message back ======" << '\n'<< '\n';
   for(int i =0; i<bytesread;i++){
       std::cout << "byte " << (i+1) << ": " << (int) result[i] << '\n';
   }
+  */
   if (bytesread==26){
     if (result[1]==0){//check no error code
       int num_anchors=(int) result[25];
-      std::cout << (int)result[25] << '\n';
       int i=0;
       anchor anchor;
       while(i<num_anchors){
@@ -79,7 +80,6 @@ std::vector<anchor> Decawave::updateSamples(){
         anchor.quality_factor=(int)result[19];
         anchors.push_back(anchor);
         i++;
-
       }
     }
   }else{//error returns empty vector
