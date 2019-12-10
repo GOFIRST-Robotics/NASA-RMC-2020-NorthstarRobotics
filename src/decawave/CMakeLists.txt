@@ -10,6 +10,7 @@ add_compile_options(-std=c++11 -g)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   nav_msgs
+  geometry_msgs
   message_generation
   serial
 )
