@@ -3,17 +3,17 @@
 //
 
 #include "achoo_controller.h"
-#include <FreeRTOS.h>
 #include <can_manager.h>
-#include <math.h>
+#include <main.h>
 #include <rt_conf.h>
-#include <task.h>
 #include "VESC.h"
-#include "stdlib.h"
+
+#include <FreeRTOS.h>
+#include <stm32f3xx_hal_conf.h>
+#include <task.h>
 
 KneelState targetState = KNEELING;
 KneelState currentState = KNEELING;
-float pos_target = ACHOO_STAND_SETPOINT;
 VESC* leftMotor;
 VESC* rightMotor;
 
@@ -42,40 +42,41 @@ void achooControllerFunc(void const* argument) {
   TickType_t lastWakeTime;
   while (1) {
     vTaskDelayUntil(&lastWakeTime, ACHOO_LOOP_MS * portTICK_RATE_MS);
-
     // Handle target state transitions
     if (targetState == KNEELING &&
         (currentState == STANDING || currentState == MOVING_STAND)) {
-      pos_target = ACHOO_KNEEL_SETPOINT;
       currentState = MOVING_KNEEL;
     } else if (targetState == STANDING &&
                (currentState == KNEELING || currentState == MOVING_KNEEL)) {
-      pos_target = ACHOO_STAND_SETPOINT;
       currentState = MOVING_STAND;
     }
+    bool lowLimit =
+        HAL_GPIO_ReadPin(ACHOO_LimitL_GPIO_Port, ACHOO_LimitL_Pin) == 0;
+    bool highLimit =
+        HAL_GPIO_ReadPin(ACHOO_LimitH_GPIO_Port, ACHOO_LimitH_Pin) == 0;
     // Check if our movement has completed
-    bool inThreshold = fabsf(getACHOOError()) < ACHOO_ERROR_THRESHOLD;
-    if (currentState == MOVING_KNEEL && inThreshold) {
+    if (lowLimit && currentState == MOVING_KNEEL) {
       currentState = KNEELING;
-    } else if (currentState == MOVING_STAND && inThreshold) {
+    }
+    if (highLimit && currentState == MOVING_STAND) {
       currentState = STANDING;
     }
 
-    // Continuously set VESC position PID target
-    vesc_set_position(leftMotor, pos_target / ACHOO_DEG_MM_CONV);
-    vesc_set_position(rightMotor, pos_target / ACHOO_DEG_MM_CONV);
+    // Set VESC movement
+    F32 current = 0.0f;
+    if (currentState == MOVING_STAND && !highLimit) {
+      current = 10.0f;
+    } else if (currentState == MOVING_KNEEL && !lowLimit) {
+      current = -10.0f;
+    }
+    vesc_set_current(leftMotor, current);
+    vesc_set_current(rightMotor, current);
 
     // Send status message
     U8 data[1];
     data[0] = currentState;
     do_send_can_message((ACHOO_MSG_STATUS << 8u) | ACHOO_SYS_ID, data, 1);
   }
-}
-
-float getACHOOError() {
-  float lerr = pos_target - vesc_get_position(leftMotor) * ACHOO_DEG_MM_CONV;
-  float rerr = pos_target - vesc_get_position(rightMotor) * ACHOO_DEG_MM_CONV;
-  return (lerr + rerr) / 2;
 }
 
 KneelState getACHOOState() { return currentState; }
