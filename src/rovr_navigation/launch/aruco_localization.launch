@@ -18,7 +18,7 @@
     <remap from="output_image" to="aruco/image" />
   </node>
   <!-- Transform aruco into map frame. This should be a static frame created somewhere else -->
-  <node pkg="tf" type="static_transform_publisher" name="aruco_broadcaster" args="1 0 0 0 0 0 1 map aruco 100" />
+  <node pkg="tf" type="static_transform_publisher" name="aruco_broadcaster" args="0 0 0 0 0 0 1 map aruco 100" />
   <!-- Transform camera frame into robot frame. This should be in URDF -->
-  <node pkg="tf" type="static_transform_publisher" name="robot_broadcaster" args="1 0 0 0 0 0 1 robot realsense_d415_link 100" />
+  <node pkg="tf" type="static_transform_publisher" name="robot_broadcaster" args="0 0 1 0 0 0 1 robot realsense_d415_link 100" />
 </launch>
