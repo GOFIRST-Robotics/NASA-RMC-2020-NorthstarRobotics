@@ -1,235 +1,205 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<robot name="rovr" xmlns:xacro="https://www.ros.org/wiki/xacro">
-  <xacro:include filename="$(find rovr_description)/urdf/wheel.urdf.xacro"/>
-  <xacro:include filename="$(find rovr_description)/urdf/sensors/camera.urdf.xacro"/>
-  <xacro:include filename="$(find rovr_description)/urdf/sensors/imu.urdf.xacro"/>
-  <xacro:include filename="$(find rovr_description)/urdf/extrusion.urdf.xacro"/>
-
-
-  <material name="grey">
-<color rgba="0.5 0.5 0.5 1"/>
-</material>
-<material name="dark_grey">
-<color rgba="0.2 0.2 0.2 1"/>
-</material>
-<material name="blue">
-<color rgba="0 0 0.8 1"/>
-</material>
-<material name="red">
-<color rgba="0.8 0 0 1"/>
-</material>
-<material name="green">
-<color rgba="0 0.5 0 1"/>
-</material>
-<material name="purple">
-<color rgba="0.8 0 0.8 1"/>
-</material>
-<material name="orange">
-<color rgba="0.8 0.2 0 1"/>
-</material>
-<!-- Hard coded dimenstions approximating robot -->
-<!-- Robot modeled as:
+<robot xmlns:xacro="https://www.ros.org/wiki/xacro" name="rovr">
+	<xacro:include filename="$(find rovr_description)/urdf/wheel.urdf.xacro" />
+	<xacro:include filename="$(find rovr_description)/urdf/sensors/camera.urdf.xacro" />
+	<xacro:include filename="$(find rovr_description)/urdf/sensors/imu.urdf.xacro" />
+	<xacro:include filename="$(find rovr_description)/urdf/extrusion.urdf.xacro" />
+	<material name="grey">
+		<color rgba="0.5 0.5 0.5 1" />
+	</material>
+	<material name="dark_grey">
+		<color rgba="0.2 0.2 0.2 1" />
+	</material>
+	<material name="blue">
+		<color rgba="0 0 0.8 1" />
+	</material>
+	<material name="red">
+		<color rgba="0.8 0 0 1" />
+	</material>
+	<material name="green">
+		<color rgba="0 0.5 0 1" />
+	</material>
+	<material name="purple">
+		<color rgba="0.8 0 0.8 1" />
+	</material>
+	<material name="orange">
+		<color rgba="0.8 0.2 0 1" />
+	</material>
+	<!-- Hard coded dimenstions approximating robot -->
+	<!-- Robot modeled as:
 a large box (base_link), origin at bottom,
 two base_legs, beneath it,
 four wheels, two on each base_leg,
 a box that reps the drum,
 four extensions with cameras, imus, decawaves,
 two rgbd(realsense) cams front and back center -->
-<!-- red axis = x, axis green axis = y, blue axis = z -->
-<!-- The following macros and properties are used to define the links
+	<!-- red axis = x, axis green axis = y, blue axis = z -->
+	<!-- The following macros and properties are used to define the links
 and joints of the bot -->
-<!-- Equation for inertial matrix of box/prisim -->
-<xacro:macro name="box_inertial_matrix" params="m l w h">
-<inertia ixx="${(m*(w*w+h*h))/12.0}" ixy = "0.0" ixz = "0.0"
-iyy="${(m*(l*l+h*h))/12.0}" iyz = "0.0"
-izz="${(m*(l*l+w*w))/12.0}" />
-</xacro:macro>
-<!-- Equation for inertial matrix of cylinder (rotating around y axis) -->
-<xacro:macro name="cylinder_inertia" params="m r h">
-<inertia ixx="${(m*(3*r*r+h*h))/12.0}" ixy = "0.0" ixz = "0.0"
-iyy="${m*r*r/2.0}" iyz = "0.0"
-izz="${(m*(3*r*r+h*h))/12.0}" />
-</xacro:macro>
-
-<!-- Main dimensions: meters, kg, seconds, rads --> 
-<!-- Rectangular Body Frame-->
-<xacro:property name="base_height" value=".500" /> 
-<xacro:property name="base_length" value="0.500" /> 
-<xacro:property name="base_width" value="0.7808" /> 
-<xacro:property name="base_mass" value="60.0" />
-<!--Part that extends from Body (Blue)-->
-<xacro:property name="leg_height" value=".1"/>
-<xacro:property name="leg_length" value="0.5"/>
-<xacro:property name="leg_width" value="0.0508"/>
-<xacro:property name="leg_mass" value="4"/>
-
-<!--Distance from Leg to Center-->
-<xacro:property name="leg_x_origin_to_axle" value="${leg_length/2-.10835}" />
-<xacro:property name="leg_y_origin_to_axle" value="0.0254" />
-<xacro:property name="leg_axle_height" value="0.10535" />
-
-<!-- End macros and properties -->
-    
-  <!-- End macros and properties -->
-
-  <!-- The following links and joints define the robots components
+	<!-- Equation for inertial matrix of box/prisim -->
+	<xacro:macro name="box_inertial_matrix" params="m l w h">
+		<inertia ixx="${(m*(w*w+h*h))/12.0}" ixy="0.0" ixz="0.0" iyy="${(m*(l*l+h*h))/12.0}" iyz="0.0" izz="${(m*(l*l+w*w))/12.0}" />
+	</xacro:macro>
+	<!-- Equation for inertial matrix of cylinder (rotating around y axis) -->
+	<xacro:macro name="cylinder_inertia" params="m r h">
+		<inertia ixx="${(m*(3*r*r+h*h))/12.0}" ixy="0.0" ixz="0.0" iyy="${m*r*r/2.0}" iyz="0.0" izz="${(m*(3*r*r+h*h))/12.0}" />
+	</xacro:macro>
+	<!-- Main dimensions: meters, kg, seconds, rads -->
+	<!-- Rectangular Body Frame-->
+	<xacro:property name="base_height" value=".500" />
+	<xacro:property name="base_length" value="0.500" />
+	<xacro:property name="base_width" value="0.7808" />
+	<xacro:property name="base_mass" value="60.0" />
+	<!--Part that extends from Body (Blue)-->
+	<xacro:property name="leg_height" value=".1" />
+	<xacro:property name="leg_length" value="0.5" />
+	<xacro:property name="leg_width" value="0.0508" />
+	<xacro:property name="leg_mass" value="4" />
+	<!--Distance from Leg to Center-->
+	<xacro:property name="leg_x_origin_to_axle" value="${leg_length/2-.10835}" />
+	<xacro:property name="leg_y_origin_to_axle" value="0.0254" />
+	<xacro:property name="leg_axle_height" value="0.10535" />
+	<!-- End macros and properties -->
+	<!-- The following links and joints define the robots components
        and their relationship to eachother -->
-    <!-- BASE_LINK represent the frame of the robot -->
-	    <link name="base_link">
-		    <!-- visual is the model shown in gazebo / rviz -->
-		    <visual>
-			    <origin xyz="0 0 ${base_height/2.0}" rpy="0 0 0"/> 
-			    <geometry>
-				    <box size=" ${base_length} ${base_width} ${base_height}" />
-			    </geometry>
-			    <material name="grey"/>
-		    </visual>
-
-        <!-- collision and inertial are used by the physics model used
+	<!-- BASE_LINK represent the frame of the robot -->
+	<link name="base_link">
+		<!-- visual is the model shown in gazebo / rviz -->
+		<visual>
+			<origin xyz="0 0 ${base_height/2.0}" rpy="0 0 0" />
+			<geometry>
+				<box size=" ${base_length} ${base_width} ${base_height}" />
+			</geometry>
+			<material name="grey" />
+		</visual>
+		<!-- collision and inertial are used by the physics model used
              in simulation -->
-		    <collision>
-			    <origin xyz="0 0 ${base_height/2.0}" rpy="0 0 0"/>
-			    <geometry>
-				    <box size="${base_length} ${base_width} ${base_width}"/>
-			    </geometry>
-		    </collision>
-
-		    <inertial>
-			    <origin xyz="0 0 ${base_height/2.0}" rpy="0 0 0"/>
-			    <mass value="${base_mass}"/>
-			    <box_inertial_matrix m="${base_mass}" h="${base_height}" l="${base_length}" w="${base_width}" />
-		    </inertial>
-	    </link>
-      
-      <!-- Gazebo element covers assigning values not handled by the URDF file format -->
-      <gazebo reference="base_link">
-        <material>Gazebo/Grey</material>
-        <turnGravityOff>false</turnGravityOff>
-      </gazebo>
-    <!-- End base_link(robot frame) description -->
-    
-    
-    <!-- Attaching the left drivetrain to the robot frame -->
-      <!-- joint defines position relationship of the child to the parent-->
-      <joint name="left_leg_joint" type="fixed">
-		    <origin xyz="0 ${base_width/2-leg_width/2} ${-leg_height}" rpy="0 0 0" />
-		    <parent link="base_link" />
-		    <child link="left_leg" />
-	    </joint>
-      
-      <!-- LEFT_LEG represents the left of the drive train -->
-	    <link name="left_leg">
-		    <!-- visual is the model shown in gazebo / rviz -->
-		    <visual>
-			    <origin xyz="0 0 ${leg_height/2.0}" rpy="0 0 0"/>
-			    <geometry>
-				    <box size=" ${leg_length} ${leg_width} ${leg_height}" />
-			    </geometry>
-			    <material name="blue"/>
-		    </visual>
-        
-        <!-- collision and inertial are used by the physics model used
+		<collision>
+			<origin xyz="0 0 ${base_height/2.0}" rpy="0 0 0" />
+			<geometry>
+				<box size="${base_length} ${base_width} ${base_width}" />
+			</geometry>
+		</collision>
+		<inertial>
+			<origin xyz="0 0 ${base_height/2.0}" rpy="0 0 0" />
+			<mass value="${base_mass}" />
+			<box_inertial_matrix m="${base_mass}" h="${base_height}" l="${base_length}" w="${base_width}" />
+		</inertial>
+	</link>
+	<!-- Gazebo element covers assigning values not handled by the URDF file format -->
+	<gazebo reference="base_link">
+		<material>Gazebo/Grey</material>
+		<turnGravityOff>false</turnGravityOff>
+	</gazebo>
+	<!-- End base_link(robot frame) description -->
+	<!-- Attaching the left drivetrain to the robot frame -->
+	<!-- joint defines position relationship of the child to the parent-->
+	<joint name="left_leg_joint" type="fixed">
+		<origin xyz="0 ${base_width/2-leg_width/2} ${-leg_height}" rpy="0 0 0" />
+		<parent link="base_link" />
+		<child link="left_leg" />
+	</joint>
+	<!-- LEFT_LEG represents the left of the drive train -->
+	<link name="left_leg">
+		<!-- visual is the model shown in gazebo / rviz -->
+		<visual>
+			<origin xyz="0 0 ${leg_height/2.0}" rpy="0 0 0" />
+			<geometry>
+				<box size=" ${leg_length} ${leg_width} ${leg_height}" />
+			</geometry>
+			<material name="blue" />
+		</visual>
+		<!-- collision and inertial are used by the physics model used
              in simulation -->
-		    <collision>
-			    <origin xyz="0 0 ${leg_height/2.0}" rpy="0 0 0"/>
-			    <geometry>
-				    <box size="${leg_length} ${leg_width} ${leg_width}"/>
-			    </geometry>
-		    </collision>
-
-		    <inertial>
-			    <origin xyz="0 0 ${leg_height/2.0}" rpy="0 0 0"/>
-			    <mass value="${leg_mass}"/>
-			    <box_inertial_matrix m="${leg_mass}" h="${leg_height}" l="${leg_length}" w="${leg_width}" />
-		    </inertial>
-	    </link>
-      
-      <!-- Gazebo element covers assigning values not handled by the URDF file format -->
-      <gazebo reference="left_leg">
-        <material>Gazebo/Blue</material>
-        <turnGravityOff>false</turnGravityOff>
-      </gazebo>
-    <!-- End left_leg_joint(left drive train) description -->
-    
-    
-    <!-- Attaching the right drivetrain to the robot frame -->
-      <!-- joint defines position relationship of the child to the parent-->
-      <joint name="right_leg_joint" type="fixed">
-        <origin xyz="0 ${-base_width/2+leg_width/2} ${-leg_height}" rpy="0 0 0" />
-        <parent link="base_link" />
-        <child link="right_leg" />
-      </joint>
-
-      <!-- RIGHT_LEG represents the right of the drive train -->
-      <link name="right_leg">
-        <!-- visual is the model shown in gazebo / rviz -->
-        <visual>
-          <origin xyz="0 0 ${leg_height/2.0}" rpy="0 0 0"/>
-          <geometry>
-            <box size=" ${leg_length} ${leg_width} ${leg_height}" />
-          </geometry>
-          <material name="blue"/>
-        </visual>
-        
-        <!-- collision and inertial are used by the physics model used
+		<collision>
+			<origin xyz="0 0 ${leg_height/2.0}" rpy="0 0 0" />
+			<geometry>
+				<box size="${leg_length} ${leg_width} ${leg_width}" />
+			</geometry>
+		</collision>
+		<inertial>
+			<origin xyz="0 0 ${leg_height/2.0}" rpy="0 0 0" />
+			<mass value="${leg_mass}" />
+			<box_inertial_matrix m="${leg_mass}" h="${leg_height}" l="${leg_length}" w="${leg_width}" />
+		</inertial>
+	</link>
+	<!-- Gazebo element covers assigning values not handled by the URDF file format -->
+	<gazebo reference="left_leg">
+		<material>Gazebo/Blue</material>
+		<turnGravityOff>false</turnGravityOff>
+	</gazebo>
+	<!-- End left_leg_joint(left drive train) description -->
+	<!-- Attaching the right drivetrain to the robot frame -->
+	<!-- joint defines position relationship of the child to the parent-->
+	<joint name="right_leg_joint" type="fixed">
+		<origin xyz="0 ${-base_width/2+leg_width/2} ${-leg_height}" rpy="0 0 0" />
+		<parent link="base_link" />
+		<child link="right_leg" />
+	</joint>
+	<!-- RIGHT_LEG represents the right of the drive train -->
+	<link name="right_leg">
+		<!-- visual is the model shown in gazebo / rviz -->
+		<visual>
+			<origin xyz="0 0 ${leg_height/2.0}" rpy="0 0 0" />
+			<geometry>
+				<box size=" ${leg_length} ${leg_width} ${leg_height}" />
+			</geometry>
+			<material name="blue" />
+		</visual>
+		<!-- collision and inertial are used by the physics model used
              in simulation -->
-        <collision>
-          <origin xyz="0 0 ${leg_height/2.0}" rpy="0 0 0"/>
-          <geometry>
-            <box size="${leg_length} ${leg_width} ${leg_width}"/>
-          </geometry>
-        </collision>
-
-        <inertial>
-          <origin xyz="0 0 ${leg_height/2.0}" rpy="0 0 0"/>
-          <mass value="${leg_mass}"/>
-          <box_inertial_matrix m="${leg_mass}" h="${leg_height}" l="${leg_length}" w="${leg_width}" />
-        </inertial>
-      </link>
-
-      <!-- Gazebo element covers assigning values not handled by the URDF file format -->
-      <gazebo reference="right_leg">
-        <material>Gazebo/Blue</material>
-        <turnGravityOff>false</turnGravityOff>
-      </gazebo>
-    <!-- End right_leg_joint(right drive train) description -->
-  
-  <!-- End links and joints -->
-  
-  <!-- The following represent extrusions from the frame and drivetrain
+		<collision>
+			<origin xyz="0 0 ${leg_height/2.0}" rpy="0 0 0" />
+			<geometry>
+				<box size="${leg_length} ${leg_width} ${leg_width}" />
+			</geometry>
+		</collision>
+		<inertial>
+			<origin xyz="0 0 ${leg_height/2.0}" rpy="0 0 0" />
+			<mass value="${leg_mass}" />
+			<box_inertial_matrix m="${leg_mass}" h="${leg_height}" l="${leg_length}" w="${leg_width}" />
+		</inertial>
+	</link>
+	<!-- Gazebo element covers assigning values not handled by the URDF file format -->
+	<gazebo reference="right_leg">
+		<material>Gazebo/Blue</material>
+		<turnGravityOff>false</turnGravityOff>
+	</gazebo>
+	<!-- End right_leg_joint(right drive train) description -->
+	<!-- End links and joints -->
+	<!-- The following represent extrusions from the frame and drivetrain
        which are defined in wheel.urdf.xacro and extrusion.urdf.xacro -->
-    <!-- wheels -->
-    <wheel prefix="front_left" leg="left_leg" x="1" y="1"/>
-    <wheel prefix="front_right" leg="right_leg" x="1" y="-1"/>
-    <wheel prefix="back_left" leg="left_leg" x="-1" y="1"/>
-    <wheel prefix="back_right" leg="right_leg" x="-1" y="-1"/>
-  <!-- End wheels and extrusions -->
-
-  <!-- skid steer plugin handles driving for us -->
+	<!-- wheels -->
+	<wheel prefix="front_left" leg="left_leg" x="1" y="1" />
+	<wheel prefix="front_right" leg="right_leg" x="1" y="-1" />
+	<wheel prefix="back_left" leg="left_leg" x="-1" y="1" />
+	<wheel prefix="back_right" leg="right_leg" x="-1" y="-1" />
+	<!-- End wheels and extrusions -->
+	<!-- skid steer plugin handles driving for us -->
 	<gazebo>
-	  <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
-	    <updateRate>100.0</updateRate>
-	    <robotNamespace>/rovr</robotNamespace>
+		<plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
+			<updateRate>100.0</updateRate>
+			<robotNamespace>/rovr</robotNamespace>
 			<commandTopic>cmd_vel</commandTopic>
 			<odometryTopic>odometry/wheel</odometryTopic>
-	    <leftFrontJoint>front_left_wheel_joint</leftFrontJoint>
-	    <rightFrontJoint>front_right_wheel_joint</rightFrontJoint>
-	    <leftRearJoint>back_left_wheel_joint</leftRearJoint>
-	    <rightRearJoint>back_right_wheel_joint</rightRearJoint>
-	    <wheelSeparation>${2*base_width}</wheelSeparation>
-	    <wheelDiameter>${2*wheel_radius}</wheelDiameter>
-	    <robotBaseFrame>base_link</robotBaseFrame>
-	    <torque>10000</torque>
-	    <broadcastTF>true</broadcastTF>
+			<leftFrontJoint>front_left_wheel_joint</leftFrontJoint>
+			<rightFrontJoint>front_right_wheel_joint</rightFrontJoint>
+			<leftRearJoint>back_left_wheel_joint</leftRearJoint>
+			<rightRearJoint>back_right_wheel_joint</rightRearJoint>
+			<wheelSeparation>${2*base_width}</wheelSeparation>
+			<wheelDiameter>${2*wheel_radius}</wheelDiameter>
+			<robotBaseFrame>base_link</robotBaseFrame>
+			<torque>10000</torque>
+			<broadcastTF>true</broadcastTF>
 			<legacyMode>false</legacyMode>
-	  </plugin>
+		</plugin>
 	</gazebo>
-
-  <gazebo>
-  <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-    <robotNamespace>/rovr</robotNamespace>
-    <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
-    <legacyMode>false</legacyMode>
-  </plugin>
-  </gazebo>
+	<gazebo>
+		<plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+			<robotNamespace>/rovr</robotNamespace>
+			<robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+			<legacyMode>false</legacyMode>
+		</plugin>
+	</gazebo>
 </robot>
+
