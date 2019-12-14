@@ -166,6 +166,29 @@ and joints of the bot -->
 		<turnGravityOff>false</turnGravityOff>
 	</gazebo>
 	<!-- End right_leg_joint(right drive train) description -->
+
+  <!-- joint defines position relationship of the child to the parent-->
+	<joint name="realsense_joint" type="fixed">
+		<origin xyz="${base_length/2} 0 ${base_height/2}" rpy="0 0.262 0" />
+		<parent link="base_link" />
+		<child link="realsense_d415_link" />
+	</joint>
+	<link name="realsense_d415_link">
+		<!-- visual is the model shown in gazebo / rviz -->
+		<visual>
+			<origin xyz="0 0 0" rpy="0 0 0" />
+			<geometry>
+				<box size=" 0.01 0.06 0.02" />
+			</geometry>
+			<material name="blue" />
+		</visual>
+	</link>
+  <gazebo reference="realsense_d415_link">
+		<material>Gazebo/Blue</material>
+		<turnGravityOff>false</turnGravityOff>
+	</gazebo>
+	<!-- End realsense description -->
+
 	<!-- End links and joints -->
 	<!-- The following represent extrusions from the frame and drivetrain
        which are defined in wheel.urdf.xacro and extrusion.urdf.xacro -->
