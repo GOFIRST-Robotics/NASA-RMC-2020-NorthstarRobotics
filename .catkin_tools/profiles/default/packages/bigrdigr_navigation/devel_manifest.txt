@@ -1,4 +1,0 @@
-bigrdigr_navigation
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/bigrdigr_navigation/lib/pkgconfig/bigrdigr_navigation.pc /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/lib/pkgconfig/bigrdigr_navigation.pc
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/bigrdigr_navigation/share/bigrdigr_navigation/cmake/bigrdigr_navigationConfig-version.cmake /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/share/bigrdigr_navigation/cmake/bigrdigr_navigationConfig-version.cmake
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/bigrdigr_navigation/share/bigrdigr_navigation/cmake/bigrdigr_navigationConfig.cmake /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/share/bigrdigr_navigation/cmake/bigrdigr_navigationConfig.cmake

@@ -1,4 +1,0 @@
-bigrdigr_gazebo
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/bigrdigr_gazebo/lib/pkgconfig/bigrdigr_gazebo.pc /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/lib/pkgconfig/bigrdigr_gazebo.pc
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/bigrdigr_gazebo/share/bigrdigr_gazebo/cmake/bigrdigr_gazeboConfig-version.cmake /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/share/bigrdigr_gazebo/cmake/bigrdigr_gazeboConfig-version.cmake
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/bigrdigr_gazebo/share/bigrdigr_gazebo/cmake/bigrdigr_gazeboConfig.cmake /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/share/bigrdigr_gazebo/cmake/bigrdigr_gazeboConfig.cmake

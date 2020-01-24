@@ -1,4 +1,0 @@
-bigrdigr_description
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/bigrdigr_description/lib/pkgconfig/bigrdigr_description.pc /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/lib/pkgconfig/bigrdigr_description.pc
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/bigrdigr_description/share/bigrdigr_description/cmake/bigrdigr_descriptionConfig.cmake /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/share/bigrdigr_description/cmake/bigrdigr_descriptionConfig.cmake
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/bigrdigr_description/share/bigrdigr_description/cmake/bigrdigr_descriptionConfig-version.cmake /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/share/bigrdigr_description/cmake/bigrdigr_descriptionConfig-version.cmake

@@ -1,4 +1,0 @@
-rgbd_pose_estimation
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/rgbd_pose_estimation/lib/pkgconfig/rgbd_pose_estimation.pc /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/lib/pkgconfig/rgbd_pose_estimation.pc
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/rgbd_pose_estimation/share/rgbd_pose_estimation/cmake/rgbd_pose_estimationConfig-version.cmake /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/share/rgbd_pose_estimation/cmake/rgbd_pose_estimationConfig-version.cmake
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/rgbd_pose_estimation/share/rgbd_pose_estimation/cmake/rgbd_pose_estimationConfig.cmake /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/share/rgbd_pose_estimation/cmake/rgbd_pose_estimationConfig.cmake
