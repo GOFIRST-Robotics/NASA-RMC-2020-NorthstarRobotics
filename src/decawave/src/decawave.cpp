@@ -9,35 +9,23 @@
  * Copyright (c) 2018 GOFIRST-Robotics
  */
 
-#include <string>
-#include <vector>
+
 #include <iostream>
-#include <math.h>
 
 #include "decawave/decawave.h"
 #include "serial/serial.h"
 
-Decawave::Decawave(std::string port_name){
-  //connecting via serial
-  std::string port =port_name; // could be something else (was /dev/serial0)
-  // Find serial port with "SEGGER" (aka decawave attached)- currently doesn't work, defaults to ^
-  // std::vector<serial::PortInfo> devices_found = serial::list_ports();
-  // std::vector<serial::PortInfo>::iterator iter = devices_found.begin();
-  // while(iter != devices_found.end()){
-  //   serial::PortInfo device = *iter++;
-  //   if(device.description.find("SEGGER") != std::string::npos){
-  //     port = device.port;
-  //   }
-  // }
 
+namespace decawave{
+Decawave::Decawave(std::string port_name){
   //Serial connection to decawave (tag)
   // /dev/ assumes a linux environment
-  my_serial.reset(new serial::Serial(("/dev/"+port), 115200, serial::Timeout::simpleTimeout(1000)));//opens the port
+  my_serial.reset(new serial::Serial(port_name, 115200, serial::Timeout::simpleTimeout(1000)));//opens the port
 }
 
-std::vector<anchor> Decawave::updateSamples(){
+std::vector<Anchor> Decawave::updateSamples(){
   unsigned char coords_updated=0;
-  std::vector<anchor> anchors={};
+  std::vector<Anchor> anchors={};
   if(my_serial->isOpen()){
     //first check if the decawave has new information
     //sending command 4.3.19  dwm_status_get uses code {0x32,0x00}
@@ -52,6 +40,8 @@ std::vector<anchor> Decawave::updateSamples(){
     }else{//no new data
       return(anchors);
     }
+  }else{
+    return(anchors);
   }
   //array to hold bytes received from decawave
   unsigned char result[26];//maximum size to be read at once
@@ -65,9 +55,8 @@ std::vector<anchor> Decawave::updateSamples(){
   if (bytesread==26){
     if (result[1]==0){//check no error code
       int num_anchors=(int) result[25];
-      int i=0;
-      anchor anchor;
-      while(i<num_anchors){
+      Anchor anchor;
+      for (int i=0; i<num_anchors; i++){
         if (my_serial->read(result, 20)!=20){
           return (anchors);
         }//read one anchor of data
@@ -79,7 +68,6 @@ std::vector<anchor> Decawave::updateSamples(){
         anchor.position[2]=((int)result[15]) | ((int)result[16]<<8) | ((int)result[17]<<16) | ((int)result[18]<<24);//z
         anchor.quality_factor=(int)result[19];
         anchors.push_back(anchor);
-        i++;
       }
     }
   }else{//error returns empty vector
@@ -93,6 +81,7 @@ Decawave::~Decawave(){
   my_serial->close();//close the serial port
 }
 
+}
 //serial library
 // http://wjwwood.io/serial/doc/1.1.0/classserial_1_1_serial.html
 
