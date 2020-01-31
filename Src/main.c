@@ -49,11 +49,18 @@ CAN_HandleTypeDef hcan;
 UART_HandleTypeDef huart2;
 
 osThreadId defaultTaskHandle;
+uint32_t defaultTaskBuffer[128];
+osStaticThreadDef_t defaultTaskControlBlock;
 osThreadId achooControllerHandle;
 uint32_t achooControllerBuffer[128];
 osStaticThreadDef_t achooControllerControlBlock;
+osThreadId canRxDispatchHandle;
+uint32_t canRxDispatchBuffer[128];
+osStaticThreadDef_t canRxDispatchControlBlock;
+osMutexId canTxMutexHandle;
+osStaticMutexDef_t canTxMutexControlBlock;
 /* USER CODE BEGIN PV */
-QueueHandle_t xCanTxQueue;
+QueueHandle_t xCanRxQueue;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -63,6 +70,7 @@ static void MX_USART2_UART_Init(void);
 static void MX_CAN_Init(void);
 void StartDefaultTask(void const *argument);
 extern void achooControllerFunc(void const *argument);
+extern void canRxDispatchTask(void const *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -106,6 +114,11 @@ int main(void) {
   vesc_system_init();
   /* USER CODE END 2 */
 
+  /* Create the mutex(es) */
+  /* definition and creation of canTxMutex */
+  osMutexStaticDef(canTxMutex, &canTxMutexControlBlock);
+  canTxMutexHandle = osMutexCreate(osMutex(canTxMutex));
+
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
@@ -119,18 +132,24 @@ int main(void) {
   /* USER CODE END RTOS_TIMERS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
-  xCanTxQueue = xQueueCreate(8, sizeof(rmc_can_msg));
+  xCanRxQueue = xQueueCreate(8, sizeof(rmc_can_msg));
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
+  osThreadStaticDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128,
+                    defaultTaskBuffer, &defaultTaskControlBlock);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of achooController */
   osThreadStaticDef(achooController, achooControllerFunc, osPriorityNormal, 0,
                     128, achooControllerBuffer, &achooControllerControlBlock);
   achooControllerHandle = osThreadCreate(osThread(achooController), NULL);
+
+  /* definition and creation of canRxDispatch */
+  osThreadStaticDef(canRxDispatch, canRxDispatchTask, osPriorityAboveNormal, 0,
+                    128, canRxDispatchBuffer, &canRxDispatchControlBlock);
+  canRxDispatchHandle = osThreadCreate(osThread(canRxDispatch), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

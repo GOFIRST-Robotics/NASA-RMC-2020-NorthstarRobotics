@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=/home/nick/NASA-RMC-RT/Inc
+HeaderPath=/home/julia/NASA-RMC-RT/Inc
 HeaderFiles=FreeRTOSConfig.h;stm32f3xx_it.h;stm32f3xx_hal_conf.h;main.h;
-SourcePath=/home/nick/NASA-RMC-RT/Src
+SourcePath=/home/julia/NASA-RMC-RT/Src
 SourceFiles=freertos.c;stm32f3xx_it.c;stm32f3xx_hal_msp.c;stm32f3xx_hal_timebase_tim.c;main.c;
 
 [PreviousLibFiles]
