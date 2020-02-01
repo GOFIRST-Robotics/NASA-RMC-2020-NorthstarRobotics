@@ -403,21 +403,21 @@ static void MX_GPIO_Init(void) {
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : GESUNDHEIT_HallL_Pin BLESSYOU_LimitRLC6_Pin
-     BLESSYOU_LimitRH_Pin DIGGER_Clock_Pin ACHOO_LimitRL_Pin */
-  GPIO_InitStruct.Pin = GESUNDHEIT_HallL_Pin | BLESSYOU_LimitRLC6_Pin |
+  /*Configure GPIO pins : GESUNDHEIT_HallL_Pin BLESSYOU_LimitRL_Pin
+     BLESSYOU_LimitRH_Pin DIGGER_Clock_Pin ACHOO_LimitLL_Pin */
+  GPIO_InitStruct.Pin = GESUNDHEIT_HallL_Pin | BLESSYOU_LimitRL_Pin |
                         BLESSYOU_LimitRH_Pin | DIGGER_Clock_Pin |
-                        ACHOO_LimitRL_Pin;
+                        ACHOO_LimitLL_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : GESUNDHEIT_HallR_Pin GESUNDHEIT_LimitLI_Pin
      GESUNDHEIT_LimitLO_Pin GESUNDHEIT_LimitRI_Pin GESUNDHEIT_LimitRO_Pin
-     BLESSYOU_LimitRL_Pin BLESSYOU_LimitLH_Pin */
+     BLESSYOU_LimitLL_Pin BLESSYOU_LimitLH_Pin */
   GPIO_InitStruct.Pin = GESUNDHEIT_HallR_Pin | GESUNDHEIT_LimitLI_Pin |
                         GESUNDHEIT_LimitLO_Pin | GESUNDHEIT_LimitRI_Pin |
-                        GESUNDHEIT_LimitRO_Pin | BLESSYOU_LimitRL_Pin |
+                        GESUNDHEIT_LimitRO_Pin | BLESSYOU_LimitLL_Pin |
                         BLESSYOU_LimitLH_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
@@ -433,10 +433,11 @@ static void MX_GPIO_Init(void) {
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : ACHOO_LimitLH_Pin ACHOO_LimitRLA9_Pin
-   * ACHOO_LimitRH_Pin */
+  /*Configure GPIO pins : ACHOO_LimitLH_Pin ACHOO_LimitRL_Pin ACHOO_LimitRH_Pin
+   */
   GPIO_InitStruct.Pin =
-      ACHOO_LimitLH_Pin | ACHOO_LimitRLA9_Pin | ACHOO_LimitRH_Pin;
+      ACHOO_LimitLH_Pin | ACHOO_LimitRL_Pin | ACHOO_LimitRH_Pin;
+
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);

@@ -50,27 +50,37 @@ void achooControllerFunc(void const* argument) {
                (currentState == KNEELING || currentState == MOVING_KNEEL)) {
       currentState = MOVING_STAND;
     }
-    bool lowLimit =
-        HAL_GPIO_ReadPin(ACHOO_LimitL_GPIO_Port, ACHOO_LimitL_Pin) == 0;
-    bool highLimit =
-        HAL_GPIO_ReadPin(ACHOO_LimitH_GPIO_Port, ACHOO_LimitH_Pin) == 0;
+    bool lowLimitR =
+        HAL_GPIO_ReadPin(ACHOO_LimitRL_GPIO_Port, ACHOO_LimitRL_Pin) == 0;
+    bool lowLimitL =
+        HAL_GPIO_ReadPin(ACHOO_LimitLL_GPIO_Port, ACHOO_LimitLL_Pin) == 0;
+    bool highLimitR =
+        HAL_GPIO_ReadPin(ACHOO_LimitRH_GPIO_Port, ACHOO_LimitRH_Pin) == 0;
+    bool highLimitL =
+        HAL_GPIO_ReadPin(ACHOO_LimitLH_GPIO_Port, ACHOO_LimitLH_Pin) == 0;
     // Check if our movement has completed
-    if (lowLimit && currentState == MOVING_KNEEL) {
+    if (lowLimitR && lowLimitL && currentState == MOVING_KNEEL) {
       currentState = KNEELING;
     }
-    if (highLimit && currentState == MOVING_STAND) {
+    if (highLimitR && highLimitL && currentState == MOVING_STAND) {
       currentState = STANDING;
     }
 
     // Set VESC movement
-    F32 current = 0.0f;
-    if (currentState == MOVING_STAND && !highLimit) {
-      current = 10.0f;
-    } else if (currentState == MOVING_KNEEL && !lowLimit) {
-      current = -10.0f;
+    F32 currentR = 0.0f;
+    if (currentState == MOVING_STAND && !highLimitR) {
+      currentR = 10.0f;
+    } else if (currentState == MOVING_KNEEL && !lowLimitR) {
+      currentR = -10.0f;
     }
-    vesc_set_current(leftMotor, current);
-    vesc_set_current(rightMotor, current);
+    vesc_set_current(rightMotor, currentR);
+    F32 currentL = 0.0f;
+    if (currentState == MOVING_STAND && !highLimitL) {
+      currentL = 10.0f;
+    } else if (currentState == MOVING_KNEEL && !lowLimitL) {
+      currentL = -10.0f;
+    }
+    vesc_set_current(leftMotor, currentL);
 
     // Send status message
     U8 data[1];
