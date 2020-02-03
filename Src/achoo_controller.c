@@ -12,8 +12,8 @@
 #include <stm32f3xx_hal_conf.h>
 #include <task.h>
 
-KneelState targetState = KNEELING;
-KneelState currentState = KNEELING;
+static KneelState targetState = KNEELING;
+static KneelState currentState = KNEELING;
 VESC* leftMotor;
 VESC* rightMotor;
 

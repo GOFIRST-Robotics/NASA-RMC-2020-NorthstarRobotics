@@ -118,14 +118,10 @@ void Error_Handler(void);
 #define R_GESUNDL_FW_GPIO_Port GPIOC
 #define SWO_Pin GPIO_PIN_3
 #define SWO_GPIO_Port GPIOB
-#define R_GESUNDEXTR_RV_Pin GPIO_PIN_4
-#define R_GESUNDEXTR_RV_GPIO_Port GPIOB
-#define R_GESUNDEXTR_FW_Pin GPIO_PIN_5
-#define R_GESUNDEXTR_FW_GPIO_Port GPIOB
-#define R_GESUNDEXTL_RV_Pin GPIO_PIN_6
-#define R_GESUNDEXTL_RV_GPIO_Port GPIOB
-#define R_GESUNDEXTL_FW_Pin GPIO_PIN_7
-#define R_GESUNDEXTL_FW_GPIO_Port GPIOB
+#define R_GESUNDEXT_RV_Pin GPIO_PIN_4
+#define R_GESUNDEXT_RV_GPIO_Port GPIOB
+#define R_GESUNDEXT_FW_Pin GPIO_PIN_5
+#define R_GESUNDEXT_FW_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

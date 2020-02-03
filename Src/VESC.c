@@ -130,31 +130,3 @@ F32 vesc_get_rpm(VESC const* vesc) { return vesc->erpm / vesc->pole_pairs; }
 F32 vesc_get_position(VESC const* vesc) {
   return 360.0f * vesc->tacho_value / (6.0f * vesc->pole_pairs);
 }
-
-S32 buffer_pop_int32(U8 const* buffer, S32* index) {
-  S32 buf;
-  buf = buffer[(*index)++] << 24;
-  buf |= buffer[(*index)++] << 16;
-  buf |= buffer[(*index)++] << 8;
-  buf |= buffer[(*index)++];
-  return buf;
-}
-
-int16_t buffer_pop_int16(U8 const* buffer, S32* index) {
-  int16_t buf;
-  buf |= buffer[(*index)++] << 8;
-  buf |= buffer[(*index)++];
-  return buf;
-}
-
-void buffer_put_int32(U8* buffer, S32* index, S32 const value) {
-  buffer[(*index)++] = value >> 24u;
-  buffer[(*index)++] = value >> 16u;
-  buffer[(*index)++] = value >> 8u;
-  buffer[(*index)++] = value;
-}
-
-void buffer_put_int16(U8* buffer, S32* index, S16 const value) {
-  buffer[(*index)++] = value >> 8u;
-  buffer[(*index)++] = value;
-}

@@ -59,6 +59,9 @@ osStaticThreadDef_t achooControllerControlBlock;
 osThreadId canRxDispatchHandle;
 uint32_t canRxDispatchBuffer[128];
 osStaticThreadDef_t canRxDispatchControlBlock;
+osThreadId gesundheitTaskHandle;
+uint32_t gesundheitTaskBuffer[128];
+osStaticThreadDef_t gesundheitTaskControlBlock;
 osMutexId canTxMutexHandle;
 osStaticMutexDef_t canTxMutexControlBlock;
 /* USER CODE BEGIN PV */
@@ -74,6 +77,7 @@ static void MX_ADC1_Init(void);
 void StartDefaultTask(void const *argument);
 extern void achooControllerFunc(void const *argument);
 extern void canRxDispatchTask(void const *argument);
+extern void gesundheitControllerFunc(void const *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -154,6 +158,11 @@ int main(void) {
   osThreadStaticDef(canRxDispatch, canRxDispatchTask, osPriorityAboveNormal, 0,
                     128, canRxDispatchBuffer, &canRxDispatchControlBlock);
   canRxDispatchHandle = osThreadCreate(osThread(canRxDispatch), NULL);
+
+  /* definition and creation of gesundheitTask */
+  osThreadStaticDef(gesundheitTask, gesundheitControllerFunc, osPriorityNormal,
+                    0, 128, gesundheitTaskBuffer, &gesundheitTaskControlBlock);
+  gesundheitTaskHandle = osThreadCreate(osThread(gesundheitTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -379,11 +388,10 @@ static void MX_GPIO_Init(void) {
   HAL_GPIO_WritePin(GPIOA, LD2_Pin | R_GESUNDR_RV_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB,
-                    R_DOOR_RV_Pin | R_DOOR_FW_Pin | R_GESUNDEXTR_RV_Pin |
-                        R_GESUNDEXTR_FW_Pin | R_GESUNDEXTL_RV_Pin |
-                        R_GESUNDEXTL_FW_Pin,
-                    GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(
+      GPIOB,
+      R_DOOR_RV_Pin | R_DOOR_FW_Pin | R_GESUNDEXT_RV_Pin | R_GESUNDEXT_FW_Pin,
+      GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOC,
@@ -423,11 +431,10 @@ static void MX_GPIO_Init(void) {
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : R_DOOR_RV_Pin R_DOOR_FW_Pin R_GESUNDEXTR_RV_Pin
-     R_GESUNDEXTR_FW_Pin R_GESUNDEXTL_RV_Pin R_GESUNDEXTL_FW_Pin */
-  GPIO_InitStruct.Pin = R_DOOR_RV_Pin | R_DOOR_FW_Pin | R_GESUNDEXTR_RV_Pin |
-                        R_GESUNDEXTR_FW_Pin | R_GESUNDEXTL_RV_Pin |
-                        R_GESUNDEXTL_FW_Pin;
+  /*Configure GPIO pins : R_DOOR_RV_Pin R_DOOR_FW_Pin R_GESUNDEXT_RV_Pin
+   * R_GESUNDEXT_FW_Pin */
+  GPIO_InitStruct.Pin =
+      R_DOOR_RV_Pin | R_DOOR_FW_Pin | R_GESUNDEXT_RV_Pin | R_GESUNDEXT_FW_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -437,7 +444,6 @@ static void MX_GPIO_Init(void) {
    */
   GPIO_InitStruct.Pin =
       ACHOO_LimitLH_Pin | ACHOO_LimitRL_Pin | ACHOO_LimitRH_Pin;
-
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);

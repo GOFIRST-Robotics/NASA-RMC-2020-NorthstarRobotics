@@ -13,9 +13,11 @@
 
 // System IDs
 #define ACHOO_SYS_ID 101u
+#define GESUNDHEIT_SYS_ID 102u
 
 // Controller IDs
 #define ACHOO_MOTOR_L 42u
 #define ACHOO_MOTOR_R 2u
+#define GESUNDHEIT_MOTOR_ID 3u
 
 #endif  // NASA_RMC_RT_RT_CONF_H

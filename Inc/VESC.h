@@ -5,6 +5,7 @@
 #ifndef NASA_RMC_RT_VESC_H
 #define NASA_RMC_RT_VESC_H
 
+#include "buffer.h"
 #include "can_manager.h"
 #include "stdint.h"
 #include "types.h"
@@ -45,27 +46,6 @@ void vesc_send_message(VESC const* vesc, U8 type, U8 const* message,
 
 void vesc_system_init();
 void handle_vesc_can_recv(rmc_can_msg msg);
-
-/**
- * Pops a value off the buffer starting at index of the specified length and
- * increments index to match
- */
-S32 buffer_pop_int32(U8 const* buffer, S32* index);
-/**
- * Pops a value off the buffer starting at index of the specified length and
- * increments index to match
- */
-S16 buffer_pop_int16(U8 const* buffer, S32* index);
-/**
- * Puts a value into the buffer starting at index of the specified length and
- * increments index to match
- */
-void buffer_put_int32(U8* buffer, S32* index, S32 value);
-/**
- * Puts a value into the the buffer starting at index of the specified length
- * and increments index to match
- */
-void buffer_put_int16(U8* buffer, S32* index, S16 value);
 
 /**
  * Set duty cycle to specified VESC
