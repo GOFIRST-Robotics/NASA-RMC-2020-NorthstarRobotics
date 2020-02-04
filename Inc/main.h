@@ -94,8 +94,8 @@ void Error_Handler(void);
 #define BLESSYOU_LimitRL_GPIO_Port GPIOC
 #define BLESSYOU_LimitRH_Pin GPIO_PIN_7
 #define BLESSYOU_LimitRH_GPIO_Port GPIOC
-#define DIGGER_Clock_Pin GPIO_PIN_8
-#define DIGGER_Clock_GPIO_Port GPIOC
+#define SNEEZE_Home_Pin GPIO_PIN_8
+#define SNEEZE_Home_GPIO_Port GPIOC
 #define ACHOO_LimitLL_Pin GPIO_PIN_9
 #define ACHOO_LimitLL_GPIO_Port GPIOC
 #define ACHOO_LimitLH_Pin GPIO_PIN_8

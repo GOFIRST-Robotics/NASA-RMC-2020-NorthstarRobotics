@@ -18,7 +18,8 @@ Below is a table of controller subsystem IDs:
 | Drivetrain | 100  |
 | ACHOO      | 101  |
 | GESUNDHEIT | 102  |
-| Digger     | 103  |
+| SNEEZE     | 103  |
+| BLESSYOU   | 104  |
 
 These IDs start at 100 to avoid interaction with VESCs.
 See the subsystem tables below for message IDs.
@@ -46,3 +47,11 @@ GESUNDHEIT
 | Set door       |  52  | Listens           |   1    | 0: Close<br>1: Open |
 | Extension state | 53 | Broadcasts (10 Hz) |   6    | Byte 0: <br>&nbsp;0: Stowed<br>&nbsp;1: Moving to stow<br>&nbsp;2: Moving to extend<br>&nbsp;3: Extended<br>Byte 1:<br>&nbsp;0: Door closed<br>&nbsp;1: Door open<br>Byte 2-5: Speed (int32) rpm |
 
+SNEEZE
+---
+| Command    | ID   | Broadcasts/Listens  | Length | Data |
+|------------|------|---------------------|--------|------|
+| Extension state | 60 | Broadcasts (50 Hz) |   6    | Byte 0 (State): <br>&nbsp;0: Idle<br>&nbsp;1: Digging<br>&nbsp;2: Homing<br>Byte 1: Is homed (bool)<br>Byte 2-5: Speed (int32) rpm |
+| Set dig speed |  61  | Listens  |   4    | Speed (int32) rpm |
+| Go home |  62  | Listens  |   0    | N/A |
+| Set transfer speed |  63  | Listens  |   4    | Speed (int32) rpm |
