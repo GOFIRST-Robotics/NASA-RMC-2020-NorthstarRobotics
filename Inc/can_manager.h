@@ -23,7 +23,14 @@ typedef struct {
   unsigned int mask;
   void (*callback)(rmc_can_msg msg);
 } CANMsgHandlerPair;
-
+/*
+typedef enum{
+    CAN_ID_DRIVETRAIN = 100,
+    CAN_ID_ACHOO,
+    CAN_ID_ELEVATOR,
+    CAN_ID_DIGGER,
+}SUBSYSTEM_ID;
+*/
 void registerCANMsgHandler(U32 mask, void (*callback)(rmc_can_msg msg));
 
 #endif  // NASA_RMC_RT_CAN_MANAGER_H
