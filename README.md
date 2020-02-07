@@ -23,13 +23,13 @@ Below is a table of controller subsystem IDs:
 
 These IDs start at 100 to avoid interaction with VESCs.
 See the subsystem tables below for message IDs.
-Message IDs are required to begin above 40 to avoid interaction with VESC command IDs, which go up to 27.
+Message IDs are required to begin above 35 to avoid interaction with VESC command IDs, which go up to 27.
 
 Drivetrain
 ---
 | Command    | ID   | Broadcasts/Listens  | Length | Data |
 |------------|------|---------------------|--------|------|
-| Twist      |  40  | Listens             |   8    | Bits 7-4: Linear velocity (int32) mm/sBits 3-0: Angular Velocity (int32) urad/s |
+| Twist      |  35  | Listens             |   8    | Bits 7-4: Linear velocity (int32) mm/s<br>Bits 3-0: Angular Velocity (int32) mrad/s |
 
 ACHOO
 ---

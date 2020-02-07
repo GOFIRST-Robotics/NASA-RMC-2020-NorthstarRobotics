@@ -1,5 +1,5 @@
 //
-// Created by nick on 11/5/19.
+// Created by julia on 11/5/19.
 //
 
 #ifndef NASA_RMC_RT_RT_CONF_H
