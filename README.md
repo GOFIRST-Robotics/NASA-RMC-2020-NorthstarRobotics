@@ -101,8 +101,9 @@ Good chapters: 2-6, 10, 12, 15, 17
 With ROS, we can use existing packages, share our packages, and facilitate communication between the parts of our software
 
 ### Example ROS filesystem
+![filesystem](https://github.com/GOFIRST-Robotics/NASA-RMC-2020-NorthstarRobotics/blob/Documentation_update/documentation/doc/reference_imgs/ROS_filesystem.png)
 ### Example node communication
-
+![nodecom](https://github.com/GOFIRST-Robotics/NASA-RMC-2020-NorthstarRobotics/blob/Documentation_update/documentation/doc/reference_imgs/ROS_Nodes.png)
 ### Getting Started with ROS
 -   ROS requires* Ubuntu OS (each version of ROS requires* a specific version of Ubuntu)
 	-   Recommended:
