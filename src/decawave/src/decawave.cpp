@@ -2,11 +2,11 @@
  * decawave.cpp
  * Interfaces with Decawave 1001 module over USB
  * VERSION: 0.0
- * Last changed: 2019-04-01
+ * Last changed: 2020-01-22
  * Authors: favou005@umn.edu>
  * Maintainers: favou005@umn.edu
  * MIT License
- * Copyright (c) 2018 GOFIRST-Robotics
+ * Copyright (c) 2020 GOFIRST-Robotics
  */
 
 
@@ -75,7 +75,6 @@ std::vector<Anchor> Decawave::updateSamples(){
   }
   return (anchors);
 }
-
 
 Decawave::~Decawave(){
   my_serial->close();//close the serial port

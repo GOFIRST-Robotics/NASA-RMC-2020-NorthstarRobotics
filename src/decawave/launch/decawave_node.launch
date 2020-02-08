@@ -11,5 +11,7 @@
   <node pkg="decawave" type="decawave_node" name="decawave_node" output="screen" respawn="true">
     <param name="frequency" type="double" value="50.0"/>
     <param name="port_name" type="str" value="/dev/ttyACM0"/>
+    <param name="base_seperation_covar" type="double" value="0.05"/>
+    <param name="distance_mesurment_covar" type="double" value="0.2"/>
   </node>
 </launch>

@@ -12,6 +12,7 @@
 // ROS Libs
 #include <ros/ros.h>
 #include <nav_msgs/Odometry.h>
+#include <geometry_msgs/PoseWithCovarianceStamped.h>
 
 // Native_Libs
 #include <string>
@@ -42,6 +43,7 @@
 ros::NodeHandle * nh;
 ros::NodeHandle * pnh;
 ros::Publisher dw_pub;
+ros::Publisher estimate_pub;
 
 // ROS Topics
 std::string gps_topic = "decawave/Range";//"odometry/gps";
@@ -49,9 +51,13 @@ std::string gps_topic = "decawave/Range";//"odometry/gps";
 // ROS Callbacks
 void update_callback(const ros::TimerEvent&);
 
+std::vector<double> do_Math(double d0, double d0_err,double d1, double d1_err,double b,double b_err, double p1x, double p1y, double p2x, double p2y);
 // ROS Params
 double frequency = 50.0;
+double base_seperation_covar=10.0;
+double distance_mesurment_covar=10.0;
 std::string port_name;
+int seq=0;
 // for(int i = 0; i < argc; ++i){
 // int port_num = atoi(argv[1]);
 // }
@@ -66,17 +72,20 @@ int main(int argc, char** argv){
 
   // Params
   ros::param::get("/decawave_node/port_name",port_name);
+  ros::param::get("/decawave_node/base_seperation_covar",base_seperation_covar);
+  ros::param::get("/decawave_node/distance_mesurment_covar",distance_mesurment_covar);
 
   // Init Decawave
+
   piTag = new decawave::Decawave(port_name);
 
   // Subscribers
   ros::Timer update_timer = nh->createTimer(ros::Duration(1.0/frequency), update_callback);
 
   // Publishers
-  gps_topic = gps_topic + port_name;
+  gps_topic = gps_topic +"_"+port_name;
   dw_pub = nh->advertise<decawave::Range>(gps_topic, 10);
-
+  estimate_pub = nh->advertise<geometry_msgs::PoseWithCovarianceStamped>("estimate", 1);
   // Spin
   ros::spin();
 }
@@ -97,9 +106,10 @@ void update_callback(const ros::TimerEvent&){
     msg.distance = ((float)m_anchor.distance)/1000;
     msg.distance_quality = m_anchor.distance_quality;
     msg.quality_factor=m_anchor.quality_factor;
+    //position in (x,y,z)
     msg.position={((float)m_anchor.position[0])/1000,
       ((float)m_anchor.position[1])/1000,
-      ((float)m_anchor.position[3])/1000};
+      ((float)m_anchor.position[2])/1000};
     // fill out message header
     msg.header.stamp = ros::Time::now();
     msg.header.frame_id = "decawave_" + frame_id;//"decawave_" + port_num;
@@ -108,4 +118,126 @@ void update_callback(const ros::TimerEvent&){
     dw_pub.publish(msg);
     i++;
   }
+/*
+  decawave::Anchor anchor_1 = {1, 12000, 100, {0,10000,1}, 100};
+  decawave::Anchor anchor_2 = {2, 12900, 100, {0,9000,1}, 100};
+  std::vector<decawave::Anchor> anchors={ anchor_1, anchor_2};
+*/
+  //check if 2 anchors are present.
+  if(anchors.size()>0){
+    //compare y vals
+    std::vector<double> covariance_vec;
+    //if anchor 1 is p1
+    if (anchors[1].position[1] >anchors[0].position[1]){
+      covariance_vec= do_Math( (double)anchors[1].distance/1000 , distance_mesurment_covar , (double)anchors[0].distance/1000 , distance_mesurment_covar,
+      sqrt( pow( (double) anchors[1].position[1] - (double) anchors[0].position[1] , 2) + pow( (double) anchors[1].position[1] - (double) anchors[0].position[1] , 2) )/1000 , base_seperation_covar,
+      (double) anchors[1].position[0]/1000, (double) anchors[1].position[1]/1000, (double) anchors[0].position[0]/1000, (double) anchors[0].position[1]/1000 );
+    }else{//anchor 0 is p1
+      covariance_vec= do_Math( (double)anchors[0].distance/1000 , distance_mesurment_covar , (double)anchors[1].distance/1000 , distance_mesurment_covar,
+      sqrt( pow( (double) anchors[1].position[1] - (double) anchors[0].position[1] , 2) + pow( (double) anchors[1].position[1] - (double) anchors[0].position[1] , 2) )/1000 , base_seperation_covar,
+      (double) anchors[0].position[0]/1000,  (double) anchors[0].position[1]/1000, (double) anchors[1].position[0]/1000,  (double)anchors[1].position[1]/1000 );
+    }
+
+    boost::array<double, 36> covariance;
+    for(int i = 0; i<36; i++){
+      covariance[i]=covariance_vec[i];
+    }
+
+    ros::Time now = ros::Time::now();
+
+    geometry_msgs::PoseWithCovarianceStamped pose_msg;
+
+    pose_msg.header.stamp=now;
+    pose_msg.header.seq=seq;
+    seq++;
+    pose_msg.header.frame_id="decawave";
+
+    //take x and y off the back and put them in the pose
+    pose_msg.pose.pose.position.y=covariance_vec[37];
+    covariance_vec.pop_back();
+    pose_msg.pose.pose.position.x=covariance_vec[36];
+    covariance_vec.pop_back();
+    pose_msg.pose.pose.position.z=0.0;
+    pose_msg.pose.covariance=covariance;
+    //quaternion, we dont know, fill w 0
+    pose_msg.pose.pose.orientation.x=0.0;
+    pose_msg.pose.pose.orientation.y=0.0;
+    pose_msg.pose.pose.orientation.z=0.0;
+    pose_msg.pose.pose.orientation.w=0.0;
+
+    estimate_pub.publish(pose_msg);
+  }
+}
+
+//gives flattened 6x6 covarience matrix, x ,y in the same frame as the endpoints of b
+/*
+      (x,y)
+        |\
+        | \
+        |  \
+      d0|   \ d1
+        |    \
+        |     \
+  theta --------
+      p1   b     p2
+
+//ASSUMES x,y is inside bounds. assumes p1 y is greater than p2 y
+*/
+std::vector<double> do_Math(double d0, double d0_err,double d1, double d1_err,double b,double b_err, double p1x, double p1y, double p2x, double p2y){
+  //calc cos theta
+  double cos_theta = (pow(b,2) + pow(d0,2) - pow(d1,2) )/(2*b*d0);
+  double b_sqr_err= 2*b_err;
+  double d0_sqr_err= 2*d0_err;
+  double d1_sqr_err= 2*d1_err;
+  double top_err = sqrt( ( pow(b_sqr_err,2) + pow( d0_sqr_err, 2 ) + pow( d1_sqr_err, 2) ) );
+  double theta_err = sqrt( pow(b_err/b , 2) + pow( top_err / (pow(b,2) + pow(d0,2) - pow(d1,2)) ,2) + pow(d0_err/d0 , 2));
+
+  double angle = acos(cos_theta);
+  double angle_diff = acos(cos_theta+theta_err);
+
+  if(angle_diff<angle){
+    angle_diff= angle - acos(cos_theta-theta_err);
+  }else{
+    angle_diff = angle_diff-angle;
+  }
+  double sin_theta = sin(angle);
+
+  //calc x and y covarience
+  double x_co = d0*tan(angle_diff);
+  double y_co = d0_err;
+
+  //unit vetors in y and x directions respecivly
+  //rotate b by theta
+  std::vector<double> v2={(p2x-p1x)*cos_theta - (p2y-p1y)*sin_theta , (p2x-p1x)*sin_theta + (p2y-p1y)*cos_theta };
+  double v2_len= sqrt(pow(v2[0], 2)+pow(v2[1], 2));
+  v2[0]=v2[0]/v2_len;
+  v2[1]=v2[1]/v2_len;
+  std::vector<double> v1={v2[1], -v2[0]};
+
+  std::vector<double> r = {v1[0], v1[1], v2[0], v2[1]};
+
+  //covariance is R C (R transpose)
+  //set c1 =R * [dxx , 0, 0 , dyy]
+  std::vector<double> c1={ x_co*r[0], y_co*r[1], x_co*r[2], y_co*r[3]};
+  //mult by r transpose
+  c1[0]= c1[0]*r[0] + c1[1]*r[1];
+  c1[1]= c1[0]*r[2] + c1[1]*r[3];
+  c1[2]= c1[2]*r[0] + c1[3]*r[1];
+  c1[3]= c1[2]*r[2] + c1[3]*r[3];
+
+  //calc x,y
+  double x = p1x+v2[0]*d0;
+  double y = p1y+v2[1]*d0;
+
+  std::vector<double> covariance=
+    { c1[0], c1[1], 0.0, 0.0, 0.0, 0.0,
+      c1[2], c1[3], 0.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 10000.0, 0.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 10000.0, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 10000.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 10000.0,
+      x, y
+    };
+
+  return covariance;
 }
