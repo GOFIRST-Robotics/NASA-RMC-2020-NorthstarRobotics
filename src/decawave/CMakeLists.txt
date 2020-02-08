@@ -83,6 +83,12 @@ target_link_libraries(decawave_node
   decawave
 )
 
+add_executable(decawave_positioning src/decawave_positioning.cpp)
+target_link_libraries(decawave_positioning
+  ${catkin_LIBRARIES}
+  decawave
+)
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
