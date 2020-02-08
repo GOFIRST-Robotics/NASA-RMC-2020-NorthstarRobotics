@@ -9,6 +9,13 @@ https://docs.google.com/presentation/d/1eXhP5dbxtgWJBE492b78TFrnQFL9yoPsJFO4HszJ
 # Starter Instructions
 
 ## Getting Everything Running From a Fresh Ubuntu Install
+
+Update computer before installing ROS
+'''
+sudo apt-get update
+sudo apt-get upgrade
+'''
+
 Configure ROS environment: see  [here:](http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment)
 add to bashrc for permanence, else run in terminal each time:
 ```

@@ -17,17 +17,11 @@ This is in progress... Will be updated...
    (old)](https://docs.google.com/document/d/1pDDC_1_RaHGiCGMDKFiZ845Ba5-fpn_cems4Xnu7P24/edit)
 
 ## Documentation 
-Organization:
-
- - doc
- - examples/src
- - GitSubmoduleUpdateScript.txt
- - HowToPush
- - github_pushing
- - installationHelp.txt
- - ssh_setup
+See documentation README for instructions
 
 ## Timeline
+
+See project board for [current status](https://github.com/GOFIRST-Robotics/NASA-RMC-2020-NorthstarRobotics/projects/1)
 
  - [x] -   Learning
  - [x] -   Robust Teleop
@@ -54,19 +48,21 @@ Variable Schedule
 The ROS Workspace 
 **Package:**		Description:
 
-* **aruco_localization**  localization using aruco markers (visual targets)	
-* **rovr_common**		  robot specific launch files
-* **rovr_control**	robot control and telecom, wheel io
-* **rovr_description**	a description of the robot, for simulation
-* **rovr_gazebo**		gazebo simulation environment
-* **rovr_input**		testing input/movement
-* **rovr_navigation**	navigation, flexbe robot behaviors
-* **decawave**		localization using decawaves
-* **formatter_string**	string formatter
-* **navx**			navx IMU data
-* **socketcan_bridge**	socketcan bridge
+* **rovr_common**			robot specific system launch files (high level)
+* **rovr_control**	    	robot control and telecom, wheel io (low level)
+* **rovr_description**		a description of the robot, for simulation (geometry 							 parameters)
+* **rovr_gazebo**			gazebo simulation environment
+* **rovr_input**			testing input/movement
+* **rovr_navigation**		navigation, EKF
+Feature packages
+* **decawave**				localization using decawaves
+* **formatter_string**		string formatter
+* **navx**					navx IMU data
+* **socketcan_bridge**		socketcan bridge
 * **socketcan_interface**	socketcan interface
-* **telecom**			telecom
+* **telecom**				telecom
+3rd party
+* **aruco_localization**  	localization using aruco markers (visual targets)	
 
 ## Other Repos
 ### Companion Repos
@@ -115,3 +111,5 @@ With ROS, we can use existing packages, share our packages, and facilitate commu
     -   Also acceptable:
 	    -   If you already have installed a different version of Ubuntu, you may use its corresponding ROS version. The robot’s computer is running 18.04 with Melodic, however, so you may have compatibility issues.
 	    - Running a virtual machine  https://www.vmware.com/
+	
+	See documentation folder README for more information
