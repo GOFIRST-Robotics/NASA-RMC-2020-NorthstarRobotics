@@ -1,8 +1,6 @@
 # NASA-RMC-2020-NorthstarRobotics
 The NASA RMC 2020 repository for Northstar Robotics, a segment of University of Minnesota Robotics student group
 
-# Table of Contents
-This is in progress... Will be updated...
 ## About
 
 > The goal of the competition is to collect icy regolith simulant from a simulated martian surface and deposit the collected material in a hopper. The top layer of the arena is a fine, dusty material, and the  bottom layer is gravel, which simulates icy regolith on mars. This is accomplished over two runs of 15 minutes. Massive bonus points are available for runs that are fully autonomous, but teleop control is available.
@@ -45,7 +43,8 @@ Variable Schedule
 
 [Milestones](https://docs.google.com/document/d/17NoA1MLxK1FFYn2GWv_bi-EYi50x5UTQvx3rQ464B9A/edit?usp=sharing)
 ## ROS Workspace
-The ROS Workspace 
+
+
 **Package:**		Description:
 
 * **rovr_common**			robot specific system launch files (high level)
@@ -54,6 +53,7 @@ The ROS Workspace
 * **rovr_gazebo**			gazebo simulation environment
 * **rovr_input**			testing input/movement
 * **rovr_navigation**		navigation, EKF
+
 Feature packages
 * **decawave**				localization using decawaves
 * **formatter_string**		string formatter
@@ -61,6 +61,7 @@ Feature packages
 * **socketcan_bridge**		socketcan bridge
 * **socketcan_interface**	socketcan interface
 * **telecom**				telecom
+
 3rd party
 * **aruco_localization**  	localization using aruco markers (visual targets)	
 
