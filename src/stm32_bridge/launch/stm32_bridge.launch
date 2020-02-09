@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+  <!-- 
+  stm32_bridge.launch
+  VERSION: 1.0.0 
+  LAST_CHANGED: 2020-02-08
+  AUTHOR: Julia Schatz
+  -->
+<launch>
+<!-- Interface: 
+  Pub: 
+    (socketcan_topic_send) (can_msgs/Frame)
+  Sub:
+    (socketcan_topic_recv) (can_msgs/Frame)
+    /cmd_vel (geometry_msgs/Twist)
+  Param: 
+    socketcan_topic_send (string) /can0/send; The topic to publish can frames to
+    socketcan_topic_recv (string) /can0/recv; The topic to receive can frames from
+  -->
+  <node pkg="stm32_bridge" type="stm32_bridge_node" name="stm32_bridge" output="screen" respawn="true">
+    <param name="socketcan_topic_send" value="/can0/send"/>
+    <param name="socketcan_topic_recv" value="/can0/recv"/>
+  </node>
+</launch>
