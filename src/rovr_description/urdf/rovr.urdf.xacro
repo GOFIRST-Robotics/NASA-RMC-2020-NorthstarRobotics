@@ -4,6 +4,7 @@
   <xacro:include filename="$(find rovr_description)/urdf/sensors/camera.urdf.xacro"/>
   <xacro:include filename="$(find rovr_description)/urdf/sensors/realsense.urdf.xacro"/>
   <xacro:include filename="$(find rovr_description)/urdf/sensors/imu.urdf.xacro"/>
+  <xacro:include filename="$(find rovr_description)/urdf/sensors/decawave.urdf.xacro"/>
   <xacro:include filename="$(find rovr_description)/urdf/extrusion.urdf.xacro"/>
 
 
@@ -279,11 +280,15 @@
   <!-- The following defines the realsense placement on the frame -->
     <realsense_macro number="1" x="1" offset="${realsense_front_offset}"/>
     <realsense_macro number="2" x="-1" offset="${realsense_back_offset}"/>
+  <!-- End realsenses -->
 
   <!-- The following defines the positions of the IMU and Decawave sensors -->
     <!-- imu and deca front left, back right. in front of extrusion -->
     <imu number="1" x="1" y="1" extrusion="front_left_extrusion"/>
     <imu number="2" x="1" y="-1" extrusion="back_right_extrusion"/>
+
+    <decawave number="1" x="1" y="1" extrusion="front_left_extrusion"/>
+    <decawave number="2" x="1" y="-1" extrusion="back_right_extrusion"/>
   <!-- End sensors -->
 
   <!-- skid steer plugin handles driving for us -->
