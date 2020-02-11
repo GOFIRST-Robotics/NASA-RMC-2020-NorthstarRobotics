@@ -219,19 +219,21 @@ std::vector<double> do_Math(double d0, double d0_err,double d1, double d1_err,do
   //covariance is R C (R transpose)
   //set c1 =R * [dxx , 0, 0 , dyy]
   std::vector<double> c1={ x_co*r[0], y_co*r[1], x_co*r[2], y_co*r[3]};
+
+  std::vector<double> covar_mat={0.0, 0.0, 0.0, 0.0};
   //mult by r transpose
-  c1[0]= c1[0]*r[0] + c1[1]*r[1];
-  c1[1]= c1[0]*r[2] + c1[1]*r[3];
-  c1[2]= c1[2]*r[0] + c1[3]*r[1];
-  c1[3]= c1[2]*r[2] + c1[3]*r[3];
+  covar_mat[0]= c1[0]*r[0] + c1[1]*r[1];
+  covar_mat[1]= c1[0]*r[2] + c1[1]*r[3];
+  covar_mat[2]= c1[2]*r[0] + c1[3]*r[1];
+  covar_mat[3]= c1[2]*r[2] + c1[3]*r[3];
 
   //calc x,y
   double x = p1x+v2[0]*d0;
   double y = p1y+v2[1]*d0;
 
   std::vector<double> covariance=
-    { c1[0], c1[1], 0.0, 0.0, 0.0, 0.0,
-      c1[2], c1[3], 0.0, 0.0, 0.0, 0.0,
+    { covar_mat[0], covar_mat[1], 0.0, 0.0, 0.0, 0.0,
+      covar_mat[2], covar_mat[3], 0.0, 0.0, 0.0, 0.0,
       0.0, 0.0, 10000.0, 0.0, 0.0, 0.0,
       0.0, 0.0, 0.0, 10000.0, 0.0, 0.0,
       0.0, 0.0, 0.0, 0.0, 10000.0, 0.0,
