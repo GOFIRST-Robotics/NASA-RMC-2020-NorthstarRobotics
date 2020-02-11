@@ -1,8 +1,0 @@
-socketcan_interface
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/socketcan_interface/lib/libsocketcan_interface_string.so /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/lib/libsocketcan_interface_string.so
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/socketcan_interface/lib/libsocketcan_interface_plugin.so /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/lib/libsocketcan_interface_plugin.so
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/socketcan_interface/lib/socketcan_interface/socketcan_bcm /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/lib/socketcan_interface/socketcan_bcm
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/socketcan_interface/lib/socketcan_interface/socketcan_dump /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/lib/socketcan_interface/socketcan_dump
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/socketcan_interface/lib/pkgconfig/socketcan_interface.pc /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/lib/pkgconfig/socketcan_interface.pc
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/socketcan_interface/share/socketcan_interface/cmake/socketcan_interfaceConfig.cmake /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/share/socketcan_interface/cmake/socketcan_interfaceConfig.cmake
-/home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/.private/socketcan_interface/share/socketcan_interface/cmake/socketcan_interfaceConfig-version.cmake /home/minyoung/Desktop/NASA-RMC-2019-NorthstarRobotics/devel/share/socketcan_interface/cmake/socketcan_interfaceConfig-version.cmake

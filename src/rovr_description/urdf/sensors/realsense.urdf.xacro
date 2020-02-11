@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<robot name="rovr" xmlns:xacro="https://www.ros.org/wiki/xacro">
+  <!--xacro:include filename="$(find realsense2_description)/urdf/_d435.urdf.xacro"/-->
+  <xacro:include filename="$(find rovr_description)/urdf/_d435.urdf.xacro"/>
+
+
+  <!-- Main dimensions: meters, kg, seconds, rads -->
+  <xacro:property name="realsense_vertical_from_base" value = "0.4763" />
+  <xacro:property name="realsense_horizontal_from_base" value = "0.3493" />
+  <xacro:property name="realsense_angle" value=".2618" /> <!--rad from horizontal, + = downward-->
+  <xacro:property name="PI" value="3.1415926535897931" />
+
+  <!-- Defined in realsense's sensor_d415 macro, so this isn't needed
+  <xacro:macro name="realsense_joint" params="number x">
+    <joint name="realsense${number}_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <parent link="base_link"/>
+      <child link="realsense${number}"/>
+    </joint>
+  </xacro:macro>
+  -->
+
+  <xacro:macro name="realsense_macro" params="number x offset">
+    <xacro:sensor_d435 parent="base_link" name="realsense${number}">
+      <origin xyz="${x*realsense_horizontal_from_base} ${offset} ${realsense_vertical_from_base}" rpy="0 ${realsense_angle} ${-PI/2+x*pi/2}"/>
+    </xacro:sensor_d435>
+  </xacro:macro>
+
+</robot>
