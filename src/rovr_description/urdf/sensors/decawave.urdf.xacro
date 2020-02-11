@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<robot name="rovr" xmlns:xacro="https://www.ros.org/wiki/xacro">
+
+  <!-- Main dimensions: meters, kg, seconds, rads -->
+  <xacro:property name="decawave_length" value="0.062" />
+  <xacro:property name="decawave_width" value="0.043" />
+  <xacro:property name="decawave_height" value="0.009" />
+
+  <xacro:macro name="decawave_joint" params="number x y extrusion">
+    <joint name="decawave${number}_joint" type="fixed">
+      <axis rpy="0 0 0" xyz="0 1 0"/>
+      <parent link="${extrusion}" />
+      <child link="decawave${number}_link" />
+      <origin xyz="${x*(extrusion_length/2+decawave_length/2)} ${y*extrusion_width/2} 0" rpy="0 0 0" />
+    </joint>
+  </xacro:macro>
+
+  <xacro:macro name="decawave_link" params="number">
+    <link name="decawave${number}_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${decawave_length} ${decawave_width} ${decawave_height}" />
+        </geometry>
+        <materal name="blue"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="${decawave_length} ${decawave_width} ${decawave_height}" />
+        </geometry>
+      </collision>
+    </link>
+  </xacro:macro>
+
+  <xacro:macro name="decawave" params="number x y extrusion">
+    <decawave_joint number="${number}" x="${x}" y="${y}" extrusion="${extrusion}"/>
+    <decawave_link number="${number}"/>
+  </xacro:macro>
+
+</robot>
