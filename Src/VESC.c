@@ -95,7 +95,7 @@ void handle_vesc_can_recv(rmc_can_msg const msg) {
 
 void vesc_set_duty_cycle(VESC const* vesc, F32 const duty_cycle) {
   U8 buffer[4];
-  U32 val = (U32)(duty_cycle * 100000.0);
+  S32 val = (S32)(duty_cycle * 100000.0);
   S32 index = 0;
   buffer_put_int32(buffer, &index, val);
   vesc_send_message(vesc, VESC_PACKET_SET_DUTY, buffer, 4);
@@ -104,7 +104,7 @@ void vesc_set_duty_cycle(VESC const* vesc, F32 const duty_cycle) {
 void vesc_set_rpm(VESC const* vesc, F32 const rpm) {
   // Normalize rpm to erpm
   U8 buffer[4];
-  U32 val = (U32)(rpm * vesc->pole_pairs);
+  S32 val = (S32)(rpm * vesc->pole_pairs);
   S32 index = 0;
   buffer_put_int32(buffer, &index, val);
   vesc_send_message(vesc, VESC_PACKET_SET_RPM, buffer, 4);
@@ -113,14 +113,14 @@ void vesc_set_rpm(VESC const* vesc, F32 const rpm) {
 void vesc_set_position(VESC const* vesc, F32 const pos) {
   // Multiply degrees to encoder counts
   U8 buffer[4];
-  U32 val = (U32)(6.0f * vesc->pole_pairs * 1000000.0f);
+  S32 val = (S32)(6.0f * vesc->pole_pairs * 1000000.0f);
   memcpy(buffer, &val, sizeof(U8) * 4);
   vesc_send_message(vesc, VESC_PACKET_SET_POS, buffer, 4);
 }
 
 void vesc_set_current(VESC const* vesc, F32 const current) {
   U8 buffer[4];
-  U32 val = (U32)(current * 1000.0);
+  S32 val = (S32)(current * 1000.0);
   memcpy(buffer, &val, sizeof(U8) * 4);
   vesc_send_message(vesc, VESC_PACKET_SET_CURRENT, buffer, 4);
 }

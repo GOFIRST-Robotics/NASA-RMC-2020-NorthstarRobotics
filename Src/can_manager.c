@@ -2,6 +2,7 @@
 // Created by julia on 10/22/19.
 //
 
+#include <print.h>
 #include <stm32f3xx.h>
 #include "FreeRTOS.h"
 #include "cmsis_os.h"
@@ -16,7 +17,7 @@ extern CAN_HandleTypeDef hcan;
 extern UART_HandleTypeDef huart2;
 extern QueueHandle_t xCanRxQueue;
 extern osMutexId canTxMutexHandle;
-U32 TxMailbox;
+U32 CurTxMailbox;
 CAN_TxHeaderTypeDef TxHeader;
 CAN_RxHeaderTypeDef RxHeader;
 U8 RxData[8];
@@ -30,7 +31,12 @@ void do_send_can_message(U32 const id, U8 const* buf, S32 const length) {
   TxHeader.DLC = length;
   TxHeader.TransmitGlobalTime = DISABLE;
   xSemaphoreTake(canTxMutexHandle, portMAX_DELAY);
-  int retval = HAL_CAN_AddTxMessage(&hcan, &TxHeader, buf, &TxMailbox);
+  while (HAL_CAN_GetTxMailboxesFreeLevel(&hcan) ==
+         0) {  // Block until a mailbox is open
+    vTaskDelay(1);
+  }
+
+  int retval = HAL_CAN_AddTxMessage(&hcan, &TxHeader, buf, &CurTxMailbox);
   xSemaphoreGive(canTxMutexHandle);
 }
 

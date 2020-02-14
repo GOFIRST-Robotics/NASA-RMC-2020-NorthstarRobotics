@@ -11,11 +11,13 @@
 // for an explanation on how the mathematics for the twist were calculated
 
 // ALL VALUES ARE IN MILLIMETERS
-#define RADIUS 1.00f
-#define WIDTH 2.00f
+#define DT_WHEEL_RADIUS 180.0f
+#define DT_WIDTH 1000.0f
+#define DT_GEAR_RATIO 80
+#define DT_MMS_TO_RPM (DT_GEAR_RATIO / (DT_WHEEL_RADIUS * 0.1047f))
 typedef enum { DRIVE_MSG_TWIST = 35 } DRIVE_MSG_T;
 
 #define DRIVE_LOOP_MS 100u  // milliseconds, unsigned
-#define DRIVE_MOTOR_POLE_PAIRS 14u
+#define DRIVE_MOTOR_POLE_PAIRS 7u
 
 #endif  // NASA_RMC_RT_DRIVETRAIN_CONTROLLER_H

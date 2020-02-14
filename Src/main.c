@@ -65,6 +65,9 @@ osStaticThreadDef_t gesundheitTaskControlBlock;
 osThreadId sneezeControlHandle;
 uint32_t sneezeControlBuffer[128];
 osStaticThreadDef_t sneezeControlControlBlock;
+osThreadId drivetrainTaskHandle;
+uint32_t drivetrainTaskBuffer[128];
+osStaticThreadDef_t drivetrainTaskControlBlock;
 osMutexId canTxMutexHandle;
 osStaticMutexDef_t canTxMutexControlBlock;
 /* USER CODE BEGIN PV */
@@ -82,6 +85,7 @@ extern void achooControllerFunc(void const *argument);
 extern void canRxDispatchTask(void const *argument);
 extern void gesundheitControllerFunc(void const *argument);
 extern void sneezeControllerFunc(void const *argument);
+extern void drivetrain_loop(void const *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -154,9 +158,9 @@ int main(void) {
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of achooController */
-  osThreadStaticDef(achooController, achooControllerFunc, osPriorityNormal, 0,
-                    128, achooControllerBuffer, &achooControllerControlBlock);
-  achooControllerHandle = osThreadCreate(osThread(achooController), NULL);
+  /*osThreadStaticDef(achooController, achooControllerFunc, osPriorityNormal, 0,
+  128, achooControllerBuffer, &achooControllerControlBlock);
+  achooControllerHandle = osThreadCreate(osThread(achooController), NULL);*/
 
   /* definition and creation of canRxDispatch */
   osThreadStaticDef(canRxDispatch, canRxDispatchTask, osPriorityAboveNormal, 0,
@@ -164,14 +168,19 @@ int main(void) {
   canRxDispatchHandle = osThreadCreate(osThread(canRxDispatch), NULL);
 
   /* definition and creation of gesundheitTask */
-  osThreadStaticDef(gesundheitTask, gesundheitControllerFunc, osPriorityNormal,
-                    0, 128, gesundheitTaskBuffer, &gesundheitTaskControlBlock);
-  gesundheitTaskHandle = osThreadCreate(osThread(gesundheitTask), NULL);
+  /*osThreadStaticDef(gesundheitTask, gesundheitControllerFunc,
+  osPriorityNormal, 0, 128, gesundheitTaskBuffer, &gesundheitTaskControlBlock);
+  gesundheitTaskHandle = osThreadCreate(osThread(gesundheitTask), NULL);*/
 
   /* definition and creation of sneezeControl */
-  osThreadStaticDef(sneezeControl, sneezeControllerFunc, osPriorityNormal, 0,
-                    128, sneezeControlBuffer, &sneezeControlControlBlock);
-  sneezeControlHandle = osThreadCreate(osThread(sneezeControl), NULL);
+  /*osThreadStaticDef(sneezeControl, sneezeControllerFunc, osPriorityNormal, 0,
+  128, sneezeControlBuffer, &sneezeControlControlBlock); sneezeControlHandle =
+  osThreadCreate(osThread(sneezeControl), NULL);*/
+
+  /* definition and creation of drivetrainTask */
+  osThreadStaticDef(drivetrainTask, drivetrain_loop, osPriorityNormal, 0, 128,
+                    drivetrainTaskBuffer, &drivetrainTaskControlBlock);
+  drivetrainTaskHandle = osThreadCreate(osThread(drivetrainTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

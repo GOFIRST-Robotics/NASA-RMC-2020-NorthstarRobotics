@@ -5,7 +5,11 @@
 #include "drivetrain_controller.h"
 #include <FreeRTOS.h>
 #include <can_manager.h>
+#include <math.h>
+#include <print.h>
 #include <rt_conf.h>
+#include <stdio.h>
+#include <stm32f3xx_hal.h>
 #include <string.h>
 #include <task.h>
 #include "VESC.h"
@@ -13,13 +17,13 @@
 
 // I am telling the motor controllers to implement a twist message until I get
 // another twist message
-double new_speed_left = 0;
-double new_speed_right = 0;
+F32 new_speed_left = 0;
+F32 new_speed_right = 0;
 
 void drivetrain_move(rmc_can_msg msg) {
   // Because of the mask we only get messages that have our ID
-  int32_t cmd_speed = 0;  // in mm/s
-  int32_t cmd_angV = 0;
+  S32 cmd_speed = 0;  // in mm/s
+  S32 cmd_angV = 0;
 
   //    if(msg.id & 0xFF != DRIVETRAIN_SYS_ID)
   //    {
@@ -28,13 +32,17 @@ void drivetrain_move(rmc_can_msg msg) {
   // This portion is already done by the CAN dispatcher. It is here purely for
   // Hunter's understanding.
 
+  S32 idx = 0;
   switch (msg.id >> 8) {
     case DRIVE_MSG_TWIST:
-      memcpy(&cmd_speed, &(msg.buf[4]), 4);
-      memcpy(&cmd_angV, (msg.buf), 4);
 
-      new_speed_right = (cmd_angV * WIDTH) / 2 + cmd_speed;
+      cmd_angV = buffer_pop_int32(msg.buf, &idx);
+      cmd_speed = buffer_pop_int32(msg.buf, &idx);
+
+      new_speed_right = (cmd_angV * DT_WIDTH) / 2 + cmd_speed;
       new_speed_left = cmd_speed * 2 - new_speed_right;
+      new_speed_right = new_speed_right * DT_MMS_TO_RPM;
+      new_speed_left = new_speed_left * DT_MMS_TO_RPM;
       break;
 
     default:
@@ -43,7 +51,7 @@ void drivetrain_move(rmc_can_msg msg) {
   }
 }
 
-void drivetrain_loop(void) {
+void drivetrain_loop(void const* argument) {
   // SETUP
   registerCANMsgHandler(DRIVETRAIN_SYS_ID, &drivetrain_move);
   VESC* blm = create_vesc(DRIVE_MOTOR_BL, DRIVE_MOTOR_POLE_PAIRS);

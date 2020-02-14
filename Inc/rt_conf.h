@@ -18,14 +18,14 @@
 #define SNEEZE_SYS_ID 103u
 
 // Controller IDs
-#define ACHOO_MOTOR_L 42u
-#define ACHOO_MOTOR_R 2u
-#define DRIVE_MOTOR_BL 21u
-#define DRIVE_MOTOR_FL 22u
-#define DRIVE_MOTOR_BR 23u
-#define DRIVE_MOTOR_FR 24u
-#define GESUNDHEIT_MOTOR_ID 3u
-#define SNEEZE_MOTOR_DIG 4u
-#define SNEEZE_MOTOR_TRANS 5u
+#define ACHOO_MOTOR_L 10u
+#define ACHOO_MOTOR_R 11u
+#define DRIVE_MOTOR_BL 2u
+#define DRIVE_MOTOR_FL 1u
+#define DRIVE_MOTOR_BR 4u
+#define DRIVE_MOTOR_FR 3u
+#define GESUNDHEIT_MOTOR_ID 12u
+#define SNEEZE_MOTOR_DIG 13u
+#define SNEEZE_MOTOR_TRANS 14u
 
 #endif  // NASA_RMC_RT_RT_CONF_H
