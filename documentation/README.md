@@ -32,17 +32,6 @@ Once "apt-get update" doesn't work go here:
 http://insane-on-linux.blogspot.com/2014/10/installing-ros-indigo-on-mint-17.html
 Replace "trusty" with "xenial" if using kinetic (second comment)
 
-## Core Launch Files
-`rovr_common/launch/sensors.launch` Launches all sensors
-
-`rovr_description/launch/description.launch` Adds robot URDF parameter to define frame transforms
-
-`stm32_bridge/launch/stm32_bridge.launch` Launches STM32 bridge to run motors and provide wheel odometry/state feedback
-
-`rovr_control/launch/main_rovr_teleop_highlevel.launch` Launches telecom system (rovr side) and STM32 bridge
-
-`rovr_control/launch/main_mc_teleop.launch` Launches telecom system (driver station side)
-
 ### Updating Git Submodules
 This command will pull down the submodules and install them as they are on the origin. after init a <submod name> can be added to only update a specific submodule.
 '''

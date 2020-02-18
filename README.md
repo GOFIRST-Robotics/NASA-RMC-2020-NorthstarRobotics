@@ -115,3 +115,14 @@ With ROS, we can use existing packages, share our packages, and facilitate commu
 	    - Running a virtual machine  https://www.vmware.com/
 	
 	See documentation folder README for more information
+
+## Core Launch Files
+`rovr_common/launch/sensors.launch` Launches all sensors
+
+`rovr_description/launch/description.launch` Adds robot URDF parameter to define frame transforms
+
+`stm32_bridge/launch/stm32_bridge.launch` Launches STM32 bridge to run motors and provide wheel odometry/state feedback
+
+`rovr_control/launch/main_rovr_teleop_highlevel.launch` Launches telecom system (rovr side) and STM32 bridge
+
+`rovr_control/launch/main_mc_teleop.launch` Launches telecom system (driver station side)
