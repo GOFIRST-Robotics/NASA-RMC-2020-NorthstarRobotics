@@ -1,16 +1,10 @@
 <?xml version="1.0"?>
-<!-- rovr_description description.launch -->
-<!-- The launch file for the rovr urdf, with
-  all passthrough arguments -->
+<!-- creates the TF tree from the URDF of the robot -->
 <launch>
+  <arg name="model" default="$(find rovr_description)/urdf/rovr.urdf.xacro"/>
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg model)"/>
 
-  <arg name="robot_namespace" default="/"/>
-  <arg name="useCameras" default="false"/>
-  <arg name="useRealsense" default="false"/>
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
 
-  <param name="robot_description" command="$(find xacro)/xacro
-    '$(find rovr_description)/urdf/rovr.urdf.xacro'
-    --inorder
-    cameras:=$(arg useCameras)
-    " />
 </launch>
