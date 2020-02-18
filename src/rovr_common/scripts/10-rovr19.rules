@@ -15,6 +15,7 @@ ATTRS{idVendor}=="1415", ATTRS{idProduct}=="2000", KERNEL=="video7", SYMLINK+="p
 #ATTRS{idVendor}=="8086", ATTRS{idProduct}=="0b07", ATTRS{serial}=="825513025424", SYMLINK+="realsense0"
 #ATTRS{idVendor}=="8086", ATTRS{idProduct}=="0b07", ATTRS{serial}=="825513025416", SYMLINK+="realsense1"
 
+# TODO These kernels need to change at some point as they are based on the physical ports/hubs that the IMUs are plugged into
 ACTION=="add", KERNELS=="1-1.2:1.0", SYMLINK+="imu0"
 ACTION=="add", KERNELS=="1-2.2:1.0", SYMLINK+="imu1"
 

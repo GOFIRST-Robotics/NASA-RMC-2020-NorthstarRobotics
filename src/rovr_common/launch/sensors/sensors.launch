@@ -5,14 +5,14 @@
 <launch>
   <!-- Launch realsenses -->
   <!-- roslaunch realsense2_camera rs_camera.launch camera:=realsense2 serial_no:=827312073868 filters:=spatial,temporal,pointcloud -->
-  <include file="$(find realsense2_camera)/rs_camera.launch">
+  <include file="$(find realsense2_camera)/launch/rs_camera.launch">
     <arg name="camera" value="realsense2" />
     <arg name="serial_no" value="827312073868" />
     <arg name="filters" value="spatial,temporal,pointcloud" />
   </include>
 
   <!-- roslaunch realsense2_camera rs_camera.launch camera:=realsense1 serial_no:=827312073427 filters:=spatial,temporal,pointcloud -->
-  <include file="$(find realsense2_camera)/rs_camera.launch">
+  <include file="$(find realsense2_camera)/launch/rs_camera.launch">
     <arg name="camera" value="realsense1" />
     <arg name="serial_no" value="827312073427" />
     <arg name="filters" value="spatial,temporal,pointcloud" />
