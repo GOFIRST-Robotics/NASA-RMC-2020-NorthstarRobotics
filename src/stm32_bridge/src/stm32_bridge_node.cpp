@@ -27,8 +27,19 @@ void twist_callback(const geometry_msgs::Twist& msg);
 void can_recv_callback(const can_msgs::Frame& msg);
 
 // ROS Params
+std::string pose_frame_id;
+std::string twist_frame_id;
+int covar_samples;
+
+// Custom Types
+typedef struct {
+  float x;
+  float y;
+  float twist;
+} OdomEntry;
 
 // Global_Vars
+std::vector<OdomEntry> odomHistory;
 
 // Utility Methods
 can_msgs::Frame make_frame(uint8_t sys_id, uint8_t cmd_id, uint8_t* data, uint8_t len);
@@ -69,6 +80,10 @@ void twist_callback(const geometry_msgs::Twist& msg) {\
     can_pub.publish(my_frame);
 }
 
+void can_recv_callback(const can_msgs::Frame& msg) {
+
+}
+
 can_msgs::Frame make_frame(uint8_t sys_id, uint8_t cmd_id, uint8_t* data, uint8_t len) {
   can_msgs::Frame frame;
   frame.id = (cmd_id << 8) | sys_id;
@@ -94,8 +109,4 @@ void buffer_put_int32(uint8_t* buffer, int* index, int32_t const value) {
   buffer[(*index)++] = value >> 16;
   buffer[(*index)++] = value >> 8;
   buffer[(*index)++] = value;
-}
-
-void can_recv_callback(const can_msgs::Frame& msg) {
-
 }
