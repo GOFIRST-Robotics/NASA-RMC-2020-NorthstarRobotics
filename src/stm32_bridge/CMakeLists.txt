@@ -17,6 +17,8 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   socketcan_bridge
   can_msgs
+  nav_msgs
+  geometry_msgs
 )
 
 ###################################

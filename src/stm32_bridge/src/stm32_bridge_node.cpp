@@ -47,7 +47,7 @@ typedef struct {
 
 // Global_Vars
 std::vector<OdomEntry> odomHistory;
-int seq = 0;
+int odom_seq = 0;
 static const float DEG_TO_RAD = M_PI / 180.0F;
 
 // Utility Methods
@@ -69,7 +69,10 @@ int main(int argc, char** argv) {
   // Params
   pnh->param<std::string>("pose_frame_id", frame_id, "odom");
   pnh->param<std::string>("twist_frame_id", child_frame_id, "base_link");
-  pnh->param<int>("covar_samples", covar_samples, 100);
+  pnh->param<int>("covar_samples", covar_samples, 10);
+
+  // Setup node
+  odomHistory.resize(covar_samples);
 
   // Subscribers
   ros::Subscriber can_sub = nh->subscribe("received_messages", 5, can_recv_callback);
@@ -77,7 +80,7 @@ int main(int argc, char** argv) {
 
   // Publishers
   can_pub = nh->advertise<can_msgs::Frame>("sent_messages", 5);
-  can_pub = nh->advertise<nav_msgs::Odometry>("wheel_odom", 5); //todo idk
+  can_pub = nh->advertise<nav_msgs::Odometry>("odom", 5);
 
   // Spin
   ros::spin();
@@ -121,19 +124,19 @@ void handle_drivetrain_msg(uint8_t cmd_id, uint8_t* data, uint8_t len) {
     entry.theta = buffer_pop_int16(data, &idx) * 1000.0f;
 
     // Add entry to history
-    odomHistory.push_back(entry);
+    odomHistory[odom_seq % covar_samples] = entry;
   }
-  else if (cmd_id == 37 && len >= 4 && odomHistory.size() > 0) { // Odom velocity
+  else if (cmd_id == 37 && len >= 4) { // Odom velocity
     // Odom messages are sent position, then velocity
     // Get the most recent entry, put in by "odom position" branch, and parse this CAN data into it
-    OdomEntry entry = odomHistory.back();
+    OdomEntry entry = odomHistory[odom_seq % covar_samples];
     entry.dx = buffer_pop_int16(data, &idx) * 1000.0f;
     entry.omega = buffer_pop_int16(data, &idx) * 1000.0f;
 
     nav_msgs::Odometry odom_msg;
     // Add header
     odom_msg.header.stamp = ros::Time::now();
-    odom_msg.header.seq = seq++;
+    odom_msg.header.seq = odom_seq++;
     odom_msg.header.frame_id = frame_id;
     odom_msg.child_frame_id = child_frame_id;
 
@@ -165,7 +168,7 @@ void handle_drivetrain_msg(uint8_t cmd_id, uint8_t* data, uint8_t len) {
  * Returns true if the returned covariance is valid, otherwise false
  */
 bool calculate_covariance(boost::array<double, 36> &pose_mat, boost::array<double, 36> &twist_mat) {
-  int count = std::min((int) odomHistory.size(), covar_samples);
+  int count = std::min(odom_seq, covar_samples);
   if (count < 2) {
     return false; // Did not calculate covariance
   }
@@ -228,7 +231,7 @@ void unpack_frame(const can_msgs::Frame& frame, uint8_t* sys_id, uint8_t* cmd_id
 }
 
 int32_t buffer_pop_int32(uint8_t const* buffer, int* index) {
-  int32_t buf;
+  int32_t buf = 0;
   buf = buffer[(*index)++] << 24;
   buf |= buffer[(*index)++] << 16;
   buf |= buffer[(*index)++] << 8;
@@ -244,7 +247,7 @@ void buffer_put_int32(uint8_t* buffer, int* index, int32_t const value) {
 }
 
 int16_t buffer_pop_int16(uint8_t const* buffer, int* index) {
-  int16_t buf;
+  int16_t buf = 0;
   buf |= buffer[(*index)++] << 8;
   buf |= buffer[(*index)++];
   return buf;

@@ -8,16 +8,19 @@
 <launch>
 <!-- Interface: 
   Pub: 
-    (socketcan_topic_send) (can_msgs/Frame)
+    sent_messages (can_msgs/Frame)
+    odom (nav_msgs/Odometry)
   Sub:
-    (socketcan_topic_recv) (can_msgs/Frame)
-    /cmd_vel (geometry_msgs/Twist)
+    received_messages (can_msgs/Frame)
+    cmd_vel (geometry_msgs/Twist)
   Param: 
-    socketcan_topic_send (string) /can0/send; The topic to publish can frames to
-    socketcan_topic_recv (string) /can0/recv; The topic to receive can frames from
+    pose_frame_id (string) odom; The frame of the odometry pose
+    twist_frame_id (string) base_link; The frame of the odometry twist
+    covar_samples (int) 10; The number of samples to store to calculate covariance
   -->
   <node pkg="stm32_bridge" type="stm32_bridge_node" name="stm32_bridge" output="screen" respawn="true">
-    <param name="socketcan_topic_send" value="/can0/send"/>
-    <param name="socketcan_topic_recv" value="/can0/recv"/>
+    <param name="pose_frame_id" value="odom"/>
+    <param name="twist_frame_id" value="base_link"/>
+    <param name="covar_samples" value="10"/>
   </node>
 </launch>
