@@ -44,7 +44,7 @@ generate_messages(
 ## catkin specific configuration ##
 ###################################
 catkin_package(
-  INCLUDE_DIRS include
+  #INCLUDE_DIRS include
   LIBRARIES stm32_bridge
   CATKIN_DEPENDS can_msgs roscpp
 #  DEPENDS system_lib
@@ -62,7 +62,7 @@ file(GLOB SOURCES
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
- include
+ #include
   ${catkin_INCLUDE_DIRS}
 )
 
