@@ -27,6 +27,7 @@
 // Native_Libs
 #include <string>
 #include <cmath>
+#include <iostream>
 
 // ROS Node and Publishers
 ros::NodeHandle * nh;
@@ -107,7 +108,7 @@ int main(int argc, char** argv) {
 
   // Publishers
   can_pub = nh->advertise<can_msgs::Frame>("sent_messages", 5);
-  can_pub = nh->advertise<nav_msgs::Odometry>("odom", 5);
+  odom_pub = nh->advertise<nav_msgs::Odometry>("odom", 5);
 
   // Spin
   ros::spin();
@@ -125,6 +126,7 @@ void twist_callback(const geometry_msgs::Twist& msg) {
   can_msgs::Frame my_frame = make_frame(100, 35, buffer, 8);
 
   my_frame.header.stamp = ros::Time::now();
+  std::cout << "Sending cmd vel msg" << std::endl;
   can_pub.publish(my_frame);
 }
 
