@@ -11,7 +11,8 @@
   <depend>roscpp</depend>
   <depend>socketcan_bridge</depend>
   <depend>can_msgs</depend>
-
+  <build_depend>message_generation</build_depend>
+  <exec_depend>message_runtime</exec_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

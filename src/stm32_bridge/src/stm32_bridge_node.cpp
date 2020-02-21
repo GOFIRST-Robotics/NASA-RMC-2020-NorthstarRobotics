@@ -14,6 +14,15 @@
 #include <can_msgs/Frame.h>
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
+#include <stm32_bridge/ACHOOCmd.h>
+#include <stm32_bridge/GESUNDHEITExtendCmd.h>
+#include <stm32_bridge/GESUNDHEITDoorCmd.h>
+#include <stm32_bridge/GESUNDHEITSpeedCmd.h>
+#include <stm32_bridge/SNEEZEDigSpeedCmd.h>
+#include <stm32_bridge/SNEEZETransSpeedCmd.h>
+#include <stm32_bridge/SNEEZEHomeCmd.h>
+#include <stm32_bridge/BLESSYOUSpeedCmd.h>
+#include <stm32_bridge/BLESSYOUPositionCmd.h>
 
 // Native_Libs
 #include <string>
@@ -27,6 +36,15 @@ ros::Publisher odom_pub;
 
 // ROS Callbacks
 void twist_callback(const geometry_msgs::Twist& msg);
+void achoo_callback(const stm32_bridge::ACHOOCmd& msg);
+void gesundheit_ext_callback(const stm32_bridge::GESUNDHEITExtendCmd& msg);
+void gesundheit_door_callback(const stm32_bridge::GESUNDHEITDoorCmd& msg);
+void gesundheit_speed_callback(const stm32_bridge::GESUNDHEITSpeedCmd& msg);
+void sneeze_dig_speed_callback(const stm32_bridge::SNEEZEDigSpeedCmd& msg);
+void sneeze_trans_speed_callback(const stm32_bridge::SNEEZETransSpeedCmd& msg);
+void sneeze_home_callback(const stm32_bridge::SNEEZEHomeCmd& msg);
+void blessyou_speed_callback(const stm32_bridge::BLESSYOUSpeedCmd& msg);
+void blessyou_position_callback(const stm32_bridge::BLESSYOUPositionCmd& msg);
 void can_recv_callback(const can_msgs::Frame& msg);
 
 // ROS Params
@@ -77,6 +95,15 @@ int main(int argc, char** argv) {
   // Subscribers
   ros::Subscriber can_sub = nh->subscribe("received_messages", 5, can_recv_callback);
   ros::Subscriber twist_sub = nh->subscribe("cmd_vel", 5, twist_callback);
+  ros::Subscriber achoo_ext_sub = nh->subscribe("achoo/extend", 5, achoo_callback);
+  ros::Subscriber gesundheit_ext_sub = nh->subscribe("gesundheit/extend", 5, gesundheit_ext_callback);
+  ros::Subscriber gesundheit_door_sub = nh->subscribe("gesundheit/door", 5, gesundheit_door_callback);
+  ros::Subscriber gesundheit_speed_sub = nh->subscribe("gesundheit/speed", 5, gesundheit_speed_callback);
+  ros::Subscriber sneeze_dig_speed_sub = nh->subscribe("sneeze/dig_speed", 5, sneeze_dig_speed_callback);
+  ros::Subscriber sneeze_trans_speed_sub = nh->subscribe("sneeze/trans_speed", 5, sneeze_trans_speed_callback);
+  ros::Subscriber sneeze_home_sub = nh->subscribe("sneeze/home", 5, sneeze_home_callback);
+  ros::Subscriber blessyou_speed_sub = nh->subscribe("blessyou/speed", 5, blessyou_speed_callback);
+  ros::Subscriber blessyou_position_sub = nh->subscribe("blessyou/position", 5, blessyou_position_callback);
 
   // Publishers
   can_pub = nh->advertise<can_msgs::Frame>("sent_messages", 5);
@@ -86,7 +113,7 @@ int main(int argc, char** argv) {
   ros::spin();
 }
 
-void twist_callback(const geometry_msgs::Twist& msg) {\
+void twist_callback(const geometry_msgs::Twist& msg) {
   double linear = msg.linear.x * 1000.0;
   double angular = msg.angular.z * 1000.0;
   int32_t v_linear = (int32_t) (linear); // mm/s
@@ -96,6 +123,82 @@ void twist_callback(const geometry_msgs::Twist& msg) {\
   buffer_put_int32(buffer, &index, v_angular);
   buffer_put_int32(buffer, &index, v_linear);
   can_msgs::Frame my_frame = make_frame(100, 35, buffer, 8);
+
+  my_frame.header.stamp = ros::Time::now();
+  can_pub.publish(my_frame);
+}
+
+void achoo_callback(const stm32_bridge::ACHOOCmd& msg) {
+  uint8_t buf[] = {msg.command};
+  can_msgs::Frame my_frame = make_frame(101, 40, buf, 1);
+
+  my_frame.header.stamp = ros::Time::now();
+  can_pub.publish(my_frame);
+}
+
+void gesundheit_ext_callback(const stm32_bridge::GESUNDHEITExtendCmd& msg) {
+  uint8_t buf[] = {msg.command};
+  can_msgs::Frame my_frame = make_frame(102, 50, buf, 1);
+
+  my_frame.header.stamp = ros::Time::now();
+  can_pub.publish(my_frame);
+}
+
+void gesundheit_door_callback(const stm32_bridge::GESUNDHEITDoorCmd& msg) {
+  uint8_t buf[] = {msg.command};
+  can_msgs::Frame my_frame = make_frame(102, 52, buf, 1);
+
+  my_frame.header.stamp = ros::Time::now();
+  can_pub.publish(my_frame);
+}
+
+void gesundheit_speed_callback(const stm32_bridge::GESUNDHEITSpeedCmd& msg) {
+  uint8_t buf[4];
+  int idx = 0;
+  buffer_put_int32(buf, &idx, msg.speed);
+  can_msgs::Frame my_frame = make_frame(102, 51, buf, 4);
+
+  my_frame.header.stamp = ros::Time::now();
+  can_pub.publish(my_frame);
+}
+
+void sneeze_dig_speed_callback(const stm32_bridge::SNEEZEDigSpeedCmd& msg) {
+  uint8_t buf[4];
+  int idx = 0;
+  buffer_put_int32(buf, &idx, msg.speed);
+  can_msgs::Frame my_frame = make_frame(103, 61, buf, 4);
+
+  my_frame.header.stamp = ros::Time::now();
+  can_pub.publish(my_frame);
+}
+
+void sneeze_trans_speed_callback(const stm32_bridge::SNEEZETransSpeedCmd& msg) {
+  uint8_t buf[4];
+  int idx = 0;
+  buffer_put_int32(buf, &idx, msg.speed);
+  can_msgs::Frame my_frame = make_frame(103, 63, buf, 4);
+
+  my_frame.header.stamp = ros::Time::now();
+  can_pub.publish(my_frame);
+}
+
+void sneeze_home_callback(const stm32_bridge::SNEEZEHomeCmd& msg) {
+  can_msgs::Frame my_frame = make_frame(103, 62, nullptr, 0);
+
+  my_frame.header.stamp = ros::Time::now();
+  can_pub.publish(my_frame);
+}
+
+void blessyou_speed_callback(const stm32_bridge::BLESSYOUSpeedCmd& msg) {
+  uint8_t buf[] = {msg.speed};
+  can_msgs::Frame my_frame = make_frame(104, 71, buf, 1);
+
+  my_frame.header.stamp = ros::Time::now();
+  can_pub.publish(my_frame);
+}
+void blessyou_position_callback(const stm32_bridge::BLESSYOUPositionCmd& msg) {
+  uint8_t buf[] = {msg.position};
+  can_msgs::Frame my_frame = make_frame(104, 72, buf, 1);
 
   my_frame.header.stamp = ros::Time::now();
   can_pub.publish(my_frame);

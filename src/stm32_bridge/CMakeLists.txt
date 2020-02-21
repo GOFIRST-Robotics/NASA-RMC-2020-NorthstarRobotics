@@ -19,6 +19,25 @@ find_package(catkin REQUIRED COMPONENTS
   can_msgs
   nav_msgs
   geometry_msgs
+  message_generation
+)
+
+add_message_files(
+  FILES
+  ACHOOCmd.msg
+  GESUNDHEITDoorCmd.msg
+  GESUNDHEITExtendCmd.msg
+  GESUNDHEITSpeedCmd.msg
+  SNEEZEDigSpeedCmd.msg
+  SNEEZETransSpeedCmd.msg
+  SNEEZEHomeCmd.msg
+  BLESSYOUPositionCmd.msg
+  BLESSYOUSpeedCmd.msg
+)
+
+generate_messages(
+  DEPENDENCIES
+  std_msgs
 )
 
 ###################################
