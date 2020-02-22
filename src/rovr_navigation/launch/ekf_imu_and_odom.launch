@@ -3,7 +3,6 @@
 
 <!-- 
     Launches EKF localization node for fusing:
-        Decawave
         Navx IMU
         Wheel Odometry
  -->
