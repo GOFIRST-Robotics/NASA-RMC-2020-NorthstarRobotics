@@ -126,7 +126,6 @@ void twist_callback(const geometry_msgs::Twist& msg) {
   can_msgs::Frame my_frame = make_frame(100, 35, buffer, 8);
 
   my_frame.header.stamp = ros::Time::now();
-  std::cout << "Sending cmd vel msg" << std::endl;
   can_pub.publish(my_frame);
 }
 
