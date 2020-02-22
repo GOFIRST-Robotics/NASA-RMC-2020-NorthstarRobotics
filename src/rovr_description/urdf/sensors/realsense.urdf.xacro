@@ -7,7 +7,7 @@
   <!-- Main dimensions: meters, kg, seconds, rads -->
   <xacro:property name="realsense_vertical_from_base" value = "0.4763" />
   <xacro:property name="realsense_horizontal_from_base" value = "0.3493" />
-  <xacro:property name="realsense_angle" value=".2618" /> <!--rad from horizontal, + = downward-->
+  <xacro:property name="realsense_angle" value="0.55" /> <!--rad from horizontal, + = downward-->
   <xacro:property name="PI" value="3.1415926535897931" />
 
   <!-- Defined in realsense's sensor_d415 macro, so this isn't needed
