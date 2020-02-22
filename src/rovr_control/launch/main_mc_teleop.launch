@@ -2,9 +2,8 @@
 <launch>
   <!--
     main_mc_teleop_direct.launch
-    VERSION 0.0.0 Last Changed 2019-05-05
-    Launch teleop joystick control over wifi, speaking directly to the motors,
-    no improved control. 
+    VERSION 0.0.0 Last Changed 2020-02-09
+    Launch teleop joystick control over wifi
   -->
   <!-- Interface: 
     Pub: 
