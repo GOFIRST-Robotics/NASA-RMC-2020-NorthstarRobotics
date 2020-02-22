@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<launch>
+  <node pkg="rovr_navigation" type="pc_filter_node" name="pc_filter1" output="screen" respawn="true">
+    <remap from="pointcloud_input" to="" />
+  </node>
+</launch>
