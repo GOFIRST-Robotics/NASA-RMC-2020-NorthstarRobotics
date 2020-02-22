@@ -224,9 +224,9 @@ void handle_drivetrain_msg(uint8_t cmd_id, uint8_t* data, uint8_t len) {
     OdomEntry entry = {};
 
     // Get data from CAN message
-    entry.x = buffer_pop_int16(data, &idx) * 1000.0f;
-    entry.y = buffer_pop_int16(data, &idx) * 1000.0f;
-    entry.theta = buffer_pop_int16(data, &idx) * 1000.0f;
+    entry.x = buffer_pop_int16(data, &idx) / 1000.0f;
+    entry.y = buffer_pop_int16(data, &idx) / 1000.0f;
+    entry.theta = buffer_pop_int16(data, &idx) / 1000.0f;
 
     // Add entry to history
     odomHistory[odom_seq % covar_samples] = entry;
@@ -235,8 +235,8 @@ void handle_drivetrain_msg(uint8_t cmd_id, uint8_t* data, uint8_t len) {
     // Odom messages are sent position, then velocity
     // Get the most recent entry, put in by "odom position" branch, and parse this CAN data into it
     OdomEntry entry = odomHistory[odom_seq % covar_samples];
-    entry.dx = buffer_pop_int16(data, &idx) * 1000.0f;
-    entry.omega = buffer_pop_int16(data, &idx) * 1000.0f;
+    entry.dx = buffer_pop_int16(data, &idx) / 1000.0f;
+    entry.omega = buffer_pop_int16(data, &idx) / 1000.0f;
 
     nav_msgs::Odometry odom_msg;
     // Add header
