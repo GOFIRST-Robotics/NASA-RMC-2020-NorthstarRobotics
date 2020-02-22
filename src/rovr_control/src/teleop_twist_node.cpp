@@ -90,7 +90,7 @@ void joy_callback(const sensor_msgs::Joy::ConstPtr& msg){
   cmd_vel_msg.linear.z = 0;
   cmd_vel_msg.angular.x = 0;
   cmd_vel_msg.angular.y = 0;
-  cmd_vel_msg.angular.z = (msg->axes[2])*angular_scale; // This spin
+  cmd_vel_msg.angular.z = (msg->axes[3])*angular_scale; // This spin
   cmd_vel_pub.publish(cmd_vel_msg);
   /*if (msg->buttons[decrease_linear_scale_button] == 1){
     linear_scale = linear_scale / 1.025;

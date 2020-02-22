@@ -20,6 +20,7 @@
 
   <!-- Launch navxs -->
   <node pkg="navx" type="navx_node" name="navx1" output="screen" respawn="true">
+    <remap from="imu/data" to="imu0/data" />
     <param name="frequency" value="50.0"/>
     <param name="publish_euler" value="false"/>
     <param name="device_path" value="/dev/imu0"/> 
@@ -27,6 +28,7 @@
   </node>
 
   <node pkg="navx" type="navx_node" name="navx2" output="screen" respawn="true">
+    <remap from="imu/data" to="imu1/data" />
     <param name="frequency" value="50.0"/>
     <param name="publish_euler" value="false"/>
     <param name="device_path" value="/dev/imu1"/>
