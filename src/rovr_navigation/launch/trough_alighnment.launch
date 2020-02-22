@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+<node pkg="rovr_navigation" type="auto_dock_node" name="auto">
+  <param name="use_pose_or_fiducials" type="bool" value="true"/> 
+  <remap from= "dock/pose" to= "aruco/estimate"/>
+</node>
+</launch>
