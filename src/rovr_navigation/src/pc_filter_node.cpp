@@ -18,6 +18,7 @@
  *   min_percentage (float) 5; The cutoff percentage of point cloud left to stop finding new planes
  *   distance_threshold (float) 5; The RANSAC distance threshold, in inches
  *   max_vert_angle (float) 0.087; The maximum angle away from vertical that constitutes a vertical plane, in radians
+ *   map_frame (string) map; The frame to transform point clouds into 
  */
 
 // ROS libs
@@ -50,7 +51,7 @@ ros::NodeHandle * pnh;
 static float _min_percentage = 5;
 static float _dist_threshold = 5;
 static float _max_vert_angle = 0.087;
-static std::string map_frame = "map";
+static std::string _map_frame = "map";
 
 // ROS callbacks
 void cloud_cb(const sensor_msgs::PointCloud2::ConstPtr &msg);
@@ -71,6 +72,7 @@ int main (int argc, char** argv) {
   pnh->getParam("min_percentage", _min_percentage);
   pnh->getParam("distance_threshold", _dist_threshold);
   pnh->getParam("max_vert_angle", _max_vert_angle);
+  pnh->getParam("map_frame", _map_frame);
 
   // Create a ROS subscriber for the input point cloud
   ros::Subscriber sub = nh->subscribe ("pointcloud_input", 1, cloud_cb);
@@ -93,7 +95,7 @@ void cloud_cb(const sensor_msgs::PointCloud2::ConstPtr &msg) {
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_msg (new pcl::PointCloud<pcl::PointXYZ>);
     pcl::fromROSMsg(*msg,*cloud_msg);
     // Transform into map frame so we can check for real vertical
-    pcl_ros::transformPointCloud(map_frame, *cloud_msg, *cloud_msg, tflistener);
+    pcl_ros::transformPointCloud(_map_frame, *cloud_msg, *cloud_msg, tflistener);
 
     // Filter cloud
     pcl::PassThrough<pcl::PointXYZ> pass;
@@ -158,5 +160,6 @@ void cloud_cb(const sensor_msgs::PointCloud2::ConstPtr &msg) {
     sensor_msgs::PointCloud2 cloud_publish;
     pcl::toROSMsg(*cloud_pub,cloud_publish);
     cloud_publish.header = msg->header;
+    cloud_publish.header.frame = _map_frame;
     filter_pub.publish(cloud_publish);
 }
