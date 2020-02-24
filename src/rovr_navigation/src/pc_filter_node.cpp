@@ -108,16 +108,19 @@ void cloud_cb(const sensor_msgs::PointCloud2::ConstPtr &msg) {
     pcl::PointIndices::Ptr inliers(new pcl::PointIndices);
     pcl::SACSegmentation<pcl::PointXYZ> seg;
     pcl::ExtractIndices<pcl::PointXYZ> extract;
+    pcl::ExtractIndices<pcl::PointXYZ> passer;
     seg.setOptimizeCoefficients (true);
     seg.setModelType (pcl::SACMODEL_PLANE);
     seg.setMethodType (pcl::SAC_RANSAC);
     seg.setDistanceThreshold(_dist_threshold);
 
+    passer.setInputCloud(cloud);
+    passer.setNegative(false);
+
+    float original_size = cloud->height*cloud->width;
     // Create pointcloud to publish inliers
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_pub(new pcl::PointCloud<pcl::PointXYZ>);
-    int original_size(cloud->height*cloud->width);
-    int n_planes(0);
-    while (cloud->height*cloud->width>original_size*_min_percentage/100){
+    while (cloud->height * cloud->width > original_size * _min_percentage / 100){
 
         // Fit a plane
         seg.setInputCloud(cloud);
@@ -134,14 +137,9 @@ void cloud_cb(const sensor_msgs::PointCloud2::ConstPtr &msg) {
         float cos_angle = vals[2] / sqrt(vals[0]*vals[0] + vals[1]*vals[1] + vals[2] * vals[2]);
         if (cos_angle > cos(_max_vert_angle)) {
             // This plane is not vertical, we can pass it through
-            for (int i=0;i<inliers->indices.size();i++) {
-
-                // Get Point
-                pcl::PointXYZ pt = cloud->points[inliers->indices[i]];
-
-                // Copy point to new cloud
-                cloud_pub->points.push_back(pt);
-            }
+            pcl::PointXYZ pt = cloud->points[inliers->indices[i]];
+            passer.setIndices(inliers);
+            extract.filter(cloud_pub);
         }
 
         // Remove plane points from original cloud
