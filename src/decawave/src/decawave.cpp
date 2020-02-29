@@ -62,6 +62,7 @@ std::vector<Anchor> Decawave::updateSamples(){
         }//read one anchor of data
         anchor.id= ((int)result[0]) | ((int)result[1]<<8);
         anchor.distance= ((int)result[2]) | ((int)result[3]<<8) | ((int)result[4]<<16) | ((int)result[5]<<24);
+	anchor.distance= (anchor.distance >> 8);
         anchor.distance_quality= (int)result[6];
         anchor.position[0]=((int)result[7]) | ((int)result[8]<<8) | ((int)result[9]<<16) | ((int)result[10]<<24);//x
         anchor.position[1]=((int)result[11]) | ((int)result[12]<<8) | ((int)result[13]<<16) | ((int)result[14]<<24);//y
