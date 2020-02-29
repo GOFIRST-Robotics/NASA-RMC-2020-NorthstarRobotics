@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+  <!-- 
+  stm32_bridge.launch
+  VERSION: 1.0.0 
+  LAST_CHANGED: 2020-02-08
+  AUTHOR: Julia Schatz
+  -->
+<launch>
+<!-- Interface: 
+  Pub: 
+    sent_messages (can_msgs/Frame)
+    odom (nav_msgs/Odometry)
+  Sub:
+    received_messages (can_msgs/Frame)
+    cmd_vel (geometry_msgs/Twist)
+  Param: 
+    pose_frame_id (string) odom; The frame of the odometry pose
+    twist_frame_id (string) base_link; The frame of the odometry twist
+    covar_samples (int) 10; The number of samples to store to calculate covariance
+  -->
+  <node pkg="stm32_bridge" type="stm32_bridge_node" name="stm32_bridge" output="screen" respawn="true">
+    <param name="pose_frame_id" value="odom"/>
+    <param name="twist_frame_id" value="base_link"/>
+    <param name="covar_samples" value="10"/>
+  </node>
+</launch>
