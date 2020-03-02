@@ -27,4 +27,8 @@
         </rosparam>
 
     </node>
+
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find rovr_navigation)/config/rmc_map.yaml"> 
+        <param name="frame_id" value="map" />
+    </node>
 </launch>

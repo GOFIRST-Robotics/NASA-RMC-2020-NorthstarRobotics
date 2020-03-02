@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<launch>
+    <node pkg="robot_localization" type="ekf_localization_node" name="ekf_map">
+        <rosparam file="$(find rovr_navigation)/config/ekf_params.yaml" />
+        <rosparam file="$(find rovr_navigation)/config/ekf_map_params.yaml" />
+    </node>
+</launch>
