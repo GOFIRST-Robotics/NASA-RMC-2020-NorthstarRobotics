@@ -18,5 +18,5 @@
     <remap from="output_image" to="aruco/image" />
 </node>
 <node pkg="rosbag" type="play" name="rosbag_play"
-  args="--loop /home/devenson13/2020-02-22-14-01-37.bag"/> 
+  args="play --loop /home/devenson13/2020-02-22-14-01-37.bag"/> 
 </launch>
