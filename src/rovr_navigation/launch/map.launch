@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<launch>
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find rovr_navigation)/config/rmc_map.yaml"> 
+        <param name="frame_id" value="map" />
+    </node>
+
+    <!-- Static transforms -->
+    <node pkg="tf" type="static_transform_publisher" name="trough_broadcaster" args="1 0 0.5 0 0 0 0 map trough 100" />
+    <node pkg="tf" type="static_transform_publisher" name="aruco_broadcaster" args="0.5 0 0 0 0 0 0 trough aruco 100" />
+</launch>
