@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!-- Launches description, sensors, navigation -->
+<launch>
+    <!-- Description: Defines transforms between frames -->
+    <include file="$(find rovr_description)/launch/description.launch" />
+
+    <!-- Sensors: Launches jetson-connected sensor nodes -->
+    <include file="$(find rovr_common)/launch/sensors/sensors.launch" />
+
+    <!-- Navigation: Launches EKFs, map, move_base -->
+    <include file="$(find rovr_navigation)/launch/navigation.launch" />
+</launch>
