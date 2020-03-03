@@ -13,7 +13,7 @@
   </node>
   
   <node pkg="stm32_bridge" type="stm32_bridge_node" name="stm32_bridge" output="screen" respawn="true">
-    
+    <remap from="odom" to="odometry/wheel" />
   </node>
 
 </launch>
