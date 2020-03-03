@@ -8,7 +8,7 @@
 <arg name="show" default = "true"/>
 <node pkg="tf" type="static_transform_publisher" name="realsense_to_aruco" args="0 0 0 0 0 0 1 realsense_d415_link aruco 100" />
 <node pkg="aruco_localization" type="aruco_localization" name="aruco" output="screen">
->>>>>>> added launch files to demo aruco localization with ekf:src/rovr_navigation/test/aruco_pipeline.launch
+    
     <param name="show_output_video" value="$(arg show)" />
     <param name="markermap_config" value="$(find rovr_common)/config/aruco_calibration_grid_board_a4.yaml" />
     <param name="marker_size" value="0.03614" />
@@ -23,6 +23,7 @@
 
     <remap from="input_image" to="realsense_d415/color/image_raw" />
     <remap from="output_image" to="aruco/image" />
+    <remap from='aruco/estimate' to="odometry/fiducial">
   </node>
   <!-- Transform aruco into map frame. This should be a static frame created somewhere else -->
   <node pkg="tf" type="static_transform_publisher" name="aruco_broadcaster" args="0 0 0 0 0 0 1 map aruco 100" />
