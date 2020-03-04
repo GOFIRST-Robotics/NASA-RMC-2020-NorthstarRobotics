@@ -2,9 +2,6 @@
 <launch>
   <arg name="device" default="/dev/video0" />
   <arg name="show" default="true" />
-
-  <node pkg="aruco_localization" type="aruco_localization" name="aruco" output="screen">
-=======
 <arg name="show" default = "true"/>
 <node pkg="tf" type="static_transform_publisher" name="realsense_to_aruco" args="0 0 0 0 0 0 1 realsense_d415_link aruco 100" />
 <node pkg="aruco_localization" type="aruco_localization" name="aruco" output="screen">
@@ -29,10 +26,6 @@
   <node pkg="tf" type="static_transform_publisher" name="aruco_broadcaster" args="0 0 0 0 0 0 1 map aruco 100" />
   <!-- Transform camera frame into robot frame. This should be in URDF -->
   <node pkg="tf" type="static_transform_publisher" name="robot_broadcaster" args="0 0 1 0 0 0 1 robot realsense_d415_link 100" />
-=======
+
 </node>
-
-<include file="$(find rovr_common)/launch/sensors/realsense_d415.launch"/>
-
->>>>>>> added launch files to demo aruco localization with ekf:src/rovr_navigation/test/aruco_pipeline.launch
 </launch>
