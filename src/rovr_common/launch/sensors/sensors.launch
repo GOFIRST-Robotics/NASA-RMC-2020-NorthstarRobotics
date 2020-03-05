@@ -35,8 +35,10 @@
     <param name="frame_id" value="imu2_link"/>
   </node>
   
-  <include file="aruco_localization"/>
-  
+  <include file="aruco_localization.launch">
+    <arg name="launchtwonodes" value="true"/>
+  </include>
+    
 
   <!-- Launch decawaves -->
   <!-- Ryan, add this -->
