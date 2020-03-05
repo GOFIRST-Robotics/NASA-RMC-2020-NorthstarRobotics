@@ -20,4 +20,5 @@
     <remap from="output_image" to="aruco/image" />
     <remap from='aruco/estimate' to="odometry/fiducial">
 </node>
+
 </launch>
