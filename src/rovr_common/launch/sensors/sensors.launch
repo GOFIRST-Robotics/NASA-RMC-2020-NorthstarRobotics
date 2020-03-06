@@ -34,6 +34,14 @@
     <param name="device_path" value="/dev/imu1"/>
     <param name="frame_id" value="imu2_link"/>
   </node>
+  
+  <include file="aruco_localization.launch">
+    <arg name="camera" value="realsense0"/>
+  </include>
+  <include file="aruco_localization.launch">
+    <arg name="camera" value="realsense1"/>
+  </include>
+    
 
   <!-- Launch decawaves -->
   <!-- Ryan, add this -->
