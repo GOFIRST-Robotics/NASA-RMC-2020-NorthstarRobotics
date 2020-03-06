@@ -36,7 +36,10 @@
   </node>
   
   <include file="aruco_localization.launch">
-    <arg name="launchtwonodes" value="true"/>
+    <arg name="camera" value="realsense0"/>
+  </include>
+  <include file="aruco_localization.launch">
+    <arg name="camera" value="realsense1"/>
   </include>
     
 
