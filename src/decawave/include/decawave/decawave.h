@@ -12,9 +12,9 @@
 namespace decawave{
 struct Anchor{
   int id;
-  int distance;
+  double distance;
   int distance_quality;
-  int position[3];
+  double position[3];
   int quality_factor;
 };
 

@@ -2,17 +2,18 @@
  * decawave_node.cpp
  * ROS interface to Decawave class
  * VERSION: 1.0
- * Last changed: 2019-04-01
+ * Last changed: 2020-03-08
  * Authors: Amalia Schwartzwald <schw1818@umn.edu>
  * Maintainers: Amalia Schwartzwald <schw1818@umn.edu>
  * MIT License
- * Copyright (c) 2018 GOFIRST-Robotics
+ * Copyright (c) 2020 GOFIRST-Robotics
  */
 
 // ROS Libs
 #include <ros/ros.h>
 #include <nav_msgs/Odometry.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
+#include <tf/transform_listener.h>
 
 // Native_Libs
 #include <string>
@@ -25,69 +26,81 @@
 // Subscribers (inputs)
 //    update_timer (Timer)
 //      Update loop for reading / querying Decawave
-//    sub_name1 (sub_name1_type): sub_name1_TOPIC_VALUE
-//      sub_name1_desc
 
 // Publishers (outputs)
-//    dw_pub (nav_msgs/Odometry): "odometry/gps"
-//      A simulated local position as if GPS UTM
+//    estimate (geometry_msgs/PoseWithCovarianceStamped): "decawave"
+//      Calculated x/y position of robot
 
 // Parameters (settings)
-
-
-//    frequency (double): default=50.0
-//      The update frequency of the update loop
-//    param_name2 (param_name2_type): default=param_name2_default(,param_name1_path)
-//    param_name3 (param_name3_type): default=param_name3_default(,param_name1_path)
+//    frequency (double): default=50.0; The update frequency of the update loop
+//    base_separation_covar (double): default=10.0; The variance of the distance between anchors?
+//    distance_measurement_covar (double): default=10.0; The variance of the distance measurement?
+//    port_name (string): default=/dev/ttyACM0; The serial port the decawave tag is connected to 
+//    anchor0_frame (string): default=anchor0; The frame whose origin defines the position of anchor tag 0
+//    anchor1_frame (string): default=anchor1; The frame whose origin defines the position of anchor tag 1
+//    anchor0_dw_id (int): default=0; The lowest 2 bits of the anchor 0 tag ID, expressed in decimal
+//    anchor1_dw_id (int): default=0; The lowest 2 bits of the anchor 1 tag ID, expressed in decimal
+//    decawave_frame (string): default=decawave; The frame of the decawave tag
+//    robot_frame (string): default=decawave; The frame to express the pose estimate of
+//    map_frame (string): default=map; The fixed world frame
 
 // ROS Node and Publishers
-
 ros::NodeHandle * nh;
 ros::NodeHandle * pnh;
-ros::Publisher dw_pub;
 ros::Publisher estimate_pub;
-
-// ROS Topics
-std::string gps_topic = "decawave/Range";//"odometry/gps";
 
 // ROS Callbacks
 void update_callback(const ros::TimerEvent&);
 
-std::vector<double> do_Math(double d0, double d0_err,double d1, double d1_err,double b,double b_err, double p1x, double p1y, double p2x, double p2y);
 // ROS Params
-double frequency = 5.0;
-double base_seperation_covar=10.0;
-double distance_mesurment_covar=10.0;
-std::string port_name;
-int seq=0;
-// for(int i = 0; i < argc; ++i){
-// int port_num = atoi(argv[1]);
-// }
+double frequency = 50.0;
+double base_seperation_covar = 10.0;
+double distance_mesurment_covar = 10.0;
+std::string port_name = "/dev/ttyACM0";
+std::string anchor0_frame_id = "anchor0";
+std::string anchor1_frame_id = "anchor1";
+int anchor0_dw_id = 0;
+int anchor1_dw_id = 0;
+std::string decawave_frame_id = "decawave";
+std::string robot_frame_id = "base_link";
+std::string map_frame_id = "map";
+
 // Global_Vars
 decawave::Decawave *piTag;
+tf::TransformListener * tf_listener_;
+int seq = 0;
+
+// Utility Functions
+std::vector<double> do_Math(double d0, double d0_err,double d1, double d1_err,double b,double b_err, double p1x, double p1y, double p2x, double p2y);
 
 int main(int argc, char** argv){
   // Init this ROS node
-  ros::init(argc, argv, "decawave_1");
+  ros::init(argc, argv, "decawave_node");
   nh = new ros::NodeHandle("");
   pnh = new ros::NodeHandle("~");
+  tf_listener_ = new tf::TransformListener();
 
   // Params
-  ros::param::get("/decawave_node/port_name",port_name);
-  ros::param::get("/decawave_node/base_seperation_covar",base_seperation_covar);
-  ros::param::get("/decawave_node/distance_mesurment_covar",distance_mesurment_covar);
+  pnh->getParam("port_name", port_name);
+  pnh->getParam("base_seperation_covar",base_seperation_covar);
+  pnh->getParam("distance_measurement_covar",distance_mesurment_covar);
+  pnh->getParam("anchor0_frame", anchor0_frame_id);
+  pnh->getParam("anchor1_frame", anchor1_frame_id);
+  pnh->getParam("anchor0_dw_id", anchor0_dw_id);
+  pnh->getParam("anchor1_dw_id", anchor1_dw_id);
+  pnh->getParam("decawave_frame", decawave_frame_id);
+  pnh->getParam("robot_frame", robot_frame_id);
+  pnh->getParam("map_frame", map_frame_id);
 
   // Init Decawave
-
   piTag = new decawave::Decawave(port_name);
 
   // Subscribers
   ros::Timer update_timer = nh->createTimer(ros::Duration(1.0/frequency), update_callback);
 
   // Publishers
-  gps_topic = gps_topic;
-  dw_pub = nh->advertise<decawave::Range>(gps_topic, 10);
   estimate_pub = nh->advertise<geometry_msgs::PoseWithCovarianceStamped>("decawave", 2);
+
   // Spin
   ros::spin();
 }
@@ -99,84 +112,97 @@ void update_callback(const ros::TimerEvent&){
 
   // update decawave data
   std::vector<decawave::Anchor> anchors = piTag->updateSamples();
-  ROS_INFO("Samples updated");
-  std::string frame_id = port_name;
-  std::cout << "numanchors" << anchors.size() << "/n";
-  decawave::Anchor m_anchor;
-  for (int i=0; i<anchors.size(); i++) {
-    m_anchor=anchors[i];//get new anchor
-    msg.distance = ((float)m_anchor.distance)/1000;
-    msg.distance_quality = m_anchor.distance_quality;
-    msg.quality_factor=m_anchor.quality_factor;
-    //position in (x,y,z)
-    msg.position={((float)m_anchor.position[0])/1000,
-      ((float)m_anchor.position[1])/1000,
-      ((float)m_anchor.position[2])/1000};
-    // fill out message header
-    msg.header.stamp = ros::Time::now();
-    msg.header.frame_id = "decawave_" + frame_id;//"decawave_" + port_num;
-    msg.child_frame_id = "decawave2_link"; //change to correct part
-    msg.id=(int)m_anchor.id;
-    //dw_pub.publish(msg);
-    i++;
-  }
-/*
-  decawave::Anchor anchor_1 = {1, 12000, 100, {0,10000,1}, 100};
-  decawave::Anchor anchor_2 = {2, 12900, 100, {0,9000,1}, 100};
-  std::vector<decawave::Anchor> anchors={ anchor_1, anchor_2};
-*/
-  //check if 2 anchors are present.
-  if(anchors.size()>1){
-    ROS_INFO("Anchors seen");
-    //compare y vals
-    std::vector<double> covariance_vec;
-    //if anchor 1 is p1
-    anchors[0].position[0]=0;
-    anchors[0].position[1]=9000;
-    anchors[1].position[0]=0;
-    anchors[1].position[1]=10000;
-    std::cout << "an1pos: " <<anchors[0].distance << " " << anchors[1].distance <<"\n";
 
-    if (anchors[1].position[1] >anchors[0].position[1]){
-      covariance_vec= do_Math( (double)anchors[1].distance/1000 , distance_mesurment_covar , (double)anchors[0].distance/1000 , distance_mesurment_covar,
-      sqrt( pow( (double) anchors[1].position[1] - (double) anchors[0].position[1] , 2) + pow( (double) anchors[1].position[0] - (double) anchors[0].position[0] , 2) )/1000 , base_seperation_covar,
-      (double) anchors[1].position[0]/1000, (double) anchors[1].position[1]/1000, (double) anchors[0].position[0]/1000, (double) anchors[0].position[1]/1000 );
-    }else{//anchor 0 is p1
-      covariance_vec= do_Math( (double)anchors[0].distance/1000 , distance_mesurment_covar , (double)anchors[1].distance/1000 , distance_mesurment_covar,
-      sqrt( pow( (double) anchors[1].position[1] - (double) anchors[0].position[1] , 2) + pow( (double) anchors[1].position[0] - (double) anchors[0].position[0] , 2) )/1000 , base_seperation_covar,
-     (double) anchors[0].position[0]/1000,  (double) anchors[0].position[1]/1000, (double) anchors[1].position[0]/1000,  (double)anchors[1].position[1]/1000 );
+  if (anchors.size() >= 2) {
+    std::vector<double> covariance_vec;
+    // get xyz positions of each anchor from tf
+    ros::Time now = ros::Time::now();
+    if (!tf_listener_->waitForTransform(map_frame_id, anchor0_frame_id, now, ros::Duration(0.5)) || 
+        !tf_listener_->waitForTransform(map_frame_id, anchor1_frame_id, now, ros::Duration(0.5))) {
+        return; // Can't find transforms
+    }
+    tf::StampedTransform anchor0_trs;
+    tf::StampedTransform anchor1_trs;
+    tf_listener_->lookupTransform(map_frame_id, anchor0_frame_id, now, anchor0_trs);
+    tf_listener_->lookupTransform(map_frame_id, anchor1_frame_id, now, anchor1_trs);
+
+    // Find anchors by id
+    decawave::Anchor anchor0;
+    decawave::Anchor anchor1;
+    int counted = 0;
+    for (decawave::Anchor anc : anchors) {
+      if (anc.id == anchor0_dw_id) {
+        anchor0 = anc;
+        counted++;
+      }
+      if (anc.id == anchor1_dw_id) {
+        anchor1 = anc;
+        counted++;
+      }
+    }
+    if (counted < 2) {
+      ROS_INFO("Couldn't find correct anchors");
+      return;
+    }
+    // todo: use positions from anchors relative to given frame?
+    anchor0.position[0] = anchor0_trs.getOrigin().getX();
+    anchor0.position[1] = anchor0_trs.getOrigin().getY();
+    anchor0.position[2] = anchor0_trs.getOrigin().getZ();
+    anchor1.position[0] = anchor1_trs.getOrigin().getX();
+    anchor1.position[1] = anchor1_trs.getOrigin().getY();
+    anchor1.position[2] = anchor1_trs.getOrigin().getZ();
+    std::cout << "Anchor " << anchor0.id << " dist: " << anchor0.distance << " Anchor " << anchor1.id << " dist: " << anchor1.distance <<std::endl;
+
+    // Here be dragons
+    // TODO: This badly needs a refactor
+    if (anchor1.position[1] > anchor0.position[1]){
+      covariance_vec= do_Math( anchor1.distance , distance_mesurment_covar , anchor0.distance , distance_mesurment_covar,
+      sqrt( pow(  anchor1.position[1] -  anchor0.position[1] , 2) + pow(  anchor1.position[0] -  anchor0.position[0] , 2) ) , base_seperation_covar,
+       anchor1.position[0],  anchor1.position[1],  anchor0.position[0],  anchor0.position[1] );
+    }
+    else {//anchor 0 is p1
+      covariance_vec= do_Math( anchor0.distance , distance_mesurment_covar , anchor1.distance , distance_mesurment_covar,
+      sqrt( pow(  anchor1.position[1] -  anchor0.position[1] , 2) + pow(  anchor1.position[0] -  anchor0.position[0] , 2) ) , base_seperation_covar,
+      anchor0.position[0],   anchor0.position[1],  anchor1.position[0],  anchor1.position[1] );
     }
 
     //handle no val
-    if(covariance_vec.size()<36){
+    if (covariance_vec.size() < 36) {
+      ROS_INFO("do_Math failed");
       return;
     }
     boost::array<double, 36> covariance;
     for(int i = 0; i<36; i++){
-      covariance[i]=covariance_vec[i];
+      covariance[i] = covariance_vec[i];
     }
-
-    ros::Time now = ros::Time::now();
 
     geometry_msgs::PoseWithCovarianceStamped pose_msg;
 
-    pose_msg.header.stamp=now;
-    pose_msg.header.seq=seq;
+    pose_msg.header.stamp = now;
+    pose_msg.header.seq = seq;
     seq++;
-      pose_msg.header.frame_id="decawave";
+    pose_msg.header.frame_id = map_frame_id; // Eventually we're publishing the pose of the robot in the map frame
 
     //take x and y off the back and put them in the pose
-    pose_msg.pose.pose.position.y=covariance_vec[37];
+    float y = covariance_vec[37];
     covariance_vec.pop_back();
-    pose_msg.pose.pose.position.x=covariance_vec[36];
+    float x = covariance_vec[36];
     covariance_vec.pop_back();
-    pose_msg.pose.pose.position.z=0.0;
-    pose_msg.pose.covariance=covariance;
-    //quaternion, we dont know, fill w 0
-    pose_msg.pose.pose.orientation.x=0.0;
-    pose_msg.pose.pose.orientation.y=0.0;
-    pose_msg.pose.pose.orientation.z=0.0;
-    pose_msg.pose.pose.orientation.w=0.0;
+    float z = anchor0.position[2]; // Assume decawaves are all planar
+
+    // Transform pose into robot position in map frame
+    tf::Stamped<tf::Vector3> posOut(tf::Vector3(x,y,z), now, decawave_frame_id);
+    tf_listener_->transformVector(robot_frame_id, posOut, posOut); // todo: check that this transforms properly
+    pose_msg.pose.pose.position.x = posOut.getX();
+    pose_msg.pose.pose.position.y = posOut.getY();
+    pose_msg.pose.pose.position.z = posOut.getZ();
+
+    pose_msg.pose.covariance = covariance;
+    // This system doesn't provide any orientation estimate, so just set to 0
+    pose_msg.pose.pose.orientation.x = 0.0;
+    pose_msg.pose.pose.orientation.y = 0.0;
+    pose_msg.pose.pose.orientation.z = 0.0;
+    pose_msg.pose.pose.orientation.w = 0.0;
 
     estimate_pub.publish(pose_msg);
   }
