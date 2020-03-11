@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <include file="$(find rovr_description)/launch/description.launch" />
+
+  <!-- Human sim pipeline -->
+  <node pkg="rovr_control" type="teleop_twist_node" name="main_teleop_twist" output="screen">
+    <param name="twist_topic" value="cmd_vel" />
+  </node>
+  <arg name="js_dev" default="/dev/input/js0"/>
+
+  <node pkg="joy" type="joy_node" name="joy" output="screen">
+    <param name="dev" value="$(arg js_dev)"/>
+  </node>
+
+  <!-- Launch Gazebo -->
+  <group>
+    <remap from="/rovr/cmd_vel" to="cmd_vel" />
+    <include file="$(find rovr_gazebo)/launch/sim.launch" />
+  </group>
+</launch>
