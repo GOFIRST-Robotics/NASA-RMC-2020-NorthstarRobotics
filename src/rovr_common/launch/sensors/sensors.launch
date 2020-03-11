@@ -40,7 +40,7 @@
   </group>
 
   <!-- Launch decawaves -->
-  <node pkg="decawave" type="decawave_node" name="decawave0_node" output="screen" respawn="true">
+  <!--<node pkg="decawave" type="decawave_node" name="decawave0_node" output="screen" respawn="true">
     <remap from="decawave" to="/decawave0" />
     <param name="frequency" type="double" value="50.0"/>
     <param name="port_name" type="str" value="/dev/decawave0"/>
@@ -72,6 +72,6 @@
     <param name="map_frame" value="map" />
     <param name="is_sim" value="$(arg simulation)" />
     <param name="gazebo_prefix" value="rovr" />
-  </node>
+  </node>-->
 
 </launch>

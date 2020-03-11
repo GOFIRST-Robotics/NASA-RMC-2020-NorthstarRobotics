@@ -19,8 +19,8 @@ Modified to remove use_nominal_extrinsics since it was causing errors.
   
     <!-- The following values are approximate, and the camera node
      publishing TF values with actual calibrated camera extrinsic values -->
-    <xacro:property name="d435_cam_depth_to_infra1_offset" value="0.0"/>
-    <xacro:property name="d435_cam_depth_to_infra2_offset" value="-0.050"/>
+    <xacro:property name="d435_cam_depth_to_left_ir_offset" value="0.0"/>
+    <xacro:property name="d435_cam_depth_to_right_ir_offset" value="-0.050"/>
     <xacro:property name="d435_cam_depth_to_color_offset" value="0.015"/>
 
     <!-- The following values model the aluminum peripherial case for the
@@ -72,5 +72,141 @@ Modified to remove use_nominal_extrinsics since it was causing errors.
         <inertia ixx="0.003881243" ixy="0.0" ixz="0.0" iyy="0.000498940" iyz="0.0" izz="0.003879257" />
       </inertial>
     </link>
+
+    <!-- camera depth joints and links -->
+    <joint name="${name}_depth_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <parent link="${name}_link"/>
+        <child link="${name}_depth_frame" />
+    </joint>
+    <link name="${name}_depth_frame"/>
+    <gazebo reference="${name}_depth_frame">
+        <turnGravityOff>false</turnGravityOff>
+    </gazebo>
+
+    <joint name="${name}_depth_optical_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="${-M_PI*2} 0 ${-M_PI*2}" />
+        <parent link="${name}_depth_frame" />
+        <child link="${name}_depth_optical_frame" />
+    </joint>
+    <link name="${name}_depth_optical_frame"/>
+    <gazebo reference="${name}_depth_optical_frame">
+        <turnGravityOff>false</turnGravityOff>
+    </gazebo>
+    
+    <!-- ${name} left IR joints and links -->
+    <joint name="${name}_left_ir_joint" type="fixed">
+        <origin xyz="0 ${d435_cam_depth_to_left_ir_offset} 0" rpy="0 0 0" />
+        <parent link="${name}_depth_frame" />
+        <child link="${name}_left_ir_frame" />
+    </joint>
+    <link name="${name}_left_ir_frame"/>
+    <gazebo reference="${name}_left_ir_frame">
+        <turnGravityOff>false</turnGravityOff>
+    </gazebo>
+
+    <joint name="${name}_left_ir_optical_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="${-M_PI*2} 0 ${-M_PI*2}" />
+        <parent link="${name}_left_ir_frame" />
+        <child link="${name}_left_ir_optical_frame" />
+    </joint>
+    <link name="${name}_left_ir_optical_frame"/>
+    <gazebo reference="${name}_left_ir_optical_frame">
+        <turnGravityOff>false</turnGravityOff>
+    </gazebo>
+
+    <!-- camera right IR joints and links -->
+    <joint name="${name}_right_ir_joint" type="fixed">
+        <origin xyz="0 ${d435_cam_depth_to_right_ir_offset} 0" rpy="0 0 0" />
+        <parent link="${name}_depth_frame" />
+        <child link="${name}_right_ir_frame" />
+    </joint>
+    <link name="${name}_right_ir_frame"/>
+    <gazebo reference="${name}_right_ir_frame">
+        <turnGravityOff>false</turnGravityOff>
+    </gazebo>
+
+    <joint name="${name}_right_ir_optical_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="${-M_PI*2} 0 ${-M_PI*2}" />
+        <parent link="${name}_right_ir_frame" />
+        <child link="${name}_right_ir_optical_frame" />
+    </joint>
+    <link name="${name}_right_ir_optical_frame"/>
+    <gazebo reference="${name}_right_ir_optical_frame">
+        <turnGravityOff>false</turnGravityOff>
+    </gazebo>
+
+    <!-- ${name color joints and links -->
+    <joint name="${name}_color_joint" type="fixed">
+        <origin xyz="0 ${d435_cam_depth_to_color_offset} 0" rpy="0 0 0" />
+        <parent link="${name}_depth_frame" />
+        <child link="${name}_color_frame" />
+    </joint>
+    <link name="${name}_color_frame"/>
+    <gazebo reference="${name}_color_frame">
+        <turnGravityOff>false</turnGravityOff>
+    </gazebo>
+
+    <joint name="${name}_color_optical_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="${-M_PI*2} 0 ${-M_PI*2}" />
+        <parent link="${name}_color_frame" />
+        <child link="${name}_color_optical_frame" />
+    </joint>
+    <link name="${name}_color_optical_frame"/>
+    <gazebo reference="${name}_color_optical_frame">
+        <turnGravityOff>false</turnGravityOff>
+    </gazebo>
+
+    <link name="${name}_depth_frame_gazebo"/>
+    <joint name="${name}_gazebo_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="${-M_PI*2} 0 ${-M_PI*2}" />
+        <parent link="${name}_link" />
+        <child link="${name}_depth_frame_gazebo" />
+    </joint>
+    <gazebo reference="${name}_depth_frame_gazebo">
+        <turnGravityOff>false</turnGravityOff>
+    </gazebo>
+
+    <gazebo reference="${name}_link">
+        <sensor name="${name}" type="depth">
+            <update_rate>30</update_rate>
+            <camera>
+                <horizontal_fov>1.59174</horizontal_fov>
+                <image>
+                    <width>640</width>
+                    <height>480</height>
+                    <format>R8G8B8</format>
+                </image>
+                <clip>
+                    <near>0.02</near>
+                    <far>6</far>
+                </clip>
+            </camera>
+            <plugin name="camera_plugin" filename="libgazebo_ros_openni_kinect.so">
+                <visualize>true</visualize>
+                <baseline>0.05</baseline>
+                <alwaysOn>true</alwaysOn>
+                <updateRate>0.0</updateRate>
+                <cameraName></cameraName>
+                <imageTopicName>${name}/color/image_raw</imageTopicName>
+                <cameraInfoTopicName>${name}/color/camera_info</cameraInfoTopicName>
+                <depthImageTopicName>${name}/aligned_depth_to_color/image_raw</depthImageTopicName>
+                <depthImageInfoTopicName>${name}/depth/camera_info</depthImageInfoTopicName>
+                <pointCloudTopicName>${name}/depth/color/points</pointCloudTopicName>
+                <frameName>${name}_depth_frame_gazebo</frameName>
+                <pointCloudCutoff>0.02</pointCloudCutoff>
+                <distortionK1>0</distortionK1>
+                <distortionK2>0</distortionK2>
+                <distortionK3>0</distortionK3>
+                <distortionT1>0</distortionT1>
+                <distortionT2>0</distortionT2>
+                <CxPrime>0</CxPrime>
+                <Cx>0</Cx>
+                <Cy>0</Cy>
+                <focalLength>0</focalLength>
+                <hackBaseline>0</hackBaseline>
+            </plugin>
+        </sensor>
+    </gazebo>
   </xacro:macro>
 </robot>
