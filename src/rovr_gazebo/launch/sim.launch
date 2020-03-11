@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
   <env name="GAZEBO_RESOURCE_PATH" value="$(find rovr_gazebo)"/>
-  <arg name="pause" default="true"/>
+  <arg name="pause" default="false"/>
   <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="worlds/frc2016.world"/>
+    <arg name="world_name" value="worlds/nasa.world"/>
     <!-- more default parameters can be changed here -->
     <arg name="paused" value="$(arg pause)"/>
     <arg name="use_sim_time" value="true"/>
@@ -15,7 +15,7 @@
 
   <!-- Spawn a robot into Gazebo -->
   <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
-    args=" -urdf -model rovr -x 0.0 -y 0.0 -z 1 -param robot_description" />
+    args=" -urdf -model rovr -x 0.0 -y -1.5 -z 0 -param robot_description" />
 
   <rosparam file="$(find rovr_control)/config/rovr_control.yaml" command="load"/>
 

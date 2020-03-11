@@ -12,6 +12,11 @@
     <param name="dev" value="$(arg js_dev)"/>
   </node>
 
+  <!-- Sensors -->
+  <include file="$(find rovr_common)/launch/sensors/sensors.launch">
+    <arg name="simulation" value="true" />
+  </include>
+
   <!-- Launch Gazebo -->
   <group>
     <remap from="/rovr/cmd_vel" to="cmd_vel" />

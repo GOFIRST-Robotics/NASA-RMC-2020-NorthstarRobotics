@@ -1,0 +1,26 @@
+<!--THis is the example in the tutorial -->
+
+<?xml version="1.0" ?>
+<sdf version="1.4">
+  <world name="default">
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <model name="arena">
+        <static>true</static>
+        <pose>0 0 0  0 0 0</pose>
+        <link name="body">
+        <visual name="visual">
+          <geometry>
+            <mesh><uri>file://models/RMCWorld.dae</uri></mesh>
+          </geometry>
+        </visual>
+        <collision name="collision">
+          <geometry>
+            <mesh><uri>file://models/RMCWorld.dae</uri></mesh>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+  </world>
+</sdf>
