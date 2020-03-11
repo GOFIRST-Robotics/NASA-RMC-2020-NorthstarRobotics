@@ -12,14 +12,14 @@
     <param name="dev" value="$(arg js_dev)"/>
   </node>
 
+  <node pkg="tf" type="static_transform_publisher" name="anchor0_broadcaster" args="0 0.57 0.48 0 0 0 1 map anchor0 100" />
+  <node pkg="tf" type="static_transform_publisher" name="anchor1_broadcaster" args="0 1.57 0.48 0 0 0 1 map anchor1 100" />
+
   <!-- Sensors -->
   <include file="$(find rovr_common)/launch/sensors/sensors.launch">
     <arg name="simulation" value="true" />
   </include>
 
   <!-- Launch Gazebo -->
-  <group>
-    <remap from="/rovr/cmd_vel" to="cmd_vel" />
-    <include file="$(find rovr_gazebo)/launch/sim.launch" />
-  </group>
+  <include file="$(find rovr_gazebo)/launch/sim.launch" />
 </launch>

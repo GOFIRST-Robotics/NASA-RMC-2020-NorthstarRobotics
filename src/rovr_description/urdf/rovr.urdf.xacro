@@ -295,7 +295,6 @@
 	<gazebo>
 	  <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
 	    <updateRate>100.0</updateRate>
-	    <robotNamespace>/rovr</robotNamespace>
 			<commandTopic>cmd_vel</commandTopic>
 			<odometryTopic>odometry/wheel</odometryTopic>
 	    <leftFrontJoint>front_left_wheel_joint</leftFrontJoint>
@@ -313,7 +312,6 @@
 
   <gazebo>
   <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-    <robotNamespace>/rovr</robotNamespace>
     <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
     <legacyMode>false</legacyMode>
   </plugin>

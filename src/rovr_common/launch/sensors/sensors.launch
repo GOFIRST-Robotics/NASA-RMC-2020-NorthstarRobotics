@@ -38,22 +38,22 @@
       <param name="frame_id" value="imu1_link"/>
     </node>
   </group>
-
+  
   <!-- Launch decawaves -->
   <node pkg="decawave" type="decawave_node" name="decawave_node" output="screen" respawn="true">
     <param name="frequency" type="double" value="50.0"/>
     <param name="port_name" type="str" value="/dev/decawave0"/>
     <param name="base_seperation_covar" type="double" value="0.05"/>
-    <param name="distance_mesurment_covar" type="double" value="0.1"/>
-    <remap from="decawave" to="decawave0"/>
-  </node>
-
-  <node pkg="decawave" type="decawave_node" name="decawave_node" output="screen" respawn="true">
-    <param name="frequency" type="double" value="50.0"/>
-    <param name="port_name" type="str" value="/dev/decawave1"/>
-    <param name="base_seperation_covar" type="double" value="0.05"/>
-    <param name="distance_mesurment_covar" type="double" value="0.1"/>
-    <remap from="decawave" to="decawave1"/>
+    <param name="distance_measurement_covar" type="double" value="0.1"/>
+    <param name="anchor0_frame" value="anchor0" />
+    <param name="anchor1_frame" value="anchor1" />
+    <param name="anchor0_dw_id" value="3209" />
+    <param name="anchor1_dw_id" value="19344" />
+    <param name="decawave_frame" value="decawave0_link" />
+    <param name="robot_frame" value="base_link" />
+    <param name="map_frame" value="map" />
+    <param name="is_sim" value="$(arg simulation)" />
+    <param name="gazebo_prefix" value="rovr" />
   </node>
 
 </launch>

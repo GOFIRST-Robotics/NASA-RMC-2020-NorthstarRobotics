@@ -14,10 +14,12 @@
 #include <nav_msgs/Odometry.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <tf/transform_listener.h>
+#include <gazebo_msgs/LinkStates.h>
 
 // Native_Libs
 #include <string>
 #include <time.h>
+#include <functional>
 
 // Custom_Libs
 #include "decawave/decawave.h"
@@ -43,6 +45,8 @@
 //    decawave_frame (string): default=decawave; The frame of the decawave tag
 //    robot_frame (string): default=decawave; The frame to express the pose estimate of
 //    map_frame (string): default=map; The fixed world frame
+//    is_sim (bool): default=false; Whether we are in a gazebo environment or not
+//    gazebo_prefix (string): default=rovr
 
 // ROS Node and Publishers
 ros::NodeHandle * nh;
@@ -51,6 +55,7 @@ ros::Publisher estimate_pub;
 
 // ROS Callbacks
 void update_callback(const ros::TimerEvent&);
+void gazebo_joint_callback(const gazebo_msgs::LinkStates& msg);
 
 // ROS Params
 double frequency = 50.0;
@@ -64,9 +69,11 @@ int anchor1_dw_id = 0;
 std::string decawave_frame_id = "decawave";
 std::string robot_frame_id = "base_link";
 std::string map_frame_id = "map";
+bool is_sim = false;
+std::string gazebo_prefix = "rovr";
 
 // Global_Vars
-decawave::Decawave *piTag;
+decawave::IDecawave *piTag;
 tf::TransformListener * tf_listener_;
 int seq = 0;
 
@@ -91,12 +98,20 @@ int main(int argc, char** argv){
   pnh->getParam("decawave_frame", decawave_frame_id);
   pnh->getParam("robot_frame", robot_frame_id);
   pnh->getParam("map_frame", map_frame_id);
+  pnh->getParam("is_sim", is_sim);
+  pnh->getParam("gazebo_prefix", gazebo_prefix);
 
   // Init Decawave
-  piTag = new decawave::Decawave(port_name);
+  if (is_sim) {
+    piTag = new decawave::DecawaveSim(map_frame_id, decawave_frame_id, anchor0_dw_id, anchor1_dw_id, anchor0_frame_id, anchor1_frame_id, gazebo_prefix, robot_frame_id, tf_listener_);
+  }
+  else {
+    piTag = new decawave::Decawave(port_name);
+  }
 
   // Subscribers
   ros::Timer update_timer = nh->createTimer(ros::Duration(1.0/frequency), update_callback);
+  ros::Subscriber joint_sub = nh->subscribe("/gazebo/link_states", 5, gazebo_joint_callback);
 
   // Publishers
   estimate_pub = nh->advertise<geometry_msgs::PoseWithCovarianceStamped>("decawave", 2);
@@ -288,4 +303,10 @@ std::vector<double> do_Math(double d0, double d0_err,double d1, double d1_err,do
     };
 
   return covariance;
+}
+
+void gazebo_joint_callback(const gazebo_msgs::LinkStates& msg) {
+  if (is_sim) {
+    static_cast<decawave::DecawaveSim*>(piTag)->gazebo_joint_callback(msg);
+  }
 }
