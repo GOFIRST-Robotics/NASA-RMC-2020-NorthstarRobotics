@@ -40,6 +40,20 @@
   </group>
 
   <!-- Launch decawaves -->
-  <!-- Ryan, add this -->
+  <node pkg="decawave" type="decawave_node" name="decawave_node" output="screen" respawn="true">
+    <param name="frequency" type="double" value="50.0"/>
+    <param name="port_name" type="str" value="/dev/decawave0"/>
+    <param name="base_seperation_covar" type="double" value="0.05"/>
+    <param name="distance_mesurment_covar" type="double" value="0.1"/>
+    <remap from="decawave" to="decawave0"/>
+  </node>
+
+  <node pkg="decawave" type="decawave_node" name="decawave_node" output="screen" respawn="true">
+    <param name="frequency" type="double" value="50.0"/>
+    <param name="port_name" type="str" value="/dev/decawave1"/>
+    <param name="base_seperation_covar" type="double" value="0.05"/>
+    <param name="distance_mesurment_covar" type="double" value="0.1"/>
+    <remap from="decawave" to="decawave1"/>
+  </node>
 
 </launch>
