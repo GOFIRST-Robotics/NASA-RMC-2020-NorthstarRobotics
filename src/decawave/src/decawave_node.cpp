@@ -34,7 +34,7 @@
 //      Calculated x/y position of robot
 
 // Parameters (settings)
-//    frequency (double): default=50.0; The update frequency of the update loop
+//    frequency (double): default=10.0; The frequency of the update loop
 //    base_separation_covar (double): default=10.0; The variance of the distance between anchors?
 //    distance_measurement_covar (double): default=10.0; The variance of the distance measurement?
 //    port_name (string): default=/dev/ttyACM0; The serial port the decawave tag is connected to 
@@ -47,6 +47,7 @@
 //    map_frame (string): default=map; The fixed world frame
 //    is_sim (bool): default=false; Whether we are in a gazebo environment or not
 //    gazebo_prefix (string): default=rovr
+//    sim_dist_stdev (double) default=0.1; Standard deviation of simulated distance measurements (meters)
 
 // ROS Node and Publishers
 ros::NodeHandle * nh;
@@ -58,7 +59,7 @@ void update_callback(const ros::TimerEvent&);
 void gazebo_joint_callback(const gazebo_msgs::LinkStates& msg);
 
 // ROS Params
-double frequency = 50.0;
+double frequency = 10.0;
 double base_seperation_covar = 10.0;
 double distance_mesurment_covar = 10.0;
 std::string port_name = "/dev/ttyACM0";
@@ -71,6 +72,7 @@ std::string robot_frame_id = "base_link";
 std::string map_frame_id = "map";
 bool is_sim = false;
 std::string gazebo_prefix = "rovr";
+double sim_dist_stdev = 0.1;
 
 // Global_Vars
 decawave::IDecawave *piTag;
@@ -100,10 +102,11 @@ int main(int argc, char** argv){
   pnh->getParam("map_frame", map_frame_id);
   pnh->getParam("is_sim", is_sim);
   pnh->getParam("gazebo_prefix", gazebo_prefix);
+  pnh->getParam("sim_dist_stdev", sim_dist_stdev);
 
   // Init Decawave
   if (is_sim) {
-    piTag = new decawave::DecawaveSim(map_frame_id, decawave_frame_id, anchor0_dw_id, anchor1_dw_id, anchor0_frame_id, anchor1_frame_id, gazebo_prefix, robot_frame_id, tf_listener_);
+    piTag = new decawave::DecawaveSim(map_frame_id, decawave_frame_id, anchor0_dw_id, anchor1_dw_id, anchor0_frame_id, anchor1_frame_id, gazebo_prefix, robot_frame_id, sim_dist_stdev, tf_listener_);
   }
   else {
     piTag = new decawave::Decawave(port_name);
@@ -133,7 +136,8 @@ void update_callback(const ros::TimerEvent&){
     // get xyz positions of each anchor from tf
     ros::Time now = ros::Time::now();
     if (!tf_listener_->waitForTransform(map_frame_id, anchor0_frame_id, now, ros::Duration(0.5)) || 
-        !tf_listener_->waitForTransform(map_frame_id, anchor1_frame_id, now, ros::Duration(0.5))) {
+        !tf_listener_->waitForTransform(map_frame_id, anchor1_frame_id, now, ros::Duration(0.5)) ||
+        !tf_listener_->waitForTransform(robot_frame_id, decawave_frame_id, now, ros::Duration(0.5))) {
         return; // Can't find transforms
     }
     tf::StampedTransform anchor0_trs;
@@ -206,11 +210,13 @@ void update_callback(const ros::TimerEvent&){
     float z = anchor0.position[2]; // Assume decawaves are all planar
 
     // Transform pose into robot position in map frame
-    tf::Stamped<tf::Vector3> posOut(tf::Vector3(x,y,z), now, decawave_frame_id);
-    tf_listener_->transformVector(robot_frame_id, posOut, posOut); // todo: check that this transforms properly
-    pose_msg.pose.pose.position.x = posOut.getX();
-    pose_msg.pose.pose.position.y = posOut.getY();
-    pose_msg.pose.pose.position.z = posOut.getZ();
+    tf::Vector3 posOut(x,y,z);
+    tf::StampedTransform trs;
+    tf_listener_->lookupTransform(decawave_frame_id, robot_frame_id, now, trs);
+    tf::Vector3 posRobot = trs * posOut;
+    pose_msg.pose.pose.position.x = posRobot.getX();
+    pose_msg.pose.pose.position.y = posRobot.getY();
+    pose_msg.pose.pose.position.z = posRobot.getZ();
 
     pose_msg.pose.covariance = covariance;
     // This system doesn't provide any orientation estimate, so just set to 0

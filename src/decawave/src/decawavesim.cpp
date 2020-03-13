@@ -16,7 +16,8 @@
 
 
 namespace decawave{
-DecawaveSim::DecawaveSim(std::string map_frame, std::string my_frame, int anchor0_id, int anchor1_id, std::string anchor0_frame, std::string anchor1_frame, std::string gazebo_prefix, std::string robot_frame_id, tf::TransformListener * tf) {
+DecawaveSim::DecawaveSim(std::string map_frame, std::string my_frame, int anchor0_id, int anchor1_id, std::string anchor0_frame, 
+                         std::string anchor1_frame, std::string gazebo_prefix, std::string robot_frame_id, double sim_dist_stdev, tf::TransformListener * tf) {
     this->my_frame = my_frame;
     this->map_frame = map_frame;
     this->anchor0_frame = anchor0_frame;
@@ -26,6 +27,7 @@ DecawaveSim::DecawaveSim(std::string map_frame, std::string my_frame, int anchor
     this->robot_frame_id = robot_frame_id;
     this->anchor0_id = anchor0_id;
     this->anchor1_id = anchor1_id; 
+    this->gaussian = new std::normal_distribution<double>(0, sim_dist_stdev);
 }
 
 std::vector<Anchor> DecawaveSim::updateSamples() {
@@ -57,8 +59,8 @@ std::vector<Anchor> DecawaveSim::updateSamples() {
     tf::Vector3 tagPos(this->lastMsg.pose[i].position.x + tag_trs.getOrigin().getX(), 
                        this->lastMsg.pose[i].position.y + tag_trs.getOrigin().getY(), 
                        this->lastMsg.pose[i].position.z + tag_trs.getOrigin().getZ());
-    double range0 = (tagPos - anchor0_trs.getOrigin()).length() + this->gaussian(this->generator);
-    double range1 = (tagPos - anchor1_trs.getOrigin()).length() + this->gaussian(this->generator);
+    double range0 = (tagPos - anchor0_trs.getOrigin()).length() + (*this->gaussian)(this->generator);
+    double range1 = (tagPos - anchor1_trs.getOrigin()).length() + (*this->gaussian)(this->generator);
     Anchor anchor0;
     Anchor anchor1;
     anchor0.id = this->anchor0_id;

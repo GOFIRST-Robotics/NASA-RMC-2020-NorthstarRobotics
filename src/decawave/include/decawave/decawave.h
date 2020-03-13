@@ -39,7 +39,8 @@ private:
 class DecawaveSim : public IDecawave {
   public:
   DecawaveSim(std::string my_frame, std::string map_frame, int anchor0_id, int anchor1_id, std::string anchor0_frame, std::string anchor1_frame, std::string gazebo_prefix, 
-              std::string robot_frame_id, tf::TransformListener * tf);
+              std::string robot_frame_id, double sim_dist_stdev, tf::TransformListener * tf);
+  ~DecawaveSim();
   std::vector<Anchor> updateSamples() override;
   void gazebo_joint_callback(const gazebo_msgs::LinkStates& msg);
   private:
@@ -54,7 +55,7 @@ class DecawaveSim : public IDecawave {
   tf::TransformListener * tf;
   gazebo_msgs::LinkStates lastMsg;
   std::default_random_engine generator;
-  std::normal_distribution<double> gaussian;
+  std::normal_distribution<double> * gaussian;
   bool has_pos = false;
 };
 }
