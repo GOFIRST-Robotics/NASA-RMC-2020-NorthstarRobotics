@@ -28,9 +28,6 @@
     back_left_wheel_position_controller
     back_right_wheel_position_controller"/>
   
-  <!--<arg name="use_gui" value="True"/>
-  <arg name="model" default="$(find rovr_description)/urdf/rovr.urdf.xacro"/>
-  <arg name="rvizconfig" default="$(find rovr_description)/rviz/config.rviz" />
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />-->
+  <node type="rviz" name="rviz" pkg="rviz" args="-d $(find rovr_gazebo)/rviz/sim.rviz" />
 
 </launch>
