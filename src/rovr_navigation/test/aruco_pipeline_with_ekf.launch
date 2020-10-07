@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+<node pkg="robot_localization" name="ekf_localization_node" type="ekf_localization_node">
+  <rosparam command="load" file="$(find rovr_control)/config/ekf_map_params.yaml"/>
+  <param name ="pose0" value="aruco/estimate"/>
+  <rosparam param="pose0_config">
+    [true,  true,  false,
+     false, false, true,
+     false,  false, false,
+     false, false, false,
+     false, false, false]</rosparam>
+</node>
+
+
+<node pkg="tf" type="static_transform_publisher" name="odom_to_base_link" args="0 0 0 0 0 0 1 odom base_link 100" />
+
+<node pkg="tf" type="static_transform_publisher" name="camera_to_base_link" args="0 0 0 0 0 0 1 base_link camera 100" />
+
+<node pkg="tf" type="static_transform_publisher" name="d415_to_camera" args="0 0 0 0 0 0 1 camera realsense_d415_link 100" />
+
+
+
+<arg name="show" default = "false"/>
+<node pkg="aruco_localization" type="aruco_localization" name="aruco" output="screen">
+    <param name="show_output_video" value="$(arg show)" />
+    <param name="mavrkermap_config" value="$(find rovr_common)/config/aruco_calibration_grid_board_a4.yaml" />
+    <param name="marker_size" value="0.03614" />
+    <param name="debug_save_input_frames" value="false" />
+    <param name="debug_save_output_frames" value="false" />
+    <param name="debug_image_path" value="/tmp/arucoimages" />
+    <param name="camera_frame" value="camera"/>
+    <param name="robot_frame" value="base_link"/>
+    <param name="aruco_frame" value="aruco"/>
+    <param name="covar_calc_duration" value="5.0"/>
+
+    <remap from="input_image" to="realsense_d415/color/image_raw" />
+    <remap from="output_image" to="aruco/image" />
+</node>
+
+<include file="$(find rovr_common)/launch/sensors/realsense_d415.launch"/>
+</launch>
