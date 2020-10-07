@@ -278,24 +278,23 @@
   <!-- End cameras -->
 
   <!-- The following defines the realsense placement on the frame -->
-    <realsense_macro number="1" x="1" offset="${realsense_front_offset}"/>
-    <realsense_macro number="2" x="-1" offset="${realsense_back_offset}"/>
+    <realsense_macro number="0" x="1" offset="${realsense_front_offset}"/>
+    <realsense_macro number="1" x="-1" offset="${realsense_back_offset}"/>
   <!-- End realsenses -->
 
   <!-- The following defines the positions of the IMU and Decawave sensors -->
     <!-- imu and deca front left, back right. in front of extrusion -->
-    <imu number="1" x="1" y="1" extrusion="front_left_extrusion"/>
-    <imu number="2" x="1" y="-1" extrusion="back_right_extrusion"/>
+    <imu number="0" x="1" y="1" extrusion="front_left_extrusion"/>
+    <imu number="1" x="1" y="-1" extrusion="back_right_extrusion"/>
 
-    <decawave number="1" x="1" y="1" extrusion="front_left_extrusion"/>
-    <decawave number="2" x="1" y="-1" extrusion="back_right_extrusion"/>
+    <decawave number="0" x="1" y="1" extrusion="front_left_extrusion"/>
+    <decawave number="1" x="1" y="-1" extrusion="back_right_extrusion"/>
   <!-- End sensors -->
 
   <!-- skid steer plugin handles driving for us -->
 	<gazebo>
 	  <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
 	    <updateRate>100.0</updateRate>
-	    <robotNamespace>/rovr</robotNamespace>
 			<commandTopic>cmd_vel</commandTopic>
 			<odometryTopic>odometry/wheel</odometryTopic>
 	    <leftFrontJoint>front_left_wheel_joint</leftFrontJoint>
@@ -305,7 +304,7 @@
 	    <wheelSeparation>${2*base_width}</wheelSeparation>
 	    <wheelDiameter>${2*wheel_radius}</wheelDiameter>
 	    <robotBaseFrame>base_link</robotBaseFrame>
-	    <torque>20</torque>
+	    <torque>10000</torque>
 	    <broadcastTF>true</broadcastTF>
 			<legacyMode>false</legacyMode>
 	  </plugin>
@@ -313,43 +312,8 @@
 
   <gazebo>
   <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-    <robotNamespace>/rovr</robotNamespace>
     <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
     <legacyMode>false</legacyMode>
   </plugin>
   </gazebo>
-  
-  <!-- <gazebo>
-	  <plugin name="differential_drive_controller1" filename="libgazebo_ros_diff_drive.so">
-	    <alwaysOn>true</alwaysOn>
-	    <updateRate>100</updateRate>
-	    <leftJoint>front_left_wheel_joint</leftJoint>
-	    <rightJoint>front_right_wheel_joint</rightJoint>
-	    <wheelSeparation>${2*base_x_origin_to_wheel_origin}</wheelSeparation>
-	    <wheelDiameter>${2*wheel_radius}</wheelDiameter>
-	    <torque>20</torque>
-	    <commandTopic>cmd_vel</commandTopic>
-	    <odometryTopic>odom</odometryTopic>
-	    <odometryFrame>odom</odometryFrame>
-	    <robotBaseFrame>world_origin</robotBaseFrame>
-			<legacyMode>false</legacyMode>
-	  </plugin>
-	</gazebo>
-
-	<gazebo>
-	  <plugin name="differential_drive_controller2" filename="libgazebo_ros_diff_drive.so">
-	    <alwaysOn>true</alwaysOn>
-	    <updateRate>100</updateRate>
-	    <leftJoint>back_left_wheel_joint</leftJoint>
-	    <rightJoint>back_right_wheel_joint</rightJoint>
-	    <wheelSeparation>${2*base_x_origin_to_wheel_origin}</wheelSeparation>
-	    <wheelDiameter>${2*wheel_radius}</wheelDiameter>
-	    <torque>20</torque>
-	    <commandTopic>cmd_vel</commandTopic>
-	    <odometryTopic>odom</odometryTopic>
-	    <odometryFrame>odom</odometryFrame>
-	    <robotBaseFrame>world_origin</robotBaseFrame>
-			<legacyMode>false</legacyMode>
-	  </plugin>
-	</gazebo> -->
 </robot>

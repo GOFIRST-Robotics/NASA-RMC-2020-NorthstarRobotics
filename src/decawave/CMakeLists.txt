@@ -10,7 +10,10 @@ add_compile_options(-std=c++11 -g)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   nav_msgs
+  geometry_msgs
   message_generation
+  gazebo_msgs
+  tf
   serial
 )
 # find_package(serial)
@@ -57,6 +60,7 @@ include_directories(
 ## Declare a C++ library
 add_library(decawave
   src/decawave.cpp
+  src/decawavesim.cpp
   include/decawave/decawave.h
 )
 target_link_libraries(decawave

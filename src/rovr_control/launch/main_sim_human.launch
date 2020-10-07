@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Launch simulation single-click
+-->
+<launch>
+
+  <include file="main_onboard_highlevel.launch" />
+  <group>
+    <remap from="/rovr/cmd_vel" to="/cmd_vel" />
+    <include file="$(find rovr_gazebo)/launch/sim.launch" />
+  </group>
+
+</launch>

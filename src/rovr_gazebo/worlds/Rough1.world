@@ -15,7 +15,7 @@
         <collision name="collision">
           <geometry>
             <heightmap>
-              <uri>model://heightmap0/materials/textures/heightmap0.png</uri>
+              <uri>materials/textures/heightmap0.png</uri>
               <size>100 100 10</size>
               <pos>0 0 0</pos>
             </heightmap>
@@ -25,18 +25,18 @@
           <geometry>
             <heightmap>
               <texture>
-                <diffuse>file://materials/textures/dirt_diffusespecular.png</diffuse>
-                <normal>file://materials/textures/flat_normal.png</normal>
+                <diffuse>materials/textures/dirt_diffusespecular.png</diffuse>
+                <normal>materials/textures/flat_normal.png</normal>
                 <size>1</size>
               </texture>
               <texture>
-                <diffuse>file://materials/textures/grass_diffusespecular.png</diffuse>
-                <normal>file://materials/textures/flat_normal.png</normal>
+                <diffuse>materials/textures/grass_diffusespecular.png</diffuse>
+                <normal>materials/textures/flat_normal.png</normal>
                 <size>1</size>
               </texture>
               <texture>
-                <diffuse>file://materials/textures/fungus_diffusespecular.png</diffuse>
-                <normal>file://materials/textures/flat_normal.png</normal>
+                <diffuse>materials/textures/fungus_diffusespecular.png</diffuse>
+                <normal>materials/textures/flat_normal.png</normal>
                 <size>1</size>
               </texture>
               <blend>
@@ -47,7 +47,7 @@
                 <min_height>4</min_height>
                 <fade_dist>5</fade_dist>
               </blend>
-              <uri>model://heightmap0/materials/textures/heightmap0.png</uri>
+              <uri>materials/textures/heightmap0.png</uri>
               <size>100 100 10</size>
               <pos>0 0 0</pos>
             </heightmap>
