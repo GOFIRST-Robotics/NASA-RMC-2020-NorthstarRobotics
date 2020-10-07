@@ -1,0 +1,15 @@
+name: Clang-Format Lint SRC
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: DoozyX/clang-format-lint-action@v0.5
+        with:
+          source: './Src'
+          extensions: 'h,c'
+          clangFormatVersion: 6
