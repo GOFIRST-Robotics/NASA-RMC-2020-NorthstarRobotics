@@ -1,0 +1,3 @@
+#!/bin/bash
+
+apt list --installed ros-melodic-* | grep ros-melodic-* | sed -E "s/(.*?)\/(.*)/\1/" > rospkgs

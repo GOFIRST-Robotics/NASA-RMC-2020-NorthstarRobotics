@@ -14,34 +14,13 @@ The NASA RMC 2020 repository for Northstar Robotics, a segment of University of 
 - [Our Notes
    (old)](https://docs.google.com/document/d/1pDDC_1_RaHGiCGMDKFiZ845Ba5-fpn_cems4Xnu7P24/edit)
 
-## Documentation 
-See documentation README for instructions
+## Setup
+See [documentation README](/documentation/README.md) for instructions
 
 ## Timeline
 
 See project board for [current status](https://github.com/GOFIRST-Robotics/NASA-RMC-2020-NorthstarRobotics/projects/1)
 
- - [x] -   Learning
- - [x] -   Robust Teleop
- - [ ] -  Trough Alignment
- 
- Winter Break
- - [ ] - Path Planning [FEB]
-	 - [ ]  - Mapping
-	 - [ ] Obstacle Avoidance
- - [ ]  - Partial Autonomy [MAR]
-	 - [ ] Dumping
-	 - [ ] Driving
- - [ ] - Full Autonomy [APRIL]
- - [ ] - Testing [APRIL]
- - [ ] - Competition [MAY]
-Variable Schedule
- - [ ] - Simple Driver Assistance
-	 - [ ]  - Auto mining
-	 - [ ] - Lift Leveling
-	 - [ ] - Camera Streaming?
-
-[Milestones](https://docs.google.com/document/d/17NoA1MLxK1FFYn2GWv_bi-EYi50x5UTQvx3rQ464B9A/edit?usp=sharing)
 ## ROS Workspace
 
 
@@ -66,11 +45,6 @@ Feature packages
 * **aruco_localization**  	localization using aruco markers (visual targets)	
 
 ## Other Repos
-### Companion Repos
- - [serial](https://github.com/GOFIRST-Robotics/serial)
- - [realsense-ros](https://github.com/GOFIRST-Robotics/realsense-ros)
-- [aruco_localization](https://github.com/GOFIRST-Robotics/aruco_localization)
-- [navXTimeSync](https://github.com/GOFIRST-Robotics/navXTimeSync)
 ### Previous Years
 
  - [NASA-RMC-2019-NorthstarRobotics](https://github.com/GOFIRST-Robotics/NASA-RMC-2019-NorthstarRobotics)
@@ -93,12 +67,6 @@ Here are some recommendations from Jude:
 [link](https://drive.google.com/file/d/1erAJl0C8ypFN3QjhTqR0VGCr4sjenJmp/view)
 Good chapters: 2-6, 10, 12, 15, 17  
 [link](https://drive.google.com/file/d/1VJa_LGtTaZmOy9H4unzVqFZFCB_CC14B/view)
-### What is ROS?
-[Wikipedia](https://en.wikipedia.org/wiki/Robot_Operating_System): 
-
-> Robot Operating System (ROS or ros) is robotics middleware (i.e. collection of software frameworks for robot software development). Although ROS is not an operating system, it provides services designed for a heterogeneous computer cluster such as hardware abstraction, low-level device control, implementation of commonly used functionality, message-passing between processes, and package management. Running sets of ROS-based processes are represented in a graph architecture where processing takes place in nodes that may receive, post and multiplex sensor data, control, state, planning, actuator, and other messages.
-
-With ROS, we can use existing packages, share our packages, and facilitate communication between the parts of our software
 
 ### Example ROS filesystem
 ![filesystem](https://github.com/GOFIRST-Robotics/NASA-RMC-2020-NorthstarRobotics/blob/Documentation_update/documentation/doc/reference_imgs/ROS_filesystem.png)
@@ -126,3 +94,5 @@ With ROS, we can use existing packages, share our packages, and facilitate commu
 `rovr_control/launch/main_rovr_teleop_highlevel.launch` Launches telecom system (rovr side) and STM32 bridge
 
 `rovr_control/launch/main_mc_teleop.launch` Launches telecom system (driver station side)
+
+`rovr_bringup/launch/sim_bringup.launch` Launches simulation
