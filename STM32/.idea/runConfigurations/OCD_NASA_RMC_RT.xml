@@ -1,8 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="OCD NASA-RMC-RT" type="com.jetbrains.cidr.embedded.openocd.conf.type" factoryName="com.jetbrains.cidr.embedded.openocd.conf.factory" PASS_PARENT_ENVS_2="true" PROJECT_NAME="NASA-RMC-RT" TARGET_NAME="NASA-RMC-RT.elf" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="NASA-RMC-RT" RUN_TARGET_NAME="NASA-RMC-RT.elf">
-    <openocd gdb-port="3333" telnet-port="4444" board-config="board/st_nucleo_f3.cfg" reset-type="INIT" download-type="ALWAYS" />
-    <method v="2">
-      <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-    </method>
-  </configuration>
-</component>
