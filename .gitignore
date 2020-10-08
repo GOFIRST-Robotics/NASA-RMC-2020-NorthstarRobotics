@@ -8,6 +8,7 @@
 *.zip
 /CMakeLists.txt
 /src/CMakeLists.txt
+.vscode
 
 # Vim save files
 *.swp
