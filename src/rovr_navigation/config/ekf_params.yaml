@@ -3,7 +3,7 @@
 
 frequency: 50 # High frequency update, poss set to wheel or imu update rate, see noise?
 sensor_timeout: 0.1 # Normally, can be 1/f usually < 0.1 sec; Basically, how much of a delay cripples sys?
-two_d_mode: true # This might be false
+two_d_mode: true # 
 transform_time_offset: 0.0
 transform_timeout: 0.0
 
@@ -25,7 +25,7 @@ world_frame: odom # For local/odom ekf
 odom0: odometry/wheel
 odom0_config: [false, false, false,
                false, false, false,
-                true, false, false,
+                true, true, false,
                false, false, true,
                false, false, false]
 odom0_queue_size: 10 # Increase of high freq data or using low freq value
@@ -35,7 +35,7 @@ odom0_relative: false
 #odom0_pose_rejection_threshold: 5
 #odom0_twist_rejection_threshold: 1
 
-imu0: imu0/data
+#imu0: imu0/data
 imu0_config: [false, false, false,
               true,  true,  true,
               false, false, false,
@@ -85,7 +85,7 @@ imu1_remove_gravitational_acceleration: true # Check
 # predicition. Note that if an acceleration measurement for the variable in question is available from one of the
 # inputs, the control term will be ignored.
 # Whether or not we use the control input during predicition. Defaults to false.
-use_control: true
+use_control: false
 # Whether the input (assumed to be cmd_vel) is a geometry_msgs/Twist or geometry_msgs/TwistStamped message. Defaults to
 # false.
 stamped_control: false

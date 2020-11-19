@@ -117,7 +117,7 @@ int main(int argc, char** argv){
   ros::Subscriber joint_sub = nh->subscribe("/gazebo/link_states", 5, gazebo_joint_callback);
 
   // Publishers
-  estimate_pub = nh->advertise<geometry_msgs::PoseWithCovarianceStamped>("decawave", 2);
+  estimate_pub = nh->advertise<nav_msgs::Odometry>("decawave/odom", 2);
 
   // Spin
   ros::spin();
@@ -170,7 +170,7 @@ void update_callback(const ros::TimerEvent&){
     anchor1.position[0] = anchor1_trs.getOrigin().getX();
     anchor1.position[1] = anchor1_trs.getOrigin().getY();
     anchor1.position[2] = anchor1_trs.getOrigin().getZ();
-    std::cout << "Anchor " << anchor0.id << " dist: " << anchor0.distance << " Anchor " << anchor1.id << " dist: " << anchor1.distance <<std::endl;
+    //std::cout << "Anchor " << anchor0.id << " dist: " << anchor0.distance << " Anchor " << anchor1.id << " dist: " << anchor1.distance <<std::endl;
 
     // Here be dragons
     // TODO: This badly needs a refactor
@@ -195,12 +195,25 @@ void update_callback(const ros::TimerEvent&){
       covariance[i] = covariance_vec[i];
     }
 
-    geometry_msgs::PoseWithCovarianceStamped pose_msg;
+    nav_msgs::Odometry odom_msg;
+    // Add header
+    odom_msg.header.stamp = ros::Time::now();
+    odom_msg.header.seq = seq++;
+    odom_msg.header.frame_id = map_frame_id;
+    odom_msg.child_frame_id = robot_frame_id; // we don't actually specify orientation but should do this just because
 
-    pose_msg.header.stamp = now;
-    pose_msg.header.seq = seq;
-    seq++;
-    pose_msg.header.frame_id = map_frame_id; // Eventually we're publishing the pose of the robot in the map frame
+    // Put data in message
+    // We only use a subset of the total pose/twist pair, so some fields are permanently zero
+    odom_msg.pose.pose.orientation.x = 0.0f;
+    odom_msg.pose.pose.orientation.y = 0.0f;
+    odom_msg.pose.pose.orientation.z = 0.0f; 
+    odom_msg.pose.pose.orientation.w = 1.0f;
+    odom_msg.twist.twist.linear.x = 0.0f;
+    odom_msg.twist.twist.linear.y = 0.0f;
+    odom_msg.twist.twist.linear.z = 0.0f;
+    odom_msg.twist.twist.angular.x = 0.0f;
+    odom_msg.twist.twist.angular.y = 0.0f;
+    odom_msg.twist.twist.angular.z = 0.0f;
 
     //take x and y off the back and put them in the pose
     float y = covariance_vec[37];
@@ -214,18 +227,18 @@ void update_callback(const ros::TimerEvent&){
     tf::StampedTransform trs;
     tf_listener_->lookupTransform(decawave_frame_id, robot_frame_id, now, trs);
     tf::Vector3 posRobot = trs * posOut;
-    pose_msg.pose.pose.position.x = posRobot.getX();
-    pose_msg.pose.pose.position.y = posRobot.getY();
-    pose_msg.pose.pose.position.z = posRobot.getZ();
+    odom_msg.pose.pose.position.x = posRobot.getX();
+    odom_msg.pose.pose.position.y = posRobot.getY();
+    odom_msg.pose.pose.position.z = posRobot.getZ();
 
-    pose_msg.pose.covariance = covariance;
+    odom_msg.pose.covariance = covariance;
     // This system doesn't provide any orientation estimate, so just set to 0
-    pose_msg.pose.pose.orientation.x = 0.0;
-    pose_msg.pose.pose.orientation.y = 0.0;
-    pose_msg.pose.pose.orientation.z = 0.0;
-    pose_msg.pose.pose.orientation.w = 0.0;
+    odom_msg.pose.pose.orientation.x = 0.0;
+    odom_msg.pose.pose.orientation.y = 0.0;
+    odom_msg.pose.pose.orientation.z = 0.0;
+    odom_msg.pose.pose.orientation.w = 0.0;
 
-    estimate_pub.publish(pose_msg);
+    estimate_pub.publish(odom_msg);
   }
 }
 
@@ -246,7 +259,7 @@ void update_callback(const ros::TimerEvent&){
 std::vector<double> do_Math(double d0, double d0_err,double d1, double d1_err,double b,double b_err, double p1x, double p1y, double p2x, double p2y){
   //protect triangle inequality
   if ( abs(d0-d1) > b){
-    std::cout << "vec: " << d0 << " " << d1 << " " << b << "\n";
+    //std::cout << "vec: " << d0 << " " << d1 << " " << b << "\n";
     std::vector<double> bad_val={0};
     return bad_val;
   } 
@@ -276,7 +289,7 @@ std::vector<double> do_Math(double d0, double d0_err,double d1, double d1_err,do
   //rotate b by theta
   std::vector<double> v2={(p2x-p1x)*cos_theta - (p2y-p1y)*sin_theta , (p2x-p1x)*sin_theta + (p2y-p1y)*cos_theta };
   double v2_len= sqrt(pow(v2[0], 2)+pow(v2[1], 2));
-  std::cout << "vec: " << d0 << " " << d1 << " " << b << "\n";
+  //std::cout << "vec: " << d0 << " " << d1 << " " << b << "\n";
   v2[0]=v2[0]/v2_len;
   v2[1]=v2[1]/v2_len;
   std::vector<double> v1={v2[1], -v2[0]};
@@ -297,6 +310,11 @@ std::vector<double> do_Math(double d0, double d0_err,double d1, double d1_err,do
   //calc x,y
   double x = p1x+v2[0]*d0;
   double y = p1y+v2[1]*d0;
+
+  if (isnan(covar_mat[0] + covar_mat[1] + covar_mat[2] + covar_mat[3])) {
+    std::vector<double> covar = {};
+    return covar; // error return
+  }
 
   std::vector<double> covariance=
     { covar_mat[0], covar_mat[1], 0.0, 0.0, 0.0, 0.0,

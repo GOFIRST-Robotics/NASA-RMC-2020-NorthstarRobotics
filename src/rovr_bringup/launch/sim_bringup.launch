@@ -14,7 +14,7 @@
 
   <node pkg="tf" type="static_transform_publisher" name="anchor0_broadcaster" args="0 0.57 0.48 0 0 0 1 map anchor0 100" />
   <node pkg="tf" type="static_transform_publisher" name="anchor1_broadcaster" args="0 1.57 0.48 0 0 0 1 map anchor1 100" />
-  <node pkg="tf" type="static_transform_publisher" name="odom_broadcaster" args="0 0 0 0 0 0 1 map odom 100" />
+  <!--<node pkg="tf" type="static_transform_publisher" name="odom_broadcaster" args="0 0 0 0 0 0 1 map odom 100" />-->
 
   <!-- Sensors -->
   <include file="$(find rovr_common)/launch/sensors/sensors.launch">
@@ -23,4 +23,8 @@
 
   <!-- Launch Gazebo -->
   <include file="$(find rovr_gazebo)/launch/sim.launch" />
+
+  <!-- Launch nav nodes. Should eventually just call navigation.launch-->
+  <include file="$(find rovr_navigation)/launch/ekf_odom.launch" />
+  <include file="$(find rovr_navigation)/launch/ekf_map.launch" />
 </launch>
