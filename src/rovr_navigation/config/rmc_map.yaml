@@ -1,4 +1,4 @@
-image: map.pgm
+image: localization_map.pgm
 resolution: 0.001
 origin: [3.58397396678, 4.75655627586, 3.10161396647]
 negate: 0
