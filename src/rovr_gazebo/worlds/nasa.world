@@ -8,7 +8,7 @@
     </include>
     <model name="arena">
         <static>true</static>
-        <pose>1.8 2.7 0  0 0 0</pose>
+        <pose>1.8 2.7 0  -1.57079632679 0 0</pose>
         <link name="body">
         <visual name="visual">
           <geometry>
