@@ -1,31 +1,7 @@
-<!--THis is the example in the tutorial -->
+<?xml version='1.0'?>
+<sdf version='1.5'>
+  <model name='aruco_markermap'>
 
-<?xml version="1.0" ?>
-<sdf version="1.4">
-  <world name="default">
-    <include>
-      <uri>model://sun</uri>
-    </include>
-    <model name="arena">
-        <static>true</static>
-        <pose>1.8 2.7 0  -1.57079632679 0 0</pose>
-        <link name="body">
-        <visual name="visual">
-          <geometry>
-            <mesh><uri>file://models/RMCWorld.dae</uri></mesh>
-          </geometry>
-        </visual>
-        <collision name="collision">
-          <geometry>
-            <mesh><uri>file://models/RMCWorld.dae</uri></mesh>
-          </geometry>
-        </collision>
-      </link>
-    </model>
-
-    <model name='aruco_markermap'>
-    <static>true</static>
-    <pose>0.31 0.75 0.25 0 1.5708 0</pose>
     <link name='marker'>
       <pose frame=''>0 0 0 0 0 0</pose>
       <visual name='visual'>
@@ -118,5 +94,4 @@
     <allow_auto_disable>1</allow_auto_disable>
 
   </model>
-  </world>
 </sdf>
