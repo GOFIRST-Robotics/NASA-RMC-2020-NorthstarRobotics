@@ -60,8 +60,8 @@ void gazebo_joint_callback(const gazebo_msgs::LinkStates& msg);
 
 // ROS Params
 double frequency = 10.0;
-double base_seperation_covar = 10.0;
-double distance_mesurment_covar = 10.0;
+double base_seperation_covar = 0.1;
+double distance_mesurment_covar = 0.1;
 std::string port_name = "/dev/ttyACM0";
 std::string anchor0_frame_id = "anchor0";
 std::string anchor1_frame_id = "anchor1";
@@ -80,7 +80,7 @@ tf::TransformListener * tf_listener_;
 int seq = 0;
 
 // Utility Functions
-std::vector<double> do_Math(double d0, double d0_err,double d1, double d1_err,double b,double b_err, double p1x, double p1y, double p2x, double p2y);
+std::vector<double> do_Math(double d0, double d0_err,double d1, double d1_err, double b);
 
 int main(int argc, char** argv){
   // Init this ROS node
@@ -135,15 +135,17 @@ void update_callback(const ros::TimerEvent&){
     std::vector<double> covariance_vec;
     // get xyz positions of each anchor from tf
     ros::Time now = ros::Time::now();
-    if (!tf_listener_->waitForTransform(map_frame_id, anchor0_frame_id, now, ros::Duration(0.5)) || 
-        !tf_listener_->waitForTransform(map_frame_id, anchor1_frame_id, now, ros::Duration(0.5)) ||
+    if (!tf_listener_->waitForTransform(anchor1_frame_id, anchor0_frame_id, now, ros::Duration(0.5)) || 
         !tf_listener_->waitForTransform(robot_frame_id, decawave_frame_id, now, ros::Duration(0.5))) {
+        ROS_WARN("Couldn't find necessary transforms for DW node");
         return; // Can't find transforms
     }
-    tf::StampedTransform anchor0_trs;
-    tf::StampedTransform anchor1_trs;
-    tf_listener_->lookupTransform(map_frame_id, anchor0_frame_id, now, anchor0_trs);
-    tf_listener_->lookupTransform(map_frame_id, anchor1_frame_id, now, anchor1_trs);
+    tf::StampedTransform anchor01_trs;
+    tf_listener_->lookupTransform(anchor1_frame_id, anchor0_frame_id, now, anchor01_trs);
+    tf::Vector3 trs_origin = anchor01_trs.getOrigin();
+    if (abs(trs_origin.getY()) > 1e-2 || abs(trs_origin.getZ()) > 1e-2) {
+      ROS_WARN("Anchor frames set improperly- they must be the same except for in anchor0's X frame");
+    }
 
     // Find anchors by id
     decawave::Anchor anchor0;
@@ -163,27 +165,12 @@ void update_callback(const ros::TimerEvent&){
       ROS_INFO("Couldn't find correct anchors");
       return;
     }
-    // todo: use positions from anchors relative to given frame?
-    anchor0.position[0] = anchor0_trs.getOrigin().getX();
-    anchor0.position[1] = anchor0_trs.getOrigin().getY();
-    anchor0.position[2] = anchor0_trs.getOrigin().getZ();
-    anchor1.position[0] = anchor1_trs.getOrigin().getX();
-    anchor1.position[1] = anchor1_trs.getOrigin().getY();
-    anchor1.position[2] = anchor1_trs.getOrigin().getZ();
+
     //std::cout << "Anchor " << anchor0.id << " dist: " << anchor0.distance << " Anchor " << anchor1.id << " dist: " << anchor1.distance <<std::endl;
 
     // Here be dragons
     // TODO: This badly needs a refactor
-    if (anchor1.position[1] > anchor0.position[1]){
-      covariance_vec= do_Math( anchor1.distance , distance_mesurment_covar , anchor0.distance , distance_mesurment_covar,
-      sqrt( pow(  anchor1.position[1] -  anchor0.position[1] , 2) + pow(  anchor1.position[0] -  anchor0.position[0] , 2) ) , base_seperation_covar,
-       anchor1.position[0],  anchor1.position[1],  anchor0.position[0],  anchor0.position[1] );
-    }
-    else {//anchor 0 is p1
-      covariance_vec= do_Math( anchor0.distance , distance_mesurment_covar , anchor1.distance , distance_mesurment_covar,
-      sqrt( pow(  anchor1.position[1] -  anchor0.position[1] , 2) + pow(  anchor1.position[0] -  anchor0.position[0] , 2) ) , base_seperation_covar,
-      anchor0.position[0],   anchor0.position[1],  anchor1.position[0],  anchor1.position[1] );
-    }
+    covariance_vec= do_Math( anchor1.distance , distance_mesurment_covar , anchor0.distance , distance_mesurment_covar, trs_origin.getX());
 
     //handle no val
     if (covariance_vec.size() < 36) {
@@ -199,7 +186,7 @@ void update_callback(const ros::TimerEvent&){
     // Add header
     odom_msg.header.stamp = ros::Time::now();
     odom_msg.header.seq = seq++;
-    odom_msg.header.frame_id = map_frame_id;
+    odom_msg.header.frame_id = anchor0_frame_id;
     odom_msg.child_frame_id = robot_frame_id; // we don't actually specify orientation but should do this just because
 
     // Put data in message
@@ -207,7 +194,7 @@ void update_callback(const ros::TimerEvent&){
     odom_msg.pose.pose.orientation.x = 0.0f;
     odom_msg.pose.pose.orientation.y = 0.0f;
     odom_msg.pose.pose.orientation.z = 0.0f; 
-    odom_msg.pose.pose.orientation.w = 1.0f;
+    odom_msg.pose.pose.orientation.w = 0.0f;
     odom_msg.twist.twist.linear.x = 0.0f;
     odom_msg.twist.twist.linear.y = 0.0f;
     odom_msg.twist.twist.linear.z = 0.0f;
@@ -225,7 +212,7 @@ void update_callback(const ros::TimerEvent&){
     // Transform pose into robot position in map frame
     tf::Vector3 posOut(x,y,z);
     tf::StampedTransform trs;
-    tf_listener_->lookupTransform(decawave_frame_id, robot_frame_id, now, trs);
+    tf_listener_->lookupTransform(robot_frame_id, decawave_frame_id, now, trs);
     tf::Vector3 posRobot = trs * posOut;
     odom_msg.pose.pose.position.x = posRobot.getX();
     odom_msg.pose.pose.position.y = posRobot.getY();
@@ -254,79 +241,26 @@ void update_callback(const ros::TimerEvent&){
   theta --------
       p1   b     p2
 
-//ASSUMES x,y is inside bounds. assumes p1 y is greater than p2 y
 */
-std::vector<double> do_Math(double d0, double d0_err,double d1, double d1_err,double b,double b_err, double p1x, double p1y, double p2x, double p2y){
-  //protect triangle inequality
-  if ( abs(d0-d1) > b){
-    //std::cout << "vec: " << d0 << " " << d1 << " " << b << "\n";
-    std::vector<double> bad_val={0};
-    return bad_val;
-  } 
-  //calc cos theta
-  double cos_theta = (pow(b,2) + pow(d0,2) - pow(d1,2) )/(2*b*d0);
-  double b_sqr_err= 2*b_err;
-  double d0_sqr_err= 2*d0_err;
-  double d1_sqr_err= 2*d1_err;
-  double top_err = sqrt( ( pow(b_sqr_err,2) + pow( d0_sqr_err, 2 ) + pow( d1_sqr_err, 2) ) );
-  double theta_err = sqrt( pow(b_err/b , 2) + pow( top_err / (pow(b,2) + pow(d0,2) - pow(d1,2)) ,2) + pow(d0_err/d0 , 2));
+std::vector<double> do_Math(double d0, double d0_err,double d1, double d1_err,double b){
 
-  double angle = acos(cos_theta);
-  double angle_diff = acos(cos_theta+theta_err);
+  // Calculate circ-circ intersection
+  double x = (b*b - d0*d0 + d1*d1) / (2*b);
+  double y = +sqrt(d1*d1 - x*x); // Take positive square root
+  // Rough standard deviation calculation
+  double xerr = (2 * d0 * d0_err + 2 * d1 * d1_err + d0_err*d0_err + d1_err*d1_err) / (2*b);
+  double yerr = (2 * d1 * d1_err + d1_err * d1_err + 2*x*xerr + xerr*xerr) / (2*y);
+  // Rotate back into real frame
 
-  if(angle_diff<angle){
-    angle_diff= angle - acos(cos_theta-theta_err);
-  }else{
-    angle_diff = angle_diff-angle;
-  }
-  double sin_theta = sin(angle);
-
-  //calc x and y covarience
-  double x_co = d0*tan(angle_diff);
-  double y_co = d0_err;
-
-  //unit vetors in y and x directions respecivly
-  //rotate b by theta
-  std::vector<double> v2={(p2x-p1x)*cos_theta - (p2y-p1y)*sin_theta , (p2x-p1x)*sin_theta + (p2y-p1y)*cos_theta };
-  double v2_len= sqrt(pow(v2[0], 2)+pow(v2[1], 2));
-  //std::cout << "vec: " << d0 << " " << d1 << " " << b << "\n";
-  v2[0]=v2[0]/v2_len;
-  v2[1]=v2[1]/v2_len;
-  std::vector<double> v1={v2[1], -v2[0]};
-
-  std::vector<double> r = {v1[0], v1[1], v2[0], v2[1]};
-
-  //covariance is R C (R transpose)
-  //set c1 =R * [dxx , 0, 0 , dyy]
-  std::vector<double> c1={ x_co*r[0], y_co*r[1], x_co*r[2], y_co*r[3]};
-
-  std::vector<double> covar_mat={0.0, 0.0, 0.0, 0.0};
-  //mult by r transpose
-  covar_mat[0]= c1[0]*r[0] + c1[1]*r[1];
-  covar_mat[1]= c1[0]*r[2] + c1[1]*r[3];
-  covar_mat[2]= c1[2]*r[0] + c1[3]*r[1];
-  covar_mat[3]= c1[2]*r[2] + c1[3]*r[3];
-
-  //calc x,y
-  double x = p1x+v2[0]*d0;
-  double y = p1y+v2[1]*d0;
-
-  if (isnan(covar_mat[0] + covar_mat[1] + covar_mat[2] + covar_mat[3])) {
-    std::vector<double> covar = {};
-    return covar; // error return
-  }
-
-  std::vector<double> covariance=
-    { covar_mat[0], covar_mat[1], 0.0, 0.0, 0.0, 0.0,
-      covar_mat[2], covar_mat[3], 0.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 10000.0, 0.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 10000.0, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 10000.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 10000.0,
-      x, y
-    };
-
-  return covariance;
+  std::vector<double> covar = {
+    xerr*xerr, xerr*yerr, 0, 0, 0, 0,
+    yerr*xerr, yerr*yerr, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, x, y
+  };
+  return covar;
 }
 
 void gazebo_joint_callback(const gazebo_msgs::LinkStates& msg) {

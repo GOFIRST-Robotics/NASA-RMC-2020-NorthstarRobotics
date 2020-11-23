@@ -6,9 +6,9 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /Odometry1
         - /Odometry1/Shape1
         - /Odometry1/Covariance1/Position1
+        - /Odometry2
         - /Odometry2/Shape1
         - /Odometry3
       Splitter Ratio: 0.5
@@ -255,7 +255,7 @@ Visualization Manager:
           Color: 204; 51; 204
           Scale: 1
           Value: true
-        Value: true
+        Value: false
       Enabled: true
       Keep: 1
       Name: Odometry
@@ -289,7 +289,7 @@ Visualization Manager:
           Color: 204; 51; 204
           Scale: 1
           Value: true
-        Value: false
+        Value: true
       Enabled: true
       Keep: 1
       Name: Odometry
@@ -323,7 +323,7 @@ Visualization Manager:
           Color: 204; 51; 204
           Scale: 1
           Value: true
-        Value: false
+        Value: true
       Enabled: true
       Keep: 1
       Name: Odometry
@@ -340,6 +340,20 @@ Visualization Manager:
         Value: Axes
       Topic: /decawave1/odom
       Unreliable: false
+      Value: true
+    - Class: rviz/Axes
+      Enabled: true
+      Length: 1
+      Name: Axes
+      Radius: 0.10000000149011612
+      Reference Frame: anchor0
+      Value: true
+    - Class: rviz/Axes
+      Enabled: true
+      Length: 1
+      Name: Axes
+      Radius: 0.10000000149011612
+      Reference Frame: anchor1
       Value: true
   Enabled: true
   Global Options:
@@ -376,18 +390,18 @@ Visualization Manager:
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.04559614881873131
-        Y: 2.9102110862731934
-        Z: -1.6534113883972168
+        X: -0.9283062219619751
+        Y: -0.03419368341565132
+        Z: -2.378422260284424
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5153985023498535
+      Pitch: 1.1947963237762451
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.262209951877594
+      Yaw: 2.5653934478759766
     Saved: ~
 Window Geometry:
   Displays:
