@@ -205,7 +205,7 @@ void update_callback(const ros::TimerEvent&){
     pose_msg.pose.pose.orientation.x = 0.0;
     pose_msg.pose.pose.orientation.y = 0.0;
     pose_msg.pose.pose.orientation.z = 0.0;
-    pose_msg.pose.pose.orientation.w = 0.0;
+    pose_msg.pose.pose.orientation.w = 1.0;
 
     estimate_pub.publish(pose_msg);
   }
