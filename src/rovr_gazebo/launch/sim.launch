@@ -21,7 +21,7 @@
 
   <!-- Spawn a robot into Gazebo -->
   <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
-    args=" -urdf -model rovr -x 1.8 -y 0.75 -z 0 -param robot_description" />
+    args=" -urdf -model rovr -x 1 -y 0.75 -z 0 -Y 3.14159 -param robot_description" />
 
   <rosparam file="$(find rovr_control)/config/rovr_control.yaml" command="load"/>
 

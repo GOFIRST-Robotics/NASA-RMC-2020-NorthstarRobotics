@@ -55,12 +55,12 @@ std::vector<Anchor> DecawaveSim::updateSamples() {
     }
     tf::StampedTransform tag_trs;
     this->tf->lookupTransform(this->robot_frame_id, this->my_frame, now, tag_trs);
+    tf::Pose robotPos;
+    tf::poseMsgToTF(lastMsg.pose[i], robotPos);
 
-    tf::Vector3 tagPos(this->lastMsg.pose[i].position.x + tag_trs.getOrigin().getX(), 
-                       this->lastMsg.pose[i].position.y + tag_trs.getOrigin().getY(), 
-                       this->lastMsg.pose[i].position.z + tag_trs.getOrigin().getZ());
-    double range0 = (tagPos - anchor0_trs.getOrigin()).length() + (*this->gaussian)(this->generator);
-    double range1 = (tagPos - anchor1_trs.getOrigin()).length() + (*this->gaussian)(this->generator);
+    tf::Pose tagPos = robotPos * tag_trs;
+    double range0 = (tagPos.getOrigin() - anchor0_trs.getOrigin()).length() + (*this->gaussian)(this->generator);
+    double range1 = (tagPos.getOrigin() - anchor1_trs.getOrigin()).length() + (*this->gaussian)(this->generator);
     Anchor anchor0;
     Anchor anchor1;
     anchor0.id = this->anchor0_id;

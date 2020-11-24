@@ -35,6 +35,7 @@
   <depend>geometry_msgs</depend>
   <depend>serial</depend>
   <depend>gazebo_msgs</depend>
+  <depend>message_filters</depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>

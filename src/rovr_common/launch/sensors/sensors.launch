@@ -47,7 +47,7 @@
 
   <!-- Launch decawaves -->
   <node pkg="decawave" type="decawave_node" name="decawave0_node" output="screen" respawn="true">
-    <remap from="decawave/odom" to="/decawave0/odom" />
+    <remap from="decawave/pose" to="/decawave0/pose" />
     <param name="frequency" type="double" value="50.0"/>
     <param name="port_name" type="str" value="/dev/decawave0"/>
     <param name="base_seperation_covar" type="double" value="0.05"/>
@@ -65,7 +65,7 @@
   </node>
 
   <node pkg="decawave" type="decawave_node" name="decawave1_node" output="screen" respawn="true">
-    <remap from="decawave/odom" to="/decawave1/odom" />
+    <remap from="decawave/pose" to="/decawave1/pose" />
     <param name="frequency" type="double" value="50.0"/>
     <param name="port_name" type="str" value="/dev/decawave1"/>
     <param name="base_seperation_covar" type="double" value="0.05"/>
@@ -80,6 +80,10 @@
     <param name="is_sim" value="$(arg simulation)" />
     <param name="gazebo_prefix" value="rovr" />
     <param name="sim_dist_stdev" value="0.001" />
+  </node>
+
+  <node pkg="decawave" type="dual_decawave_node" name="decawave_combiner" output="screen" respawn="true">
+
   </node>
 
   <node pkg="aruco_localization" type="aruco_localization" name="aruco0" output="screen" respawn="true">

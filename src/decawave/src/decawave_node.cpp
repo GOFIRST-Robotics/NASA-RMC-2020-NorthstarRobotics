@@ -30,7 +30,7 @@
 //      Update loop for reading / querying Decawave
 
 // Publishers (outputs)
-//    estimate (geometry_msgs/PoseWithCovarianceStamped): "decawave"
+//    estimate (geometry_msgs/PoseWithCovarianceStampedStamped): "decawave"
 //      Calculated x/y position of robot
 
 // Parameters (settings)
@@ -117,7 +117,7 @@ int main(int argc, char** argv){
   ros::Subscriber joint_sub = nh->subscribe("/gazebo/link_states", 5, gazebo_joint_callback);
 
   // Publishers
-  estimate_pub = nh->advertise<nav_msgs::Odometry>("decawave/odom", 2);
+  estimate_pub = nh->advertise<geometry_msgs::PoseWithCovarianceStamped>("decawave/pose", 2);
 
   // Spin
   ros::spin();
@@ -135,8 +135,7 @@ void update_callback(const ros::TimerEvent&){
     std::vector<double> covariance_vec;
     // get xyz positions of each anchor from tf
     ros::Time now = ros::Time::now();
-    if (!tf_listener_->waitForTransform(anchor1_frame_id, anchor0_frame_id, now, ros::Duration(0.5)) || 
-        !tf_listener_->waitForTransform(robot_frame_id, decawave_frame_id, now, ros::Duration(0.5))) {
+    if (!tf_listener_->waitForTransform(anchor1_frame_id, anchor0_frame_id, now, ros::Duration(0.5))) {
         ROS_WARN("Couldn't find necessary transforms for DW node");
         return; // Can't find transforms
     }
@@ -182,50 +181,33 @@ void update_callback(const ros::TimerEvent&){
       covariance[i] = covariance_vec[i];
     }
 
-    nav_msgs::Odometry odom_msg;
+    geometry_msgs::PoseWithCovarianceStamped pose_msg;
     // Add header
-    odom_msg.header.stamp = ros::Time::now();
-    odom_msg.header.seq = seq++;
-    odom_msg.header.frame_id = anchor0_frame_id;
-    odom_msg.child_frame_id = robot_frame_id; // we don't actually specify orientation but should do this just because
+    pose_msg.header.stamp = ros::Time::now();
+    pose_msg.header.seq = seq++;
+    pose_msg.header.frame_id = anchor0_frame_id;
 
     // Put data in message
-    // We only use a subset of the total pose/twist pair, so some fields are permanently zero
-    odom_msg.pose.pose.orientation.x = 0.0f;
-    odom_msg.pose.pose.orientation.y = 0.0f;
-    odom_msg.pose.pose.orientation.z = 0.0f; 
-    odom_msg.pose.pose.orientation.w = 0.0f;
-    odom_msg.twist.twist.linear.x = 0.0f;
-    odom_msg.twist.twist.linear.y = 0.0f;
-    odom_msg.twist.twist.linear.z = 0.0f;
-    odom_msg.twist.twist.angular.x = 0.0f;
-    odom_msg.twist.twist.angular.y = 0.0f;
-    odom_msg.twist.twist.angular.z = 0.0f;
 
     //take x and y off the back and put them in the pose
     float y = covariance_vec[37];
     covariance_vec.pop_back();
     float x = covariance_vec[36];
     covariance_vec.pop_back();
-    float z = anchor0.position[2]; // Assume decawaves are all planar
+    float z = 0; // Assume decawaves are all planar
+    
+    pose_msg.pose.pose.position.x = x;
+    pose_msg.pose.pose.position.y = y;
+    pose_msg.pose.pose.position.z = z;
 
-    // Transform pose into robot position in map frame
-    tf::Vector3 posOut(x,y,z);
-    tf::StampedTransform trs;
-    tf_listener_->lookupTransform(robot_frame_id, decawave_frame_id, now, trs);
-    tf::Vector3 posRobot = trs * posOut;
-    odom_msg.pose.pose.position.x = posRobot.getX();
-    odom_msg.pose.pose.position.y = posRobot.getY();
-    odom_msg.pose.pose.position.z = posRobot.getZ();
-
-    odom_msg.pose.covariance = covariance;
+    pose_msg.pose.covariance = covariance;
     // This system doesn't provide any orientation estimate, so just set to 0
-    odom_msg.pose.pose.orientation.x = 0.0;
-    odom_msg.pose.pose.orientation.y = 0.0;
-    odom_msg.pose.pose.orientation.z = 0.0;
-    odom_msg.pose.pose.orientation.w = 0.0;
+    pose_msg.pose.pose.orientation.x = 0.0;
+    pose_msg.pose.pose.orientation.y = 0.0;
+    pose_msg.pose.pose.orientation.z = 0.0;
+    pose_msg.pose.pose.orientation.w = 0.0;
 
-    estimate_pub.publish(odom_msg);
+    estimate_pub.publish(pose_msg);
   }
 }
 
@@ -245,7 +227,7 @@ void update_callback(const ros::TimerEvent&){
 std::vector<double> do_Math(double d0, double d0_err,double d1, double d1_err,double b){
 
   // Calculate circ-circ intersection
-  double x = (b*b - d0*d0 + d1*d1) / (2*b);
+  double x = -(b*b - d0*d0 + d1*d1) / (2*b);
   double y = +sqrt(d1*d1 - x*x); // Take positive square root
   // Rough standard deviation calculation
   double xerr = (2 * d0 * d0_err + 2 * d1 * d1_err + d0_err*d0_err + d1_err*d1_err) / (2*b);
@@ -253,8 +235,8 @@ std::vector<double> do_Math(double d0, double d0_err,double d1, double d1_err,do
   // Rotate back into real frame
 
   std::vector<double> covar = {
-    xerr*xerr, xerr*yerr, 0, 0, 0, 0,
-    yerr*xerr, yerr*yerr, 0, 0, 0, 0,
+    xerr*xerr, 0, 0, 0, 0, 0,
+    0, yerr*yerr, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0,
