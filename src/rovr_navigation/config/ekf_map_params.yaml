@@ -14,10 +14,10 @@ odom1_config: [ true,  true, false,
                false, false, false,
                false, false, false,
                false, false, false]
-odom1_queue_size: 5
-odom1_pose_rejection_threshold: 2 # Adjust?
-odom1_twist_rejection_threshold: 0.2 # Adjust?
-odom1_nodelay: false
+#odom1_queue_size: 5
+#odom1_pose_rejection_threshold: 2 # Adjust?
+#odom1_twist_rejection_threshold: 0.2 # Adjust?
+#odom1_nodelay: false
 
 odom2: decawave1/odom
 odom2_config: [ true,  true, false,
@@ -25,22 +25,22 @@ odom2_config: [ true,  true, false,
                false, false, false,
                false, false, false,
                false, false, false]
-odom2_queue_size: 5
-odom2_pose_rejection_threshold: 2 # Adjust?
-odom2_twist_rejection_threshold: 0.2 # Adjust?
-odom2_nodelay: false
+#odom2_queue_size: 5
+#odom2_pose_rejection_threshold: 2 # Adjust?
+#odom2_twist_rejection_threshold: 0.2 # Adjust?
+#odom2_nodelay: false
 
-#odom3: odometry/fiducial
-#odom3_config: [ true,  true, false,
-#               false, false, true,
-#               false, false, false,
-#               false, false, false,
-#               false, false, false]
-#odom3_differential: false # Make odometry/fiducial abs
-#odom3_relative: false # Our initial position is not zero, so wait for sensor
-#odom3_queue_size: 5 # If the queue is large, fuse old vals?
-##odom3_pose_rejection_threshold: 2 # Don't want to reject anything?
-##odom3_twist_rejection_threshold: 0.2 # Don't want to reject anything?
-#odom3_nodelay: false
+pose0: aruco0/estimate
+pose0_config: [ true,  true, false,
+               false, false, true,
+               false, false, false,
+               false, false, false,
+               false, false, false]
+pose1: aruco1/estimate
+pose1_config: [ true,  true, false,
+               false, false, true,
+               false, false, false,
+               false, false, false,
+               false, false, false]
 
   # Everything below is unconfigured, defaults

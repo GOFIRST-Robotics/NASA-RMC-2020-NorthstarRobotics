@@ -31,7 +31,7 @@
       <visual name='visual'>
         <geometry>
           <box>
-            <size>0.2794 0.2159 1e-5</size>
+            <size>0.5 0.386 1e-5</size>
           </box>
         </geometry>
         <material>
@@ -58,7 +58,7 @@
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
           <box>
-            <size>0.2794 0.2159 1e-05</size>
+            <size>0.5 0.386 1e-05</size>
           </box>
         </geometry>
       </collision>
@@ -69,7 +69,7 @@
       <visual name='visual'>
         <geometry>
           <box>
-            <size>0.2794 0.2159 1e-5</size>
+            <size>0.5 0.386 1e-5</size>
           </box>
         </geometry>
         <material>
@@ -95,7 +95,7 @@
         <pose frame=''>0 0 0 0 -0 0</pose>
         <geometry>
           <box>
-            <size>0.2794 0.2159 1e-5</size>
+            <size>0.5 0.386 1e-5</size>
           </box>
         </geometry>
       </collision>
