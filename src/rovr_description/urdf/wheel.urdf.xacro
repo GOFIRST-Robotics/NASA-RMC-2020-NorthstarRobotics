@@ -4,8 +4,8 @@
 	<!-- Properties which define the robots wheels -->
 	  <!-- Main dimensions: meters, kg, seconds, rads -->
 	  <xacro:property name="PI" value="3.141592653589793238462643383279502884197" />
-	  <xacro:property name="wheel_width" value=".15" />
-	  <xacro:property name="wheel_radius" value=".18035" />
+	  <xacro:property name="wheel_width" value=".10" />
+	  <xacro:property name="wheel_radius" value=".120" />
 	  <xacro:property name="wheel_mass" value="2" />
   <!-- end properties -->
 
@@ -40,7 +40,7 @@
 		<joint name="${prefix}_wheel_joint" type="continuous">
 			<parent link="${leg}" />
 			<child 	link="${prefix}_wheel" />
-      <origin xyz="${x*leg_x_origin_to_axle} ${y*(wheel_radius/2+leg_width/4)} ${leg_axle_height-leg_height/2}" rpy="0 0 0"/>
+      <origin xyz="${x*leg_x_origin_to_axle} ${y*(wheel_radius/2+leg_width/4)} ${leg_axle_height-leg_height/2-0.01}" rpy="0 0 0"/>
       <dynamics damping="0.5" friction="0.1"/> <!-- get real later N*m*s/rad damp N*m friction-->
       <limit effort="1000" velocity="10"/> <!-- simmulate motors, max velocity and max joint effort -->
       <axis xyz="0 1 0"/> <!-- will rotate for y axis -->

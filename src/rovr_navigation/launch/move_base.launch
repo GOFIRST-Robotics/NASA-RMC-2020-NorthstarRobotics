@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?> 
-<!-- Launch all rovr navigation functions.
+<!-- Launch move_base
      This does the following:
 
      This does not (explicitly):
@@ -26,7 +26,7 @@
   <arg name="base_local_planner" default="dwa_local_planner/DWAPlannerROS"/>
   
   <arg name="odom_frame_id"   default="odom"/>
-  <arg name="base_frame_id"   default="base_footprint"/>
+  <arg name="base_frame_id"   default="base_link"/>
   <arg name="global_frame_id" default="map"/>
   <arg name="odom_topic" default="odom" />
   <arg name="laser_topic" default="scan" />

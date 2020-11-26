@@ -1,17 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?> 
-<!-- Launch all rovr navigation functions.
-     This does the following:
-
-     This does not (explicitly):
-
-     Interface:
-      Sub:
-        
-      Pub:
-
-      TF:
-
--->
+<!-- Launch all rovr navigation functions: Map, EKFs, move_base -->
 <launch>
-
+      <include file="$(find rovr_navigation)/launch/map.launch" />
+      <include file="$(find rovr_navigation)/launch/ekf_map.launch" />
+      <include file="$(find rovr_navigation)/launch/ekf_odom.launch" />
+      <include file="$(find rovr_navigation)/launch/move_base.launch" />
 </launch>

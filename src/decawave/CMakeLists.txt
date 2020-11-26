@@ -81,7 +81,12 @@ add_dependencies( decawave UpdateSubmodule )
 # add_executable(${PROJECT_NAME}_node src/decawave_raw_node.cpp)
 
 add_executable(decawave_node src/decawave_node.cpp)
+add_executable(dual_decawave_node src/dual_decawave_node.cpp)
 target_link_libraries(decawave_node
+  ${catkin_LIBRARIES}
+  decawave
+)
+target_link_libraries(dual_decawave_node
   ${catkin_LIBRARIES}
   decawave
 )
